@@ -2,18 +2,18 @@
 
 namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
 
-use Illuminate\Support\Str;
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\LinkAction;
+use Filament\Tables\Columns\BooleanColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Columns\BooleanColumn;
 use Qubiqx\QcommerceForms\Models\FormInput;
-use Filament\Tables\Concerns\InteractsWithTable;
 use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use Illuminate\Support\Str;
 
 class ViewForm extends Page implements HasTable
 {
