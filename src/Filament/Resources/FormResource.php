@@ -2,12 +2,12 @@
 
 namespace Qubiqx\QcommerceForms\Filament\Resources;
 
-use Filament\Resources\Form;
-use Filament\Resources\Table;
-use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Resources\Form;
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
+use Filament\Tables\Columns\TextColumn;
 use Qubiqx\QcommerceCore\Filament\Resources\FormResource\Pages\ListForm;
 use Qubiqx\QcommerceCore\Filament\Resources\FormResource\Pages\ViewForm;
 use Qubiqx\QcommerceCore\Filament\Resources\FormResource\Pages\ViewFormInput;
