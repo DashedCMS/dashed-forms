@@ -2,24 +2,57 @@
 
 namespace Qubiqx\QcommerceForms;
 
+use Filament\PluginServiceProvider;
+use Qubiqx\QcommerceForms\Filament\Pages\Settings\FormSettingsPage;
+use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
 use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Qubiqx\QcommerceForms\Commands\QcommerceFormsCommand;
 
-class QcommerceFormsServiceProvider extends PackageServiceProvider
+class QcommerceFormsServiceProvider extends PluginServiceProvider
 {
+    public static string $name = 'qcommerce-forms';
+
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+
+        cms()->builder(
+            'settingPages',
+            array_merge(cms()->builder('settingPages'), [
+                'formNotifications' => [
+                    'name' => 'Formulier notificaties',
+                    'description' => 'Beheer meldingen die na het invullen van het formulier worden verstuurd',
+                    'icon' => 'bell',
+                    'page' => FormSettingsPage::class,
+                ],
+            ])
+        );
+
         $package
             ->name('qcommerce-forms')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_qcommerce-forms_table')
-            ->hasCommand(QcommerceFormsCommand::class);
+            ->hasRoutes([
+                'frontend',
+            ])
+            ->hasViews();
+    }
+
+    protected function getStyles(): array
+    {
+        return array_merge(parent::getStyles(), [
+            'qcommerce-core' => str_replace('/vendor/qubiqx/qcommerce-core/src', '', str_replace('/packages/qubiqx/qcommerce-core/src', '', __DIR__)) . '/vendor/qubiqx/qcommerce-core/resources/dist/css/qcommerce-core.css',
+        ]);
+    }
+
+    protected function getPages(): array
+    {
+        return array_merge(parent::getPages(), [
+            FormSettingsPage::class,
+        ]);
+    }
+
+    protected function getResources(): array
+    {
+        return array_merge(parent::getResources(), [
+            FormResource::class,
+        ]);
     }
 }

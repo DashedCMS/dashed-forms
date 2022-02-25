@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Database\Factories;
+namespace Qubiqx\QcommerceCore\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
