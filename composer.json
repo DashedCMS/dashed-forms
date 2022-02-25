@@ -51,10 +51,7 @@
         "laravel": {
             "providers": [
                 "Qubiqx\\QcommerceForms\\QcommerceFormsServiceProvider"
-            ],
-            "aliases": {
-                "QcommerceForms": "Qubiqx\\QcommerceForms\\Facades\\QcommerceForms"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",

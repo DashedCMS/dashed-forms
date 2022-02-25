@@ -4,8 +4,8 @@ namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
 
 use Filament\Resources\Pages\Page;
 use Filament\Pages\Actions\ButtonAction;
-use Qubiqx\QcommerceCore\Models\FormInput;
-use Qubiqx\QcommerceCore\Filament\Resources\FormResource;
+use Qubiqx\QcommerceForms\Models\FormInput;
+use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
 
 class ViewFormInput extends Page
 {
@@ -17,10 +17,6 @@ class ViewFormInput extends Page
 
     public function mount($record, FormInput $formInput): void
     {
-        if ($formInput->form->id != $record) {
-            abort(404);
-        }
-
         $this->record = $formInput;
     }
 

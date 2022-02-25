@@ -10,9 +10,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Columns\BooleanColumn;
-use Qubiqx\QcommerceCore\Models\FormInput;
+use Qubiqx\QcommerceForms\Models\FormInput;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Qubiqx\QcommerceCore\Filament\Resources\FormResource;
+use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
 class ViewForm extends Page implements HasTable
