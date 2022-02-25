@@ -2,9 +2,9 @@
 
 namespace Qubiqx\QcommerceForms;
 
+use Qubiqx\QcommerceForms\Commands\QcommerceFormsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Qubiqx\QcommerceForms\Commands\QcommerceFormsCommand;
 
 class QcommerceFormsServiceProvider extends PackageServiceProvider
 {
