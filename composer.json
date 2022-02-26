@@ -53,7 +53,7 @@
                 "Qubiqx\\QcommerceForms\\QcommerceFormsServiceProvider"
             ],
             "aliases": {
-                "Forms": "Qubiqx\\QcommerceCore\\Classes\\Forms"
+                "Forms": "Qubiqx\\QcommerceForms\\Classes\\Forms"
             }
         }
     },
