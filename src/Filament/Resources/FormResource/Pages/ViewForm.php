@@ -23,7 +23,7 @@ class ViewForm extends Page implements HasTable
     public $record;
 
     protected static string $resource = FormResource::class;
-    protected static string $view = 'qcommerce-core::forms.pages.view-form';
+    protected static string $view = 'qcommerce-forms::forms.pages.view-form';
 
     public function getTableSortColumn(): ?string
     {

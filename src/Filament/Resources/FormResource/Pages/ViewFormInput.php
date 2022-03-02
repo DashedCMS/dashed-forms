@@ -11,7 +11,7 @@ class ViewFormInput extends Page
 {
     protected static string $resource = FormResource::class;
 
-    protected static string $view = 'qcommerce-core::forms.pages.view-form-input';
+    protected static string $view = 'qcommerce-forms::forms.pages.view-form-input';
 
     public $record;
 
