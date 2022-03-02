@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Qubiqx\QcommerceCore\Middleware\FrontendMiddleware;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Qubiqx\QcommerceForms\Controllers\Frontend\FormController;
 use Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
-use Qubiqx\QcommerceCore\Middleware\FrontendMiddleware;
-use Qubiqx\QcommerceForms\Controllers\Frontend\FormController;
 
 Route::group(
     [
