@@ -28,13 +28,6 @@ class FormResource extends Resource
         return 'Formulieren (' . FormInput::unviewed()->count() . ')';
     }
 
-    public static function getGloballySearchableAttributes(): array
-    {
-        return [
-            'name',
-        ];
-    }
-
     public static function form(Form $form): Form
     {
         return $form
