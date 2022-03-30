@@ -2,13 +2,13 @@
 
 namespace Qubiqx\QcommerceForms\Mail;
 
-use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Qubiqx\QcommerceForms\Models\Form;
 use Illuminate\Queue\SerializesModels;
-use Qubiqx\QcommerceForms\Models\FormInput;
+use Illuminate\Support\Str;
 use Qubiqx\QcommerceCore\Models\Customsetting;
+use Qubiqx\QcommerceForms\Models\Form;
+use Qubiqx\QcommerceForms\Models\FormInput;
 use Qubiqx\QcommerceTranslations\Models\Translation;
 
 class AdminFormSubmitConfirmationMail extends Mailable
