@@ -20,7 +20,7 @@ class FormController extends FrontendController
     public function store(Request $request)
     {
         $formName = $request->form_name;
-        if (!$formName) {
+        if (! $formName) {
             return redirect()->back()->with('error', Translation::get('form-name-not-provided', 'form', 'Form name not provided, please contact a administrator'))->withInput();
         }
 
@@ -41,7 +41,7 @@ class FormController extends FrontendController
                 $request->validate($validations);
 
                 $form = Form::where('name', $formName)->first();
-                if (!$form) {
+                if (! $form) {
                     $form = new Form();
                     $form->name = $formName;
                     $form->save();
