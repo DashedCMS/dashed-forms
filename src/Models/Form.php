@@ -2,6 +2,7 @@
 
 namespace Qubiqx\QcommerceForms\Models;
 
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -23,6 +24,11 @@ class Form extends Model
     ];
 
     protected $table = 'qcommerce__forms';
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
 
     public function inputs()
     {
