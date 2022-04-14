@@ -81,7 +81,7 @@ class FormSettingsPage extends Page implements HasForms
                     unset($emails[$key]);
                 }
             }
-            Customsetting::set('notification_form_inputs_emails', $emails, $site['id']);
+            Customsetting::set('notification_form_inputs_emails', json_encode($emails), $site['id']);
             $formState["notification_form_inputs_emails_{$site['id']}"] = $emails;
         }
 
