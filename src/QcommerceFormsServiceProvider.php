@@ -3,9 +3,9 @@
 namespace Qubiqx\QcommerceForms;
 
 use Filament\PluginServiceProvider;
-use Spatie\LaravelPackageTools\Package;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
 use Qubiqx\QcommerceForms\Filament\Pages\Settings\FormSettingsPage;
+use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Spatie\LaravelPackageTools\Package;
 
 class QcommerceFormsServiceProvider extends PluginServiceProvider
 {

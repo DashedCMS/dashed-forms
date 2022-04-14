@@ -2,8 +2,8 @@
 
 namespace Qubiqx\QcommerceForms\Tests;
 
-use Orchestra\Testbench\TestCase as Orchestra;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Orchestra\Testbench\TestCase as Orchestra;
 use Qubiqx\QcommerceForms\QcommerceFormsServiceProvider;
 
 class TestCase extends Orchestra
