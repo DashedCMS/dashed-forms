@@ -32,7 +32,7 @@ class ViewForm extends Page implements HasTable
 
     public function mount($record): void
     {
-        $this->record = $this->getRecord($record);
+        $this->record = $this->resolveRecord($record);
     }
 
     protected function getTableQuery(): Builder
