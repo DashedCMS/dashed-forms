@@ -2,18 +2,18 @@
 
 namespace Qubiqx\QcommerceForms\Controllers\Frontend;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-use Qubiqx\QcommerceCore\Classes\Sites;
-use Qubiqx\QcommerceCore\Controllers\Frontend\FrontendController;
-use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceForms\Mail\AdminFormSubmitConfirmationMail;
-use Qubiqx\QcommerceForms\Mail\FormSubmitConfirmationMail;
 use Qubiqx\QcommerceForms\Models\Form;
+use Qubiqx\QcommerceCore\Classes\Sites;
 use Qubiqx\QcommerceForms\Models\FormInput;
+use Qubiqx\QcommerceCore\Models\Customsetting;
 use Qubiqx\QcommerceTranslations\Models\Translation;
+use Qubiqx\QcommerceForms\Mail\FormSubmitConfirmationMail;
+use Qubiqx\QcommerceForms\Mail\AdminFormSubmitConfirmationMail;
+use Qubiqx\QcommerceCore\Controllers\Frontend\FrontendController;
 
 class FormController extends FrontendController
 {

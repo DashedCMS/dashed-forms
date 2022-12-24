@@ -2,10 +2,11 @@
 
 namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Pages\Actions\ButtonAction;
+use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\Page;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Filament\Pages\Actions\ButtonAction;
 use Qubiqx\QcommerceForms\Models\FormInput;
+use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
 
 class ViewFormInput extends Page
 {
@@ -35,13 +36,15 @@ class ViewFormInput extends Page
     {
         if ($this->record->viewed == 1) {
             return [
-                ButtonAction::make('mark_as_not_viewed')
+                Action::make('mark_as_not_viewed')
+                    ->button()
                     ->label('Markeer als niet bekeken')
                     ->action('markAsNotViewed'),
             ];
         } else {
             return [
-                ButtonAction::make('mark_as_viewed')
+                Action::make('mark_as_viewed')
+                    ->button()
                     ->label('Markeer als bekeken')
                     ->action('markAsViewed'),
             ];
