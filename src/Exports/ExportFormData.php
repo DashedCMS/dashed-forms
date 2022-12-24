@@ -3,7 +3,6 @@
 namespace Qubiqx\QcommerceForms\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\FromCollection;
 
 class ExportFormData implements FromArray
 {

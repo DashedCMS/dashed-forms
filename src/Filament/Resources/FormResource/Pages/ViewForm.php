@@ -2,24 +2,22 @@
 
 namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
 
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
-use Filament\Resources\Pages\Page;
-use Filament\Tables\Actions\LinkAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Columns\BooleanColumn;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Qubiqx\QcommerceForms\Exports\ExportFormData;
-use Qubiqx\QcommerceForms\Models\FormInput;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Qubiqx\QcommerceForms\Models\FormInput;
 
 class ViewForm extends Page implements HasTable
 {
@@ -87,7 +85,7 @@ class ViewForm extends Page implements HasTable
             if ($inputCount < 4) {
                 $tableColumns[] = TextColumn::make($key)
                     ->label(Str::of($key)->replace('_', ' ')->title())
-                    ->getStateUsing(fn($record) => $record->content[$key] ?? 'Niet ingevuld');
+                    ->getStateUsing(fn ($record) => $record->content[$key] ?? 'Niet ingevuld');
             }
             $inputCount++;
         }
@@ -114,7 +112,7 @@ class ViewForm extends Page implements HasTable
     {
         return [
             Action::make('Bekijk')
-                ->url(fn(FormInput $record): string => route('filament.resources.forms.viewFormInput', [$record->form->id, $record])),
+                ->url(fn (FormInput $record): string => route('filament.resources.forms.viewFormInput', [$record->form->id, $record])),
         ];
     }
 
@@ -125,6 +123,7 @@ class ViewForm extends Page implements HasTable
                 ->label('Exporteer')
                 ->action(function (Collection $records) {
                     $this->notify('success', 'Resultaten geëxporteerd');
+
                     return Excel::download(new ExportFormData($records), 'form-data.xlsx');
                 })
                 ->deselectRecordsAfterCompletion(),
