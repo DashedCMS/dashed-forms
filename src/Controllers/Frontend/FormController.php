@@ -20,7 +20,7 @@ class FormController extends FrontendController
     public function store(Request $request)
     {
         $formName = $request->form_name;
-        if (! $formName) {
+        if (!$formName) {
             return redirect()->back()->with('error', Translation::get('form-name-not-provided', 'form', 'Form name not provided, please contact a administrator'))->withInput();
         }
 
@@ -41,7 +41,7 @@ class FormController extends FrontendController
                 $request->validate($validations);
 
                 $form = Form::where('name', $formName)->first();
-                if (! $form) {
+                if (!$form) {
                     $form = new Form();
                     $form->name = $formName;
                     $form->save();
@@ -69,27 +69,17 @@ class FormController extends FrontendController
                     try {
                         Mail::to($sendToFieldValue)->send(new FormSubmitConfirmationMail($form, $formInput));
                     } catch (\Exception $e) {
-                        dd($e->getMessage());
                     }
                 }
 
-                if (env('APP_ENV') == 'local') {
-                    try {
-                        Mail::to('robin@qubiqx.com')->send(new AdminFormSubmitConfirmationMail($form, $formInput, $sendToFieldValue));
-                    } catch (\Exception $e) {
-                        dd($e->getMessage());
-                    }
-                } else {
-                    try {
-                        $notificationFormInputsEmails = Customsetting::get('notification_form_inputs_emails', Sites::getActive(), '[]');
-                        if ($notificationFormInputsEmails) {
-                            foreach (json_decode($notificationFormInputsEmails) as $notificationFormInputsEmail) {
-                                Mail::to($notificationFormInputsEmail)->send(new AdminFormSubmitConfirmationMail($form, $formInput, $sendToFieldValue));
-                            }
+                try {
+                    $notificationFormInputsEmails = Customsetting::get('notification_form_inputs_emails', Sites::getActive(), '[]');
+                    if ($notificationFormInputsEmails) {
+                        foreach (json_decode($notificationFormInputsEmails) as $notificationFormInputsEmail) {
+                            Mail::to($notificationFormInputsEmail)->send(new AdminFormSubmitConfirmationMail($form, $formInput, $sendToFieldValue));
                         }
-                    } catch (\Exception $e) {
-                        dd($e->getMessage());
                     }
+                } catch (\Exception $e) {
                 }
 
                 return redirect()->back()->with('success', Translation::get('form-' . Str::slug($form->name) . '-succesfully-submitted', 'form', 'The form has been submitted'));
