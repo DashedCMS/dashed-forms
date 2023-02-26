@@ -2,10 +2,8 @@
 
 namespace Qubiqx\QcommerceForms\Filament\Resources;
 
-use Faker\Provider\ar_JO\Text;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -79,18 +77,18 @@ class FormResource extends Resource
                             ->required()
                             ->reactive()
                             ->rules([
-                                'required'
+                                'required',
                             ]),
                         Select::make('input_type')
                             ->label('Input type veld')
                             ->options(Forms::availableInputTypesForInput())
-                            ->required(fn($get) => in_array($get('type'), ['input']))
+                            ->required(fn ($get) => in_array($get('type'), ['input']))
                             ->reactive()
-                            ->when(fn($get) => in_array($get('type'), ['input'])),
+                            ->when(fn ($get) => in_array($get('type'), ['input'])),
                         TextInput::make('placeholder')
                             ->label('Placeholder')
                             ->maxLength(255)
-                            ->when(fn($get) => in_array($get('type'), ['input', 'textarea']))
+                            ->when(fn ($get) => in_array($get('type'), ['input', 'textarea']))
                             ->rules([
                                 'max:255',
                             ]),
@@ -103,7 +101,7 @@ class FormResource extends Resource
                             ]),
                         Toggle::make('required')
                             ->label('Verplicht in te vullen')
-                            ->when(fn($get) => !in_array($get('type'), ['info', 'image'])),
+                            ->when(fn ($get) => ! in_array($get('type'), ['info', 'image'])),
                         Toggle::make('stack_start')
                             ->label('Start van de stack'),
                         Toggle::make('stack_end')
@@ -111,15 +109,15 @@ class FormResource extends Resource
                         Textarea::make('description')
                             ->label('Descriptie')
                             ->maxLength(500)
-                            ->required(fn($get) => in_array($get('type'), ['info']))
-                            ->when(fn($get) => in_array($get('type'), ['info', 'select-image']))
+                            ->required(fn ($get) => in_array($get('type'), ['info']))
+                            ->when(fn ($get) => in_array($get('type'), ['info', 'select-image']))
                             ->rules([
                                 'max:500',
                             ]),
                         Repeater::make('options')
                             ->label('Opties')
-                            ->required(fn($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
-                            ->when(fn($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
+                            ->required(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
+                            ->when(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
                             ->orderable()
                             ->schema([
                                 TextInput::make('name')
@@ -136,8 +134,8 @@ class FormResource extends Resource
                             ]),
                         Repeater::make('images')
                             ->label('Afbeeldingen')
-                            ->required(fn($get) => in_array($get('type'), ['select-image']))
-                            ->when(fn($get) => in_array($get('type'), ['select-image']))
+                            ->required(fn ($get) => in_array($get('type'), ['select-image']))
+                            ->when(fn ($get) => in_array($get('type'), ['select-image']))
                             ->orderable()
                             ->schema([
                                 TextInput::make('name')
@@ -161,8 +159,8 @@ class FormResource extends Resource
                             ]),
                         FileUpload::make('image')
                             ->label('Afbeelding')
-                            ->required(fn($get) => in_array($get('type'), ['image']))
-                            ->when(fn($get) => in_array($get('type'), ['image']))
+                            ->required(fn ($get) => in_array($get('type'), ['image']))
+                            ->when(fn ($get) => in_array($get('type'), ['image']))
                             ->image()
                             ->directory('qcommerce/quotations')
                             ->rules([
@@ -212,22 +210,22 @@ class FormResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->label('Naam')
-                    ->formatStateUsing(fn($state) => ucfirst($state))
+                    ->formatStateUsing(fn ($state) => ucfirst($state))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('amount_of_requests')
                     ->label('Aantal aanvragen')
-                    ->getStateUsing(fn($record) => $record->inputs->count()),
+                    ->getStateUsing(fn ($record) => $record->inputs->count()),
                 TextColumn::make('amount_of_unviewed_requests')
                     ->label('Aantal openstaande aanvragen')
-                    ->getStateUsing(fn($record) => $record->inputs()->unviewed()->count()),
+                    ->getStateUsing(fn ($record) => $record->inputs()->unviewed()->count()),
             ])
             ->actions([
                 EditAction::make(),
                 Action::make('viewInputs')
                     ->label('Bekijk aanvragen')
                     ->icon('heroicon-s-eye')
-                    ->url(fn($record) => route('filament.resources.forms.viewInputs', [$record])),
+                    ->url(fn ($record) => route('filament.resources.forms.viewInputs', [$record])),
             ])
             ->filters([
                 //

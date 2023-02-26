@@ -2,7 +2,6 @@
 
 namespace Qubiqx\QcommerceForms\Models;
 
-use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,7 +24,7 @@ class Form extends Model
     }
 
     public $translatable = [
-        ''
+        '',
     ];
 
     public function fields(): HasMany

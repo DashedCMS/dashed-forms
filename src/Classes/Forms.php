@@ -26,7 +26,7 @@ class Forms
         ];
 
         foreach ($validTypes as $key => $validType) {
-            if (!view()->exists('components.form-components.' . $key)) {
+            if (! view()->exists('components.form-components.' . $key)) {
                 unset($validTypes[$key]);
             }
         }

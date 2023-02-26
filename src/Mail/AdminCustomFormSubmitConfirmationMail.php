@@ -7,7 +7,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceForms\Models\Form;
 use Qubiqx\QcommerceForms\Models\FormInput;
 use Qubiqx\QcommerceTranslations\Models\Translation;
 

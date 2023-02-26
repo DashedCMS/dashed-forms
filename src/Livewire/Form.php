@@ -3,17 +3,17 @@
 namespace Qubiqx\QcommerceForms\Livewire;
 
 use Filament\Notifications\Notification;
-use Livewire\Component;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
+use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use Qubiqx\QcommerceCore\Classes\Sites;
+use Qubiqx\QcommerceCore\Models\Customsetting;
 use Qubiqx\QcommerceForms\Mail\AdminCustomFormSubmitConfirmationMail;
 use Qubiqx\QcommerceForms\Mail\CustomFormSubmitConfirmationMail;
 use Qubiqx\QcommerceForms\Models\FormField;
 use Qubiqx\QcommerceForms\Models\FormInput;
-use Qubiqx\QcommerceCore\Models\Customsetting;
 
 class Form extends Component
 {
@@ -82,14 +82,14 @@ class Form extends Component
     protected function validationAttributes()
     {
         return collect($this->formFields)
-            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
+            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
             ->toArray();
     }
 
     protected function rules()
     {
         return collect($this->formFields)
-            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
+            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
             ->toArray();
     }
 
@@ -99,6 +99,7 @@ class Form extends Component
 
         if ($this->myName) {
             $this->addError('values.' . $this->form->fields()->where('type', '!=', 'info')->first()->fieldName, 'Je bent een bot!');
+
             return Notification::make()
                 ->danger()
                 ->body('Je bent een bot!')
@@ -156,6 +157,7 @@ class Form extends Component
             ->body('Je bericht is verzonden!')
             ->send();
     }
+
     public function updated($name, $value)
     {
         if ($value instanceof TemporaryUploadedFile) {

@@ -5,11 +5,6 @@ namespace Qubiqx\QcommerceForms\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Qubiqx\QcommerceCore\Classes\Sites;
-use Qubiqx\QcommerceCore\Models\Concerns\HasMetadata;
-use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceForms\Models\Form;
-use Qubiqx\QcommercePages\Models\Page;
 use Spatie\Translatable\HasTranslations;
 
 class FormField extends Model
@@ -34,7 +29,7 @@ class FormField extends Model
     ];
 
     protected $appends = [
-        'fieldName'
+        'fieldName',
     ];
 
     public function form(): BelongsTo
