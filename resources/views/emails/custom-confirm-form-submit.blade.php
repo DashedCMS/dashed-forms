@@ -45,10 +45,10 @@
         } </style>
     <!--[if mso]>
     <xml>
-    <o:OfficeDocumentSettings>
-        <o:AllowPNG/>
-        <o:PixelsPerInch>96</o:PixelsPerInch>
-    </o:OfficeDocumentSettings>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
     </xml>
     <![endif]--> <!--[if lte mso 11]>
     <style type="text/css"> .outlook-group-fix {
@@ -171,8 +171,8 @@
     <!-- Body Wrapper --> <!--[if mso | IE]>
     <table align="center" border="0" cellpadding="0" cellspacing="0" class="body-wrapper-outlook" style="width:600px;"
            width="600">
-    <tr>
-        <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
+        <tr>
+            <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
     <![endif]-->
     <div class="body-wrapper"
          style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; padding-bottom: 20px; box-shadow: 0 4px 10px #ddd; background: #F2F2F2; background-color: #F2F2F2; margin: 0px auto; max-width: 600px; margin-bottom: 10px;">
@@ -186,11 +186,11 @@
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                     <![endif]--> <!-- Pre-Headers --> <!--[if mso | IE]>
                     <tr>
-                    <td class="pre-header-outlook" width="600px">
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="pre-header-outlook"
-                               style="width:560px;" width="560">
-                            <tr>
-                                <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
+                        <td class="pre-header-outlook" width="600px">
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="pre-header-outlook"
+                                   style="width:560px;" width="560">
+                                <tr>
+                                    <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
                     <![endif]-->
                     <!--[if mso | IE]>
                     </td>
@@ -200,11 +200,11 @@
                     </tr>
                     <![endif]--> <!-- header --> <!--[if mso | IE]>
                     <tr>
-                    <td class="header-outlook" width="600px">
-                        <table align="center" border="0" cellpadding="0" cellspacing="0" class="header-outlook"
-                               style="width:560px;" width="560">
-                            <tr>
-                                <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
+                        <td class="header-outlook" width="600px">
+                            <table align="center" border="0" cellpadding="0" cellspacing="0" class="header-outlook"
+                                   style="width:560px;" width="560">
+                                <tr>
+                                    <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
                     <![endif]-->
                     <div class="header"
                          style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; line-height: 22px; padding: 15px 0; margin: 0px auto; max-width: 560px;">
@@ -216,7 +216,7 @@
                                     align="center">
                                     <!--[if mso | IE]>
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                    <tr>
+                                        <tr>
                                     <![endif]--> <!-- LOGO --> <!--[if mso | IE]>
                                     <td class="" style="vertical-align:middle;width:140px;">
                                     <![endif]-->
@@ -269,8 +269,8 @@
                                                         <!--[if mso | IE]>
                                                         <table role="presentation" border="0" cellpadding="0"
                                                                cellspacing="0" align="center">
-                                                        <tr>
-                                                            <td style="padding:15px 10px;" class="">
+                                                            <tr>
+                                                                <td style="padding:15px 10px;" class="">
                                                         <![endif]--> <a class="link"
                                                                         href="{{url('/')}}"
                                                                         target="_blank"
@@ -304,11 +304,11 @@
                     </tr>
                     <![endif]--> <!-- notice --> <!--[if mso | IE]>
                     <tr>
-                    <td class="notice-wrap-outlook margin-bottom-outlook" width="600px">
-                        <table align="center" border="0" cellpadding="0" cellspacing="0"
-                               class="notice-wrap-outlook margin-bottom-outlook" style="width:560px;" width="560">
-                            <tr>
-                                <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
+                        <td class="notice-wrap-outlook margin-bottom-outlook" width="600px">
+                            <table align="center" border="0" cellpadding="0" cellspacing="0"
+                                   class="notice-wrap-outlook margin-bottom-outlook" style="width:560px;" width="560">
+                                <tr>
+                                    <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
                     <![endif]-->
                     <div class="notice-wrap margin-bottom"
                          style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; margin: 0px auto; max-width: 560px; margin-bottom: 15px;">
@@ -320,8 +320,8 @@
                                     align="center">
                                     <!--[if mso | IE]>
                                     <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-                                    <tr>
-                                        <td class="" style="vertical-align:top;width:560px;">
+                                        <tr>
+                                            <td class="" style="vertical-align:top;width:560px;">
                                     <![endif]-->
                                     <div class="column-per-100 outlook-group-fix"
                                          style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 0px; text-align: left; direction: ltr; display: inline-block; vertical-align: top; width: 100%;">
@@ -338,7 +338,7 @@
                                                                 style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 0px; padding: 0; word-break: break-word;">
                                                                 <div
                                                                     style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 26px; font-weight: bold; line-height: 30px; text-align: left; color: #4F4F4F;">
-                                                                    {{Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-title', 'forms', 'You have received a new form submit!')}}
+                                                                    {{Translation::get('form-confirmation-' . Str::slug($formInput->form->name) . '-email-title', 'forms', 'We have received your form submit!')}}
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -348,34 +348,22 @@
                                                                 <div
                                                                     style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px; text-align: left; color: #4F4F4F;">
                                                                     <br>
-                                                                    {!! nl2br(Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-content', 'forms', 'Try to respond to this form submit within 2 business days.', 'textarea')) !!}
+                                                                    {!! nl2br(Translation::get('form-confirmation-' . Str::slug($formInput->form->name) . '-email-content', 'forms', 'We will try to respond within 2 business days.', 'textarea')) !!}
                                                                     <hr>
-                                                                    @foreach($formInput->content as $field => $value)
-                                                                        <h4>{{str_replace('_', ' ', ucfirst($field)) . ':'}}</h4>
-                                                                        <div
-                                                                            style="margin-top: -20px;">{!! nl2br($value) !!}</div>
+                                                                    @foreach($formInput->formFields as $field)
+                                                                        <h4><b>{{$field->formField->name . ':'}}</b></h4>
+                                                                        @if($field->isImage())
+                                                                            @if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg']))
+                                                                                <img style="max-width: 400px;" src="/storage/{{ $field->value }}">
+                                                                            @else
+                                                                                <a href="{{ url('/storage/' . $field->value) }}">Bekijk bestand</a>
+                                                                            @endif
+                                                                        @else
+                                                                            <div
+                                                                                style="margin-top: -20px;">{!! nl2br($field->value) !!}</div>
+                                                                        @endif
                                                                     @endforeach
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="left" vertical-align="middle"
-                                                                style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 0px; padding: 0; word-break: break-word;">
-                                                                <table border="0" cellpadding="0" cellspacing="0"
-                                                                       role="presentation"
-                                                                       style="border-collapse:separate;line-height:100%;">
-                                                                    <tr>
-                                                                        <td align="center"
-                                                                            bgcolor="{{Translation::get('primary-color-code', 'emails', '#A0131C')}}"
-                                                                            role="presentation"
-                                                                            style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; border: none; border-radius: 3px; cursor: auto; mso-padding-alt: 10px 25px; background: {{Translation::get('primary-color-code', 'emails', '#A0131C')}};"
-                                                                            valign="middle"><a
-                                                                                href="{{route('filament.resources.forms.viewInput', [$form, $formInput])}}"
-                                                                                style="display: inline-block; background: {{Translation::get('primary-color-code', 'emails', '#A0131C')}}; color: #ffffff; font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 18px; font-weight: bold; line-height: 120%; margin: 0; text-decoration: none; text-transform: none; padding: 10px 25px; mso-padding-alt: 0px; border-radius: 3px;"
-                                                                                target="_blank"> {{Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-view-button', 'orders', 'View input')}} </a>
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
                                                             </td>
                                                         </tr>
                                                     </table>

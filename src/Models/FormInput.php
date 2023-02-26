@@ -3,6 +3,8 @@
 namespace Qubiqx\QcommerceForms\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -27,9 +29,14 @@ class FormInput extends Model
         return LogOptions::defaults();
     }
 
-    public function form()
+    public function form(): BelongsTo
     {
         return $this->belongsTo(Form::class);
+    }
+
+    public function formFields(): HasMany
+    {
+        return $this->hasMany(FormInputField::class);
     }
 
     public function scopeUnviewed($query)

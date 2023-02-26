@@ -3,8 +3,10 @@
 namespace Qubiqx\QcommerceForms;
 
 use Filament\PluginServiceProvider;
+use Livewire\Livewire;
 use Qubiqx\QcommerceForms\Filament\Pages\Settings\FormSettingsPage;
 use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Qubiqx\QcommerceForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
 
 class QcommerceFormsServiceProvider extends PluginServiceProvider
@@ -33,6 +35,8 @@ class QcommerceFormsServiceProvider extends PluginServiceProvider
                 'frontend',
             ])
             ->hasViews();
+
+        Livewire::component('qcommerce-forms.form', Form::class);
     }
 
     protected function getPages(): array

@@ -5,13 +5,30 @@
                 <div class="text-sm bg-white rounded-md p-4">
                     <h2 class="text-2xl font-bold">Formulier invoer</h2>
                     <div class="space-y-4">
-                        @foreach($record->content as $key => $value)
-                            <div class="mt-4">
-                                <p class="font-bold">{{ \Illuminate\Support\Str::of($key)->replace('_', ' ')->title() }}
-                                    :</p>
-                                <div>{{ $value }}</div>
-                            </div>
-                        @endforeach
+                        @if($record->content)
+                            @foreach($record->content as $key => $value)
+                                <div class="mt-4">
+                                    <p class="font-bold">{{ \Illuminate\Support\Str::of($key)->replace('_', ' ')->title() }}
+                                        :</p>
+                                    <div>{{ $value }}</div>
+                                </div>
+                            @endforeach
+                        @else
+                            @foreach($record->formFields as $field)
+                                <div>
+                                    <h4 class="font-bold">{{$field->formField->name . ':'}}</h4>
+                                    @if($field->isImage())
+                                        @if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg']))
+                                            <img style="max-width: 400px;" src="/storage/{{ $field->value }}">
+                                        @else
+                                            <a href="{{ url('/storage/' . $field->value) }}">Bekijk bestand</a>
+                                        @endif
+                                    @else
+                                        <div>{!! nl2br($field->value) !!}</div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @endif
                         <div class="mt-4">
                             <p class="font-bold">Bekeken:</p>
                             <div>{{ $record->viewed ? 'Ja' : 'Nee' }}</div>

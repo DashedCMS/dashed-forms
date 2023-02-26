@@ -25,7 +25,7 @@ class ViewFormInput extends Page
         $breadcrumbs = parent::getBreadcrumbs();
         $lastBreadcrumb = $breadcrumbs[0];
         array_pop($breadcrumbs);
-        $breadcrumbs[route('filament.resources.forms.view', [$this->record->form->id])] = "Aanvragen voor {$this->record->form->name}";
+        $breadcrumbs[route('filament.resources.forms.viewInputs', [$this->record->form->id])] = "Aanvragen voor {$this->record->form->name}";
         $breadcrumbs[] = $lastBreadcrumb;
 
         return $breadcrumbs;

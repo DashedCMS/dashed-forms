@@ -7,12 +7,14 @@ use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Qubiqx\QcommerceForms\Exports\ExportFormData;
@@ -80,14 +82,31 @@ class ViewForm extends Page implements HasTable
         ];
 
         $formInput = $this->record->inputs()->first();
-        $inputCount = 0;
-        foreach ($formInput->content as $key => $item) {
-            if ($inputCount < 4) {
-                $tableColumns[] = TextColumn::make($key)
-                    ->label(Str::of($key)->replace('_', ' ')->title())
-                    ->getStateUsing(fn ($record) => $record->content[$key] ?? 'Niet ingevuld');
+            $inputCount = 0;
+        if ($formInput->content ?? []) {
+            foreach ($formInput->content as $key => $item) {
+                if ($inputCount < 4) {
+                    $tableColumns[] = TextColumn::make($key)
+                        ->label(Str::of($key)->replace('_', ' ')->title())
+                        ->getStateUsing(fn($record) => $record->content[$key] ?? 'Niet ingevuld');
+                }
+                $inputCount++;
             }
-            $inputCount++;
+        } else {
+            foreach ($this->record->fields()->whereNotIn('type', ['info'])->get() as $item) {
+                if ($inputCount < 4) {
+                    if ($item->isImage()) {
+                        $tableColumns[] = ImageColumn::make($item->name)
+                            ->label($item->name)
+                            ->getStateUsing(fn($record) => $record->formFields()->where('form_field_id', $item->id)->first()->value ?? 'Niet ingevuld');
+                    } else {
+                        $tableColumns[] = TextColumn::make($item->name)
+                            ->label($item->name)
+                            ->getStateUsing(fn($record) => $record->formFields()->where('form_field_id', $item->id)->first()->value ?? 'Niet ingevuld');
+                    }
+                }
+                $inputCount++;
+            }
         }
 
         $tableColumns[] =
@@ -112,7 +131,7 @@ class ViewForm extends Page implements HasTable
     {
         return [
             Action::make('Bekijk')
-                ->url(fn (FormInput $record): string => route('filament.resources.forms.viewFormInput', [$record->form->id, $record])),
+                ->url(fn(FormInput $record): string => route('filament.resources.forms.viewInput', [$record->form->id, $record])),
         ];
     }
 
