@@ -114,9 +114,10 @@ class Forms
                 'type' => 'textarea',
                 'required' => 1,
                 'sort' => 5,
-                'helper_text' => [
+                'placeholder' => [
                     App::getLocale() => 'Waar kunnen we je mee helpen?',
                 ],
+                'helper_text' => [],
             ]);
 
             $form->email_confirmation_form_field_id = $emailField->id;
