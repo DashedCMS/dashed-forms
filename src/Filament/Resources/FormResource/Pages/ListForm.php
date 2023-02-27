@@ -16,7 +16,7 @@ class ListForm extends ListRecords
         return array_merge(parent::getActions(), [
             Action::make('createContactForm')
                 ->label('Contact formulier aanmaken')
-            ->action(function(){
+            ->action(function () {
                 Forms::createPresetForms('contact');
                 $this->notify('success', 'Contact formulier aangemaakt');
             }),

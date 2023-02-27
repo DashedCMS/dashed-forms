@@ -5,7 +5,6 @@ namespace Qubiqx\QcommerceForms\Classes;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\App;
 use Qubiqx\QcommerceForms\Models\Form;
-use Qubiqx\QcommerceForms\Models\FormField;
 
 class Forms
 {
@@ -28,7 +27,7 @@ class Forms
         ];
 
         foreach ($validTypes as $key => $validType) {
-            if (!view()->exists('components.form-components.' . $key)) {
+            if (! view()->exists('components.form-components.' . $key)) {
                 unset($validTypes[$key]);
             }
         }
