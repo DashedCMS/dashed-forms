@@ -3,7 +3,9 @@
 namespace Qubiqx\QcommerceForms\Classes;
 
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\App;
 use Qubiqx\QcommerceForms\Models\Form;
+use Qubiqx\QcommerceForms\Models\FormField;
 
 class Forms
 {
@@ -26,7 +28,7 @@ class Forms
         ];
 
         foreach ($validTypes as $key => $validType) {
-            if (! view()->exists('components.form-components.' . $key)) {
+            if (!view()->exists('components.form-components.' . $key)) {
                 unset($validTypes[$key]);
             }
         }
@@ -53,5 +55,73 @@ class Forms
                 ->label('Formulier')
                 ->options(Form::all()->pluck('name', 'id'))
                 ->required();
+    }
+
+    public static function createPresetForms(string $presetForm = 'contact')
+    {
+        if ($presetForm == 'contact') {
+            $form = Form::create([
+                'name' => 'Contact formulier',
+            ]);
+
+            $form->fields()->create([
+                'name' => [
+                    App::getLocale() => 'Naam',
+                ],
+                'type' => 'input',
+                'input_type' => 'text',
+                'required' => 1,
+                'sort' => 1,
+                'helper_text' => [],
+            ]);
+
+            $emailField = $form->fields()->create([
+                'name' => [
+                    App::getLocale() => 'E-mailadres',
+                ],
+                'type' => 'input',
+                'input_type' => 'email',
+                'required' => 1,
+                'sort' => 2,
+                'helper_text' => [],
+            ]);
+
+            $form->fields()->create([
+                'name' => [
+                    App::getLocale() => 'Bedrijfsnaam',
+                ],
+                'type' => 'input',
+                'input_type' => 'text',
+                'required' => 0,
+                'sort' => 3,
+                'helper_text' => [],
+            ]);
+
+            $form->fields()->create([
+                'name' => [
+                    App::getLocale() => 'Telefoonnummer',
+                ],
+                'type' => 'input',
+                'input_type' => 'text',
+                'required' => 0,
+                'sort' => 4,
+                'helper_text' => [],
+            ]);
+
+            $form->fields()->create([
+                'name' => [
+                    App::getLocale() => 'Bericht',
+                ],
+                'type' => 'textarea',
+                'required' => 1,
+                'sort' => 5,
+                'helper_text' => [
+                    App::getLocale() => 'Waar kunnen we je mee helpen?',
+                ],
+            ]);
+
+            $form->email_confirmation_form_field_id = $emailField->id;
+            $form->save();
+        }
     }
 }
