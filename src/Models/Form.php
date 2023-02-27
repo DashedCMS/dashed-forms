@@ -18,6 +18,14 @@ class Form extends Model
 
     protected $table = 'qcommerce__forms';
 
+    protected static function booted()
+    {
+        static::deleting(function ($form) {
+            $form->fields()->delete();
+            $form->inputs()->delete();
+        });
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();
