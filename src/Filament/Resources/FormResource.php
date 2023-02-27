@@ -56,7 +56,7 @@ class FormResource extends Resource
                     ]),
                 Select::make('email_confirmation_form_field_id')
                     ->label('Email bevestiging veld')
-                    ->relationship('emailConfirmationFormField', 'name'),
+                    ->relationship('emailConfirmationFormField', 'name->' . app()->getLocale()),
                 Repeater::make('fields')
                     ->relationship('fields')
                     ->label('Velden')
