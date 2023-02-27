@@ -42,6 +42,16 @@ class FormField extends Model
         return str($this->name)->slug() . '-' . $this->id;
     }
 
+    public function getLabelNameAttribute(): string
+    {
+        return $this->name . '*';
+    }
+
+    public function getPlaceholderNameAttribute(): string
+    {
+        return $this->placeholder ? $this->placeholder . '*' : '';
+    }
+
     public function isImage(): bool
     {
         return ($this->type == 'select-image' || $this->type == 'file' || ($this->type == 'input' && $this->input_type == 'file'));
