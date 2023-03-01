@@ -16,6 +16,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use Qubiqx\QcommerceCore\Classes\Sites;
 use Qubiqx\QcommerceForms\Classes\Forms;
 use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\CreateForm;
 use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\EditForm;
@@ -56,7 +57,7 @@ class FormResource extends Resource
                     ]),
                 Select::make('email_confirmation_form_field_id')
                     ->label('Email bevestiging veld')
-                    ->relationship('emailConfirmationFormField', 'name->' . app()->getLocale()),
+                    ->relationship('emailConfirmationFormField', 'name'),
                 Repeater::make('fields')
                     ->relationship('fields')
                     ->label('Velden')
