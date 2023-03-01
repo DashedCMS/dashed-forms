@@ -16,7 +16,6 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
-use Qubiqx\QcommerceCore\Classes\Sites;
 use Qubiqx\QcommerceForms\Classes\Forms;
 use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\CreateForm;
 use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\EditForm;
