@@ -21,8 +21,8 @@ class QcommerceFormsServiceProvider extends PluginServiceProvider
             'settingPages',
             array_merge(cms()->builder('settingPages'), [
                 'formNotifications' => [
-                    'name' => 'Formulier notificaties',
-                    'description' => 'Beheer meldingen die na het invullen van het formulier worden verstuurd',
+                    'name' => 'Formulier instellingen',
+                    'description' => 'Beheer instellingen voor de formulieren',
                     'icon' => 'bell',
                     'page' => FormSettingsPage::class,
                 ],

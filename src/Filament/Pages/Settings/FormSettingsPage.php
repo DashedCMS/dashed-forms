@@ -6,6 +6,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
@@ -31,6 +32,8 @@ class FormSettingsPage extends Page implements HasForms
         $sites = Sites::getSites();
         foreach ($sites as $site) {
             $formData["notification_form_inputs_emails_{$site['id']}"] = json_decode(Customsetting::get('notification_form_inputs_emails', $site['id'], '{}'));
+            $formData["form_activecampaign_url_{$site['id']}"] = Customsetting::get('form_activecampaign_url', $site['id']);
+            $formData["form_activecampaign_key_{$site['id']}"] = Customsetting::get('form_activecampaign_key', $site['id']);
         }
 
         $this->form->fill($formData);
@@ -45,14 +48,19 @@ class FormSettingsPage extends Page implements HasForms
         foreach ($sites as $site) {
             $schema = [
                 Placeholder::make('label')
-                    ->label("Notificaties voor {$site['name']}")
-                    ->content('Stel extra opties in voor de notificaties.'),
+                    ->label("Formulier instellingen voor {$site['name']}")
+                    ->content('Stel extra opties in voor de formulieren.'),
                 TagsInput::make("notification_form_inputs_emails_{$site['id']}")
                     ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
                     ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
                     ->placeholder('Voer een email in')
-                    ->reactive()
-                    ->required(),
+                    ->reactive(),
+                TextInput::make("form_activecampaign_url_{$site['id']}")
+                    ->label('ActiveCampaign API url')
+                    ->reactive(),
+                TextInput::make("form_activecampaign_key_{$site['id']}")
+                    ->label('ActiveCampaign API key')
+                    ->reactive(),
             ];
 
             $tabs[] = Tab::make($site['id'])
@@ -77,12 +85,15 @@ class FormSettingsPage extends Page implements HasForms
         foreach ($sites as $site) {
             $emails = $this->form->getState()["notification_form_inputs_emails_{$site['id']}"];
             foreach ($emails as $key => $email) {
-                if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     unset($emails[$key]);
                 }
             }
             Customsetting::set('notification_form_inputs_emails', json_encode($emails), $site['id']);
             $formState["notification_form_inputs_emails_{$site['id']}"] = $emails;
+
+            Customsetting::set('form_activecampaign_url', $this->form->getState()["form_activecampaign_url_{$site['id']}"], $site['id']);
+            Customsetting::set('form_activecampaign_key', $this->form->getState()["form_activecampaign_key_{$site['id']}"], $site['id']);
         }
 
         $this->form->fill($formState);
