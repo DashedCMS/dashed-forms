@@ -25,18 +25,6 @@ class FormInput extends Model
         'content' => 'array',
     ];
 
-    protected static function booted()
-    {
-        static::created(function ($formInput) {
-            foreach (MailingProviders::cases() as $provider) {
-                $provider = $provider->getClass();
-                if ($provider->connected) {
-                    $provider->createContactFromFormInput($formInput);
-                }
-            }
-        });
-    }
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();

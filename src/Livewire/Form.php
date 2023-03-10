@@ -10,6 +10,7 @@ use Livewire\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use Qubiqx\QcommerceCore\Classes\Sites;
 use Qubiqx\QcommerceCore\Models\Customsetting;
+use Qubiqx\QcommerceForms\Enums\MailingProviders;
 use Qubiqx\QcommerceForms\Mail\AdminCustomFormSubmitConfirmationMail;
 use Qubiqx\QcommerceForms\Mail\CustomFormSubmitConfirmationMail;
 use Qubiqx\QcommerceForms\Models\FormField;
@@ -150,8 +151,16 @@ class Form extends Component
         } catch (\Exception $e) {
         }
 
+        foreach (MailingProviders::cases() as $provider) {
+            $provider = $provider->getClass();
+            if ($provider->connected) {
+                $provider->createContactFromFormInput($formInput);
+            }
+        }
+
         $this->resetForm();
         $this->formSent = true;
+
         Notification::make()
             ->success()
             ->body('Je bericht is verzonden!')
