@@ -45,10 +45,10 @@ class ActiveCampaign
     public function getFormSchema(): array
     {
         return [
-            Select::make("external_options.{$this->slug}_list_id")
-                ->label('Kies een lijst')
-                ->options(collect($this->getLists())->pluck('name', 'stringid'))
-                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
+//            Select::make("external_options.{$this->slug}_list_id")
+//                ->label('Kies een lijst')
+//                ->options(collect($this->getLists())->pluck('name', 'stringid'))
+//                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
             Select::make("external_options.{$this->slug}_tags")
                 ->label('Kies tags om toe te voegen aan het contact')
                 ->options(collect($this->getTags())->pluck('tag', 'id'))
