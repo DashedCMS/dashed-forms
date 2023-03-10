@@ -47,10 +47,10 @@ class Forms
         ];
     }
 
-    public static function formSelecter(bool $required = true): Select
+    public static function formSelecter(string $name = 'form', bool $required = true): Select
     {
         return
-            Select::make('form')
+            Select::make($name)
                 ->label('Formulier')
                 ->options(Form::all()->pluck('name', 'id'))
                 ->required($required);
