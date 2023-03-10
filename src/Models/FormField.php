@@ -26,6 +26,7 @@ class FormField extends Model
     protected $casts = [
         'options' => 'array',
         'images' => 'array',
+        'external_options' => 'array',
     ];
 
     protected $appends = [

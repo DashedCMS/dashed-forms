@@ -5,6 +5,7 @@ namespace Qubiqx\QcommerceForms\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Qubiqx\QcommerceForms\Enums\MailingProviders;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -23,6 +24,18 @@ class FormInput extends Model
     protected $casts = [
         'content' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::created(function ($formInput) {
+            foreach (MailingProviders::cases() as $provider) {
+                $provider = $provider->getClass();
+                if ($provider->connected) {
+                    $provider->createContactFromFormInput($formInput);
+                }
+            }
+        });
+    }
 
     public function getActivitylogOptions(): LogOptions
     {

@@ -35,6 +35,10 @@ class Form extends Model
         '',
     ];
 
+    protected $casts = [
+        'external_options' => 'array',
+    ];
+
     public function fields(): HasMany
     {
         return $this->hasMany(FormField::class)

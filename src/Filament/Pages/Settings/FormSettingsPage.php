@@ -13,6 +13,7 @@ use Filament\Pages\Page;
 use Qubiqx\QcommerceCore\Classes\Sites;
 use Qubiqx\QcommerceCore\Models\Customsetting;
 use Qubiqx\QcommerceCore\Models\User;
+use Qubiqx\QcommerceForms\Classes\MailingProviders\ActiveCampaign;
 
 class FormSettingsPage extends Page implements HasForms
 {
@@ -47,6 +48,8 @@ class FormSettingsPage extends Page implements HasForms
 
         $tabs = [];
         foreach ($sites as $site) {
+            $activeCampaign = new ActiveCampaign($site['id']);
+
             $schema = [
                 Placeholder::make('label')
                     ->label("Formulier instellingen voor {$site['name']}")
@@ -58,6 +61,7 @@ class FormSettingsPage extends Page implements HasForms
                     ->reactive(),
                 TextInput::make("form_activecampaign_url_{$site['id']}")
                     ->label('ActiveCampaign API url')
+                    ->helperText('ActiveCampaign actief: ' . ($activeCampaign->connected ? 'Ja' : 'Nee'))
                     ->reactive(),
                 TextInput::make("form_activecampaign_key_{$site['id']}")
                     ->label('ActiveCampaign API key')
@@ -86,7 +90,7 @@ class FormSettingsPage extends Page implements HasForms
         foreach ($sites as $site) {
             $emails = $this->form->getState()["notification_form_inputs_emails_{$site['id']}"];
             foreach ($emails as $key => $email) {
-                if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     unset($emails[$key]);
                 }
             }
