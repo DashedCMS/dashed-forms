@@ -82,14 +82,14 @@ class Form extends Component
     protected function validationAttributes()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
             ->toArray();
     }
 
     protected function rules()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
             ->toArray();
     }
 
@@ -173,6 +173,10 @@ class Form extends Component
 
     public function render()
     {
-        return view('qcommerce.forms.form');
+        if (view()->exists('qcommerce.forms.' . str($this->form->name)->slug() . '-form')) {
+            return view('qcommerce.forms.' . str($this->form->name)->slug() . '-form');
+        } else {
+            return view('qcommerce.forms.form');
+        }
     }
 }
