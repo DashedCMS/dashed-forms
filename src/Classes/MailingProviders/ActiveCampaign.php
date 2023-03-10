@@ -54,7 +54,7 @@ class ActiveCampaign
                 ->options(collect($this->getTags())->pluck('tag', 'id'))
                 ->multiple()
                 ->preload()
-                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
+                ->visible(fn($get) => $get("external_options.send_to_$this->slug")),
         ];
     }
 
@@ -65,7 +65,7 @@ class ActiveCampaign
                 ->label('Kies een contact veld')
                 ->options(collect($this->getContactFields())->pluck('title', 'id'))
                 ->preload()
-                ->visible(fn ($get) => $get("../../external_options.send_to_$this->slug")),
+                ->visible(fn($get) => $get("../../external_options.send_to_$this->slug")),
         ];
     }
 
@@ -163,20 +163,24 @@ class ActiveCampaign
             }
         }
 
-        $response = Http::withHeaders([
-            'Api-Token' => $this->key,
-            'accept' => 'application/json',
-        ])
-            ->post("$this->url/api/3/contacts", [
-                'contact' => [
-                    'email' => $email,
-                    'firstName' => $firstName,
-                    'lastName' => $lastName,
-                    'phone' => $phone,
-                    'fieldValues' => $fieldValues,
-                ],
+        $contact = $this->getContactByEmail($email);
+        if (!$contact) {
+            $contact = Http::withHeaders([
+                'Api-Token' => $this->key,
+                'accept' => 'application/json',
             ])
-            ->json();
+                ->post("$this->url/api/3/contacts", [
+                    'contact' => [
+                        'email' => $email,
+                        'firstName' => $firstName,
+                        'lastName' => $lastName,
+                        'phone' => $phone,
+                        'fieldValues' => $fieldValues,
+                    ],
+                ])
+                ->json();
+            $contact = $contact['contact'];
+        }
 
         if ($formInput->form->external_options["{$this->slug}_tags"]) {
             foreach ($formInput->form->external_options["{$this->slug}_tags"] as $tagId) {
@@ -185,13 +189,27 @@ class ActiveCampaign
                     'accept' => 'application/json',
                 ])
                     ->post("$this->url/api/3/contactTags", [
-                        'contact' => $response['contact']['id'],
-                        'tag' => $tagId,
+                        'contactTag' => [
+                            'contact' => $contact['id'],
+                            'tag' => $tagId,
+                        ],
                     ])
                     ->json();
             }
         }
 
         return $response;
+    }
+
+    public function getContactByEmail(string $email): ?array
+    {
+        $response = Http::withHeaders([
+            'Api-Token' => $this->key,
+            'accept' => 'application/json',
+        ])
+            ->get("$this->url/api/3/contacts?email=$email")
+            ->json();
+
+        return $response['contacts'][0] ?? null;
     }
 }
