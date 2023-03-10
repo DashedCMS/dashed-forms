@@ -64,6 +64,7 @@ class ActiveCampaign
             Select::make("external_options.{$this->slug}_contact_field")
                 ->label('Kies een contact veld')
                 ->options(collect($this->getContactFields())->pluck('title', 'id'))
+                ->preload()
                 ->visible(fn ($get) => $get("../../external_options.send_to_$this->slug")),
         ];
     }
