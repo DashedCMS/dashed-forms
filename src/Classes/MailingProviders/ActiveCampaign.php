@@ -5,7 +5,6 @@ namespace Qubiqx\QcommerceForms\Classes\MailingProviders;
 use Exception;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Http;
-use Qubiqx\QcommerceCore\Classes\Sites;
 use Qubiqx\QcommerceCore\Models\Customsetting;
 use Qubiqx\QcommerceForms\Models\FormInput;
 
@@ -21,7 +20,6 @@ class ActiveCampaign
 
     public function __construct(string $siteId)
     {
-
         $this->url = Customsetting::get('form_activecampaign_url', $siteId, '');
         $this->key = Customsetting::get('form_activecampaign_key', $siteId, '');
 
@@ -50,13 +48,13 @@ class ActiveCampaign
             Select::make("external_options.{$this->slug}_list_id")
                 ->label('Kies een lijst')
                 ->options(collect($this->getLists())->pluck('name', 'stringid'))
-                ->visible(fn($get) => $get("external_options.send_to_$this->slug")),
+                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
             Select::make("external_options.{$this->slug}_tags")
                 ->label('Kies tags om toe te voegen aan het contact')
                 ->options(collect($this->getTags())->pluck('tag', 'id'))
                 ->multiple()
                 ->preload()
-                ->visible(fn($get) => $get("external_options.send_to_$this->slug")),
+                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
         ];
     }
 
@@ -66,7 +64,7 @@ class ActiveCampaign
             Select::make("external_options.{$this->slug}_contact_field")
                 ->label('Kies een contact veld')
                 ->options(collect($this->getContactFields())->pluck('title', 'id'))
-                ->visible(fn($get) => $get("../../external_options.send_to_$this->slug")),
+                ->visible(fn ($get) => $get("../../external_options.send_to_$this->slug")),
         ];
     }
 
@@ -181,7 +179,6 @@ class ActiveCampaign
 
         if ($formInput->form->external_options["{$this->slug}_tags"]) {
             foreach ($formInput->form->external_options["{$this->slug}_tags"] as $tagId) {
-
                 $response = Http::withHeaders([
                     'Api-Token' => $this->key,
                     'accept' => 'application/json',

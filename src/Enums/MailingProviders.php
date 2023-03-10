@@ -8,9 +8,10 @@ use Qubiqx\QcommerceForms\Classes\MailingProviders\ActiveCampaign;
 enum MailingProviders: string
 {
     case ActiveCampaign = 'activeCampaign';
+
     public function getClass(string $siteId = '')
     {
-        if (!$siteId) {
+        if (! $siteId) {
             $siteId = Sites::getFirstSite()['id'];
         }
 
@@ -19,7 +20,7 @@ enum MailingProviders: string
             default => null,
         };
 
-        if (!$adapter) {
+        if (! $adapter) {
             return null;
         }
 
