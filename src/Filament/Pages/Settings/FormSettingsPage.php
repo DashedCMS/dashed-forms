@@ -86,7 +86,7 @@ class FormSettingsPage extends Page implements HasForms
         foreach ($sites as $site) {
             $emails = $this->form->getState()["notification_form_inputs_emails_{$site['id']}"];
             foreach ($emails as $key => $email) {
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     unset($emails[$key]);
                 }
             }
