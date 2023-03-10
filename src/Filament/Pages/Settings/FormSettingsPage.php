@@ -29,6 +29,7 @@ class FormSettingsPage extends Page implements HasForms
     public function mount(): void
     {
         $formData = [];
+
         $sites = Sites::getSites();
         foreach ($sites as $site) {
             $formData["notification_form_inputs_emails_{$site['id']}"] = json_decode(Customsetting::get('notification_form_inputs_emails', $site['id'], '{}'));
