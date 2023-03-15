@@ -17,6 +17,7 @@ class Forms
     {
         $validTypes = [
             'info' => 'Informatie',
+            'image' => 'Afbeelding',
             'input' => 'Tekst',
             'textarea' => 'Tekstvak',
             'checkbox' => 'Checkbox',
