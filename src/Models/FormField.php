@@ -45,12 +45,12 @@ class FormField extends Model
 
     public function getLabelNameAttribute(): string
     {
-        return $this->name . '*';
+        return $this->name . ($this->required ? '*' : '');
     }
 
     public function getPlaceholderNameAttribute(): string
     {
-        return $this->placeholder ? $this->placeholder . '*' : '';
+        return $this->placeholder ? $this->placeholder . ($this->required ? '*' : '') : '';
     }
 
     public function isImage(): bool
