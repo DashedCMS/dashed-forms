@@ -21,7 +21,7 @@
                                         @if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg']))
                                             <img style="max-width: 400px;" src="/storage/{{ $field->value }}">
                                         @else
-                                            <a href="{{ url('/storage/' . $field->value) }}">Bekijk bestand</a>
+                                            <a target="_blank" href="{{ url('/storage/' . $field->value) }}">Bekijk bestand</a>
                                         @endif
                                         @if($field->formField->type == 'select-image')
                                             <div>{{ collect($field->formField->images)->where('image', $field->value)->first()['name'] }}</div>
