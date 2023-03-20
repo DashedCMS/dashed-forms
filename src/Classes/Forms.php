@@ -66,7 +66,7 @@ class Forms
 
             $form->fields()->create([
                 'name' => [
-                    App::getLocale() => 'Naam',
+                    app()->getLocale() => 'Naam',
                 ],
                 'type' => 'input',
                 'input_type' => 'text',
@@ -77,7 +77,7 @@ class Forms
 
             $emailField = $form->fields()->create([
                 'name' => [
-                    App::getLocale() => 'E-mailadres',
+                    app()->getLocale() => 'E-mailadres',
                 ],
                 'type' => 'input',
                 'input_type' => 'email',
@@ -88,7 +88,7 @@ class Forms
 
             $form->fields()->create([
                 'name' => [
-                    App::getLocale() => 'Bedrijfsnaam',
+                    app()->getLocale() => 'Bedrijfsnaam',
                 ],
                 'type' => 'input',
                 'input_type' => 'text',
@@ -99,7 +99,7 @@ class Forms
 
             $form->fields()->create([
                 'name' => [
-                    App::getLocale() => 'Telefoonnummer',
+                    app()->getLocale() => 'Telefoonnummer',
                 ],
                 'type' => 'input',
                 'input_type' => 'text',
@@ -110,13 +110,13 @@ class Forms
 
             $form->fields()->create([
                 'name' => [
-                    App::getLocale() => 'Bericht',
+                    app()->getLocale() => 'Bericht',
                 ],
                 'type' => 'textarea',
                 'required' => 1,
                 'sort' => 5,
                 'placeholder' => [
-                    App::getLocale() => 'Waar kunnen we je mee helpen?',
+                    app()->getLocale() => 'Waar kunnen we je mee helpen?',
                 ],
                 'helper_text' => [],
             ]);

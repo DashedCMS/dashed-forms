@@ -23,6 +23,9 @@
                                         @else
                                             <a href="{{ url('/storage/' . $field->value) }}">Bekijk bestand</a>
                                         @endif
+                                        @if($field->type == 'select-image')
+                                            <div>{{ collect($field->formField->images)->where('image', $field->value)->first()->name }}</div>
+                                        @endif
                                     @else
                                         <div>{!! nl2br($field->value) !!}</div>
                                     @endif
