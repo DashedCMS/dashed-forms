@@ -30,7 +30,7 @@ class EditForm extends EditRecord
         $newRecord = $this->record->replicate();
         $newRecord->save();
 
-        foreach ($this->record->formFields as $field) {
+        foreach ($this->record->fields as $field) {
             $newField = $field->replicate();
             $newField->form_id = $newRecord->id;
             $newField->save();
