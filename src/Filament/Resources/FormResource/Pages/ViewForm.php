@@ -137,6 +137,16 @@ class ViewForm extends Page implements HasTable
     protected function getTableBulkActions(): array
     {
         return [
+            BulkAction::make('delete')
+                ->label('Verwijderen')
+                ->action(function (Collection $records) {
+                    foreach($records as $record){
+                        $record->delete();
+                    }
+
+                    $this->notify('success', 'Resultaten verwijderd');
+                })
+                ->deselectRecordsAfterCompletion(),
             BulkAction::make('export')
                 ->label('Exporteer')
                 ->action(function (Collection $records) {
