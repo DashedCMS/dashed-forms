@@ -140,7 +140,7 @@ class ViewForm extends Page implements HasTable
             BulkAction::make('delete')
                 ->label('Verwijderen')
                 ->action(function (Collection $records) {
-                    foreach($records as $record){
+                    foreach ($records as $record) {
                         $record->delete();
                     }
 
