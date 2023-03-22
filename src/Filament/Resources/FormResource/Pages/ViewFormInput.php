@@ -33,21 +33,27 @@ class ViewFormInput extends Page
 
     protected function getActions(): array
     {
+        $actions = [];
+
         if ($this->record->viewed == 1) {
-            return [
-                Action::make('mark_as_not_viewed')
-                    ->button()
-                    ->label('Markeer als niet bekeken')
-                    ->action('markAsNotViewed'),
-            ];
+            $actions[] = Action::make('mark_as_not_viewed')
+                ->button()
+                ->label('Markeer als niet bekeken')
+                ->action('markAsNotViewed');
         } else {
-            return [
-                Action::make('mark_as_viewed')
-                    ->button()
-                    ->label('Markeer als bekeken')
-                    ->action('markAsViewed'),
-            ];
+            $actions[] = Action::make('mark_as_viewed')
+                ->button()
+                ->label('Markeer als bekeken')
+                ->action('markAsViewed');
         }
+
+        $actions[] = Action::make('delete')
+            ->button()
+            ->color('danger')
+            ->label('Verwijderen')
+            ->action('delete');
+
+        return $actions;
     }
 
     public function markAsNotViewed(): void
@@ -60,6 +66,13 @@ class ViewFormInput extends Page
     {
         $this->record->viewed = 1;
         $this->record->save();
+    }
+
+    public function delete()
+    {
+        $this->record->delete();
+
+        return redirect()->route('filament.resources.forms.viewInputs', [$this->record->form->id]);
     }
 
     protected function getTitle(): string
