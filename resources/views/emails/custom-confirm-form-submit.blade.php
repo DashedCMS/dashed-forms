@@ -354,7 +354,7 @@
                                                                         <h4><b>{{$field->formField->name . ':'}}</b></h4>
                                                                         @if($field->isImage())
                                                                             @if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg']))
-                                                                                <img style="max-width: 400px;" src="/storage/{{ $field->value }}">
+                                                                                <img style="max-width: 400px;" src="{{ url('/storage/' . $field->value) }}">
                                                                             @else
                                                                                 <a href="{{ url('/storage/' . $field->value) }}">Bekijk bestand</a>
                                                                             @endif
