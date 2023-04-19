@@ -49,8 +49,8 @@ class Form extends Component
                 'radio' => $field->required ? $this->values[$field->fieldName] = $field->options[0]['name'] : null,
                 'select' => $this->values[$field->fieldName] = $field->options[0]['name'],
                 'select-image' => $this->values[$field->fieldName] = $field->images[0]['image'],
-                'input' => $this->values[$field->fieldName] = '',
-                'textarea' => $this->values[$field->fieldName] = '',
+                'input' => $this->values[$field->fieldName] = (request()->has($field->fieldName) ? request()->get($field->fieldName) : request()->get(strtolower($field->fieldName))),
+                'textarea' => $this->values[$field->fieldName] = (request()->has($field->fieldName) ? request()->get($field->fieldName) : request()->get(strtolower($field->fieldName))),
                 'file' => $this->values[$field->fieldName] = '',
                 default => null,
             };
