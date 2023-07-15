@@ -23,16 +23,18 @@ class Form extends Component
     public \Qubiqx\QcommerceForms\Models\Form $form;
     public array $values = [];
     public array $blockData = [];
+    public array $inputData = [];
     public bool $formSent = false;
     public ?string $myName = '';
     public bool $singleColumn = false;
     public ?string $buttonTitle = '';
 
-    public function mount(\Qubiqx\QcommerceForms\Models\Form $formId, array $blockData = [], bool $singleColumn = false, ?string $buttonTitle = '')
+    public function mount(\Qubiqx\QcommerceForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
     {
         $this->singleColumn = $singleColumn;
         $this->form = $formId;
         $this->blockData = $blockData;
+        $this->inputData = $inputData;
         $this->buttonTitle = $buttonTitle;
         $this->resetForm();
     }
@@ -49,8 +51,8 @@ class Form extends Component
                 'radio' => $field->required ? $this->values[$field->fieldName] = $field->options[0]['name'] : null,
                 'select' => $this->values[$field->fieldName] = $field->options[0]['name'],
                 'select-image' => $this->values[$field->fieldName] = $field->images[0]['image'],
-                'input' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug()),
-                'textarea' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug()),
+                'input' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[str($field->name)->slug()] ?? ''),
+                'textarea' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[str($field->name)->slug()] ?? ''),
                 'file' => $this->values[$field->fieldName] = '',
                 default => null,
             };
