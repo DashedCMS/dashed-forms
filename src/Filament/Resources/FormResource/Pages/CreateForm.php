@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Resources\Pages\CreateRecord;
 use Dashed\DashedForms\Filament\Resources\FormResource;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateForm extends CreateRecord
 {

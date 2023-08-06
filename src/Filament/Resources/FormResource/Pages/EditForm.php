@@ -2,10 +2,10 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
+use Dashed\DashedForms\Filament\Resources\FormResource;
 use Filament\Pages\Actions;
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
-use Dashed\DashedForms\Filament\Resources\FormResource;
 
 class EditForm extends EditRecord
 {

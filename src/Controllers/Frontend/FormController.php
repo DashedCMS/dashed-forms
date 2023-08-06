@@ -2,10 +2,6 @@
 
 namespace Dashed\DashedForms\Controllers\Frontend;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedCore\Controllers\Frontend\FrontendController;
 use Dashed\DashedCore\Models\Customsetting;
@@ -14,6 +10,10 @@ use Dashed\DashedForms\Mail\FormSubmitConfirmationMail;
 use Dashed\DashedForms\Models\Form;
 use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedTranslations\Models\Translation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class FormController extends FrontendController
 {

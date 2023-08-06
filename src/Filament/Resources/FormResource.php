@@ -2,6 +2,14 @@
 
 namespace Dashed\DashedForms\Filament\Resources;
 
+use Dashed\DashedForms\Classes\Forms;
+use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\EditForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
+use Dashed\DashedForms\Models\FormInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -16,14 +24,6 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
-use Dashed\DashedForms\Classes\Forms;
-use Dashed\DashedForms\Enums\MailingProviders;
-use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
-use Dashed\DashedForms\Filament\Resources\FormResource\Pages\EditForm;
-use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
-use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
-use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
-use Dashed\DashedForms\Models\FormInput;
 
 class FormResource extends Resource
 {
