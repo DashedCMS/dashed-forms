@@ -36,7 +36,7 @@ class DashedFormsServiceProvider extends PluginServiceProvider
             ])
             ->hasViews();
 
-//        Livewire::component('dashed-forms.form', Form::class);
+        //        Livewire::component('dashed-forms.form', Form::class);
     }
 
     protected function getPages(): array
