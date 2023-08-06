@@ -1,11 +1,11 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
+namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
 use Filament\Pages\Actions;
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Filament\Resources\FormResource;
 
 class EditForm extends EditRecord
 {

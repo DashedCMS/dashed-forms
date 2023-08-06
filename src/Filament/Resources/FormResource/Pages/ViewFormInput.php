@@ -1,17 +1,17 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
+namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\Page;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
-use Qubiqx\QcommerceForms\Models\FormInput;
+use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Models\FormInput;
 
 class ViewFormInput extends Page
 {
     protected static string $resource = FormResource::class;
 
-    protected static string $view = 'qcommerce-forms::forms.pages.view-form-input';
+    protected static string $view = 'dashed-forms::forms.pages.view-form-input';
 
     public $record;
 

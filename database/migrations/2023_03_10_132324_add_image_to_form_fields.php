@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('qcommerce__form_fields', function (Blueprint $table) {
+        Schema::table('dashed__form_fields', function (Blueprint $table) {
             $table->string('image')
                 ->nullable();
         });

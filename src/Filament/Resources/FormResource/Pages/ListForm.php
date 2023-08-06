@@ -1,11 +1,11 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
+namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
-use Qubiqx\QcommerceForms\Classes\Forms;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Classes\Forms;
+use Dashed\DashedForms\Filament\Resources\FormResource;
 
 class ListForm extends ListRecords
 {

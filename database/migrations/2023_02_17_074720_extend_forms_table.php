@@ -12,11 +12,11 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('qcommerce__form_fields', function (Blueprint $table) {
+        Schema::create('dashed__form_fields', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('form_id')
-                ->constrained('qcommerce__forms')
+                ->constrained('dashed__forms')
                 ->cascadeOnDelete();
             $table->json('name');
             $table->boolean('required')
@@ -46,21 +46,21 @@ return new class extends Migration {
         });
 
 
-        Schema::table('qcommerce__form_inputs', function (Blueprint $table) {
+        Schema::table('dashed__form_inputs', function (Blueprint $table) {
             $table->longText('content')
                 ->nullable()
                 ->change();
         });
 
-        Schema::create('qcommerce__form_input_fields', function (Blueprint $table) {
+        Schema::create('dashed__form_input_fields', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('form_input_id')
-                ->constrained('qcommerce__form_inputs')
+                ->constrained('dashed__form_inputs')
                 ->cascadeOnDelete();
 
             $table->foreignId('form_field_id')
-                ->constrained('qcommerce__form_fields')
+                ->constrained('dashed__form_fields')
                 ->cascadeOnDelete();
 
             $table->longText('value');
@@ -68,10 +68,10 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        Schema::table('qcommerce__forms', function (Blueprint $table) {
+        Schema::table('dashed__forms', function (Blueprint $table) {
             $table->foreignId('email_confirmation_form_field_id')
                 ->nullable()
-                ->constrained('qcommerce__form_fields')
+                ->constrained('dashed__form_fields')
                 ->nullOnDelete();
         });
     }

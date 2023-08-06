@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
+namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use Qubiqx\QcommerceForms\Exports\ExportFormData;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
-use Qubiqx\QcommerceForms\Models\FormInput;
+use Dashed\DashedForms\Exports\ExportFormData;
+use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Models\FormInput;
 
 class ViewForm extends Page implements HasTable
 {
@@ -28,7 +28,7 @@ class ViewForm extends Page implements HasTable
     public $record;
 
     protected static string $resource = FormResource::class;
-    protected static string $view = 'qcommerce-forms::forms.pages.view-form';
+    protected static string $view = 'dashed-forms::forms.pages.view-form';
 
     public function getTableSortColumn(): ?string
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Livewire;
+namespace Dashed\DashedForms\Livewire;
 
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\App;
@@ -8,19 +8,19 @@ use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
-use Qubiqx\QcommerceCore\Classes\Sites;
-use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceForms\Enums\MailingProviders;
-use Qubiqx\QcommerceForms\Mail\AdminCustomFormSubmitConfirmationMail;
-use Qubiqx\QcommerceForms\Mail\CustomFormSubmitConfirmationMail;
-use Qubiqx\QcommerceForms\Models\FormField;
-use Qubiqx\QcommerceForms\Models\FormInput;
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
+use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
+use Dashed\DashedForms\Models\FormField;
+use Dashed\DashedForms\Models\FormInput;
 
 class Form extends Component
 {
     use WithFileUploads;
 
-    public \Qubiqx\QcommerceForms\Models\Form $form;
+    public \Dashed\DashedForms\Models\Form $form;
     public array $values = [];
     public array $blockData = [];
     public array $inputData = [];
@@ -29,7 +29,7 @@ class Form extends Component
     public bool $singleColumn = false;
     public ?string $buttonTitle = '';
 
-    public function mount(\Qubiqx\QcommerceForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
+    public function mount(\Dashed\DashedForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
     {
         $this->singleColumn = $singleColumn;
         $this->form = $formId;
@@ -172,7 +172,7 @@ class Form extends Component
     public function updated($name, $value)
     {
         if ($value instanceof TemporaryUploadedFile) {
-            $path = $value->storeAs('qcommerce', "forms/form-{$this->form->name}-" . time() . '.' . $value->getClientOriginalExtension());
+            $path = $value->storeAs('dashed', "forms/form-{$this->form->name}-" . time() . '.' . $value->getClientOriginalExtension());
             $this->values[str($name)->explode('.')->last()] = $path;
         }
     }
@@ -184,10 +184,10 @@ class Form extends Component
 
     public function render()
     {
-        if (view()->exists('qcommerce.forms.' . str($this->form->name)->slug() . '-form')) {
-            return view('qcommerce.forms.' . str($this->form->name)->slug() . '-form');
+        if (view()->exists('dashed.forms.' . str($this->form->name)->slug() . '-form')) {
+            return view('dashed.forms.' . str($this->form->name)->slug() . '-form');
         } else {
-            return view('qcommerce.forms.form');
+            return view('dashed.forms.form');
         }
     }
 }

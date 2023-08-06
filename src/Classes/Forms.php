@@ -1,15 +1,15 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Classes;
+namespace Dashed\DashedForms\Classes;
 
 use Filament\Forms\Components\Select;
-use Qubiqx\QcommerceForms\Models\Form;
+use Dashed\DashedForms\Models\Form;
 
 class Forms
 {
     public static function getPostUrl()
     {
-        return route('qcommerce.frontend.forms.store');
+        return route('dashed.frontend.forms.store');
     }
 
     public static function availableInputTypes(): array

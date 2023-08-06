@@ -1,19 +1,19 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Controllers\Frontend;
+namespace Dashed\DashedForms\Controllers\Frontend;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Qubiqx\QcommerceCore\Classes\Sites;
-use Qubiqx\QcommerceCore\Controllers\Frontend\FrontendController;
-use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceForms\Mail\AdminFormSubmitConfirmationMail;
-use Qubiqx\QcommerceForms\Mail\FormSubmitConfirmationMail;
-use Qubiqx\QcommerceForms\Models\Form;
-use Qubiqx\QcommerceForms\Models\FormInput;
-use Qubiqx\QcommerceTranslations\Models\Translation;
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedCore\Controllers\Frontend\FrontendController;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Mail\AdminFormSubmitConfirmationMail;
+use Dashed\DashedForms\Mail\FormSubmitConfirmationMail;
+use Dashed\DashedForms\Models\Form;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedTranslations\Models\Translation;
 
 class FormController extends FrontendController
 {
