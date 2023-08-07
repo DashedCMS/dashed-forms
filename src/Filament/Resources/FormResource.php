@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Filament\Resources;
+namespace Dashed\DashedForms\Filament\Resources;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -16,20 +16,20 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
-use Qubiqx\QcommerceForms\Classes\Forms;
-use Qubiqx\QcommerceForms\Enums\MailingProviders;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\CreateForm;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\EditForm;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\ListForm;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\ViewForm;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages\ViewFormInput;
-use Qubiqx\QcommerceForms\Models\FormInput;
+use Dashed\DashedForms\Classes\Forms;
+use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\EditForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
+use Dashed\DashedForms\Models\FormInput;
 
 class FormResource extends Resource
 {
     use Translatable;
 
-    protected static ?string $model = \Qubiqx\QcommerceForms\Models\Form::class;
+    protected static ?string $model = \Dashed\DashedForms\Models\Form::class;
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'heroicon-o-archive';
@@ -155,7 +155,7 @@ class FormResource extends Resource
                         ->label('Afbeelding')
                         ->required()
                         ->image()
-                        ->directory('qcommerce/quotations')
+                        ->directory('dashed/images')
                         ->rules([
                             'required',
                             'image',
@@ -169,7 +169,7 @@ class FormResource extends Resource
                 ->required(fn ($get) => in_array($get('type'), ['image']))
                 ->when(fn ($get) => in_array($get('type'), ['image']))
                 ->image()
-                ->directory('qcommerce/quotations')
+                ->directory('dashed/images')
                 ->rules([
                     'required',
                     'image',

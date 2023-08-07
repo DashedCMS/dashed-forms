@@ -15,6 +15,6 @@ Route::group(
     ],
     function () {
         //Form routes
-        Route::post('/form/post', [FormController::class, 'store'])->name('qcommerce.frontend.forms.store');
+        Route::post('/form/post', [FormController::class, 'store'])->name('dashed.frontend.forms.store');
     }
 );
