@@ -13,6 +13,11 @@ class DashedFormsServiceProvider extends PluginServiceProvider
 {
     public static string $name = 'dashed-forms';
 
+    public function bootingPackage()
+    {
+        Livewire::component('dashed-forms.form', Form::class);
+    }
+
     public function configurePackage(Package $package): void
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
@@ -36,7 +41,6 @@ class DashedFormsServiceProvider extends PluginServiceProvider
             ])
             ->hasViews();
 
-        Livewire::component('dashed-forms.form', Form::class);
     }
 
     protected function getPages(): array
