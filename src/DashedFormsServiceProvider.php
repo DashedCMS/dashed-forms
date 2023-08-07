@@ -5,8 +5,8 @@ namespace Dashed\DashedForms;
 use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 use Filament\PluginServiceProvider;
-use Spatie\LaravelPackageTools\Package;
 use Livewire\Livewire;
+use Spatie\LaravelPackageTools\Package;
 
 class DashedFormsServiceProvider extends PluginServiceProvider
 {
