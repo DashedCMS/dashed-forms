@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Livewire;
+namespace Dashed\DashedForms\Livewire;
 
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\App;
@@ -20,7 +20,7 @@ class Form extends Component
 {
     use WithFileUploads;
 
-    public \Qubiqx\QcommerceForms\Models\Form $form;
+    public \Dashed\DashedForms\Models\Form $form;
     public array $values = [];
     public array $blockData = [];
     public array $inputData = [];
@@ -29,7 +29,7 @@ class Form extends Component
     public bool $singleColumn = false;
     public ?string $buttonTitle = '';
 
-    public function mount(\Qubiqx\QcommerceForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
+    public function mount(\Dashed\DashedForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
     {
         $this->singleColumn = $singleColumn;
         $this->form = $formId;

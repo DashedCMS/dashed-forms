@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Models;
+namespace Dashed\DashedForms\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +12,7 @@ class FormField extends Model
     use HasFactory;
     use HasTranslations;
 
-    protected $table = 'qcommerce__form_fields';
+    protected $table = 'dashed__form_fields';
 
     public $translatable = [
         'name',

@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Enums;
+namespace Dashed\DashedForms\Enums;
 
 use Qubiqx\QcommerceCore\Classes\Sites;
 use Qubiqx\QcommerceForms\Classes\MailingProviders\ActiveCampaign;

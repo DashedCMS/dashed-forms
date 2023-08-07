@@ -1,12 +1,12 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Classes\MailingProviders;
+namespace Dashed\DashedForms\Classes\MailingProviders;
 
 use Exception;
 use Filament\Forms\Components\Select;
 use Illuminate\Support\Facades\Http;
-use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceForms\Models\FormInput;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Models\FormInput;
 
 class ActiveCampaign
 {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Mail;
+namespace Dashed\DashedForms\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
-use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceForms\Models\Form;
-use Qubiqx\QcommerceForms\Models\FormInput;
-use Qubiqx\QcommerceTranslations\Models\Translation;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Models\Form;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedTranslations\Models\Translation;
 
 class AdminFormSubmitConfirmationMail extends Mailable
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Classes;
+namespace Dashed\DashedForms\Classes;
 
 use Filament\Forms\Components\Select;
-use Qubiqx\QcommerceForms\Models\Form;
+use Dashed\DashedForms\Models\Form;
 
 class Forms
 {

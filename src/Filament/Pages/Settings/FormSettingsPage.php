@@ -1,6 +1,6 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Filament\Pages\Settings;
+namespace Dashed\DashedForms\Filament\Pages\Settings;
 
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Tabs;
@@ -10,10 +10,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
-use Qubiqx\QcommerceCore\Classes\Sites;
-use Qubiqx\QcommerceCore\Models\Customsetting;
-use Qubiqx\QcommerceCore\Models\User;
-use Qubiqx\QcommerceForms\Classes\MailingProviders\ActiveCampaign;
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedCore\Models\User;
+use Dashed\DashedForms\Classes\MailingProviders\ActiveCampaign;
 
 class FormSettingsPage extends Page implements HasForms
 {
