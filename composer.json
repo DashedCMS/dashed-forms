@@ -34,11 +34,6 @@
             "Dashed\\DashedForms\\Database\\Factories\\": "database/factories"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "Dashed\\DashedForms\\Tests\\": "tests"
-        }
-    },
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
         "test": "vendor/bin/pest",
