@@ -1,6 +1,6 @@
 <?php
 
-namespace Dashed\DashedForms\Exports;
+namespace Qubiqx\QcommerceForms\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
 

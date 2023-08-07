@@ -1,15 +1,15 @@
 <?php
 
-namespace Dashed\DashedForms\Mail;
+namespace Qubiqx\QcommerceForms\Mail;
 
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedForms\Models\Form;
-use Dashed\DashedForms\Models\FormInput;
-use Dashed\DashedTranslations\Models\Translation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
+use Qubiqx\QcommerceCore\Models\Customsetting;
+use Qubiqx\QcommerceForms\Models\Form;
+use Qubiqx\QcommerceForms\Models\FormInput;
+use Qubiqx\QcommerceTranslations\Models\Translation;
 
 class FormSubmitConfirmationMail extends Mailable
 {
@@ -34,7 +34,7 @@ class FormSubmitConfirmationMail extends Mailable
      */
     public function build()
     {
-        return $this->view('dashed-forms::emails.confirm-form-submit')
+        return $this->view('qcommerce-forms::emails.confirm-form-submit')
             ->from(Customsetting::get('site_from_email'), Customsetting::get('company_name'))->subject(Translation::get('form-confirmation-'.Str::slug($this->form->name).'-email-subject', 'forms', 'We received your form submit!'))
             ->with([
                 'form' => $this->form,

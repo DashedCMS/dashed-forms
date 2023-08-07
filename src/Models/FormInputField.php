@@ -1,6 +1,6 @@
 <?php
 
-namespace Dashed\DashedForms\Models;
+namespace Qubiqx\QcommerceForms\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +10,7 @@ class FormInputField extends Model
 {
     use HasFactory;
 
-    protected $table = 'dashed__form_input_fields';
+    protected $table = 'qcommerce__form_input_fields';
 
     public function formInput(): BelongsTo
     {

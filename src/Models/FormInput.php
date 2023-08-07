@@ -1,6 +1,6 @@
 <?php
 
-namespace Dashed\DashedForms\Models;
+namespace Qubiqx\QcommerceForms\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,7 +18,7 @@ class FormInput extends Model
         'name',
     ];
 
-    protected $table = 'dashed__form_inputs';
+    protected $table = 'qcommerce__form_inputs';
 
     protected $casts = [
         'content' => 'array',

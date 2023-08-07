@@ -12,11 +12,11 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::table('dashed__forms', function (Blueprint $table) {
+        Schema::table('qcommerce__forms', function (Blueprint $table) {
             $table->json('external_options')
                 ->nullable();
         });
-        Schema::table('dashed__form_fields', function (Blueprint $table) {
+        Schema::table('qcommerce__form_fields', function (Blueprint $table) {
             $table->json('external_options')
                 ->nullable();
         });

@@ -1,6 +1,6 @@
 <?php
 
-namespace Dashed\DashedForms\Models;
+namespace Qubiqx\QcommerceForms\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +16,7 @@ class Form extends Model
 
     protected static $logFillable = true;
 
-    protected $table = 'dashed__forms';
+    protected $table = 'qcommerce__forms';
 
     protected static function booted()
     {

@@ -1,17 +1,17 @@
 <?php
 
-namespace Dashed\DashedForms;
+namespace Qubiqx\QcommerceForms;
 
-use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
-use Dashed\DashedForms\Filament\Resources\FormResource;
-use Dashed\DashedForms\Livewire\Form;
 use Filament\PluginServiceProvider;
 use Livewire\Livewire;
+use Qubiqx\QcommerceForms\Filament\Pages\Settings\FormSettingsPage;
+use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Qubiqx\QcommerceForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
 
-class DashedFormsServiceProvider extends PluginServiceProvider
+class QcommerceFormsServiceProvider extends PluginServiceProvider
 {
-    public static string $name = 'dashed-forms';
+    public static string $name = 'qcommerce-forms';
 
     public function configurePackage(Package $package): void
     {
@@ -30,13 +30,13 @@ class DashedFormsServiceProvider extends PluginServiceProvider
         );
 
         $package
-            ->name('dashed-forms')
+            ->name('qcommerce-forms')
             ->hasRoutes([
                 'frontend',
             ])
             ->hasViews();
 
-        Livewire::component('dashed-forms.form', Form::class);
+        Livewire::component('qcommerce-forms.form', Form::class);
     }
 
     protected function getPages(): array

@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Dashed\DashedCore\Middleware\FrontendMiddleware;
+use Qubiqx\QcommerceCore\Middleware\FrontendMiddleware;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Dashed\DashedForms\Controllers\Frontend\FormController;
+use Qubiqx\QcommerceForms\Controllers\Frontend\FormController;
 use Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
@@ -15,6 +15,6 @@ Route::group(
     ],
     function () {
         //Form routes
-        Route::post('/form/post', [FormController::class, 'store'])->name('dashed.frontend.forms.store');
+        Route::post('/form/post', [FormController::class, 'store'])->name('qcommerce.frontend.forms.store');
     }
 );
