@@ -1,17 +1,17 @@
 {
-    "name": "qubiqx/qcommerce-forms",
-    "description": "This is my package qcommerce-forms",
+    "name": "dashed/dashed-forms",
+    "description": "This is my package dashed-forms",
     "keywords": [
-        "Qubiqx",
+        "Dashed",
         "laravel",
-        "qcommerce-forms"
+        "dashed-forms"
     ],
-    "homepage": "https://github.com/qubiqx/qcommerce-forms",
+    "homepage": "https://github.com/Dashed-DEV/dashed-forms",
     "license": "MIT",
     "authors": [
         {
             "name": "Robin van Maasakker",
-            "email": "robin@qubiqx.com",
+            "email": "robin@dashed.nl",
             "role": "Developer"
         }
     ],
@@ -30,13 +30,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Qubiqx\\QcommerceForms\\": "src",
-            "Qubiqx\\QcommerceForms\\Database\\Factories\\": "database/factories"
+            "Dashed\\DashedForms\\": "src",
+            "Dashed\\DashedForms\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Qubiqx\\QcommerceForms\\Tests\\": "tests"
+            "Dashed\\DashedForms\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -53,10 +53,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Qubiqx\\QcommerceForms\\QcommerceFormsServiceProvider"
+                "Dashed\\DashedForms\\DashedFormsServiceProvider"
             ],
             "aliases": {
-                "Forms": "Qubiqx\\QcommerceForms\\Classes\\Forms"
+                "Forms": "Dashed\\DashedForms\\Classes\\Forms"
             }
         }
     },
