@@ -25,7 +25,7 @@ class FormSettingsPage extends Page implements HasForms
     protected static ?string $navigationGroup = 'Overige';
     protected static ?string $title = 'Formulier instellingen';
 
-    protected static string $view = 'qcommerce-core::settings.pages.default-settings';
+    protected static string $view = 'dashed-core::settings.pages.default-settings';
 
     public function mount(): void
     {

@@ -9,7 +9,7 @@ class Forms
 {
     public static function getPostUrl()
     {
-        return route('qcommerce.frontend.forms.store');
+        return route('dashed.frontend.forms.store');
     }
 
     public static function availableInputTypes(): array

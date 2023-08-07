@@ -13,7 +13,7 @@ class CreateFormInputTables extends Migration
      */
     public function up()
     {
-        Schema::create('qcommerce__forms', function (Blueprint $table) {
+        Schema::create('dashed__forms', function (Blueprint $table) {
             $table->id();
 
             $table->string('name');
@@ -22,10 +22,10 @@ class CreateFormInputTables extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('qcommerce__form_inputs', function (Blueprint $table) {
+        Schema::create('dashed__form_inputs', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('form_id')->constrained('qcommerce__forms');
+            $table->foreignId('form_id')->constrained('dashed__forms');
             $table->ipAddress('ip');
             $table->text('user_agent');
             $table->longText('content');

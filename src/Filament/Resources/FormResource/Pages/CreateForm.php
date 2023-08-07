@@ -1,9 +1,9 @@
 <?php
 
-namespace Qubiqx\QcommerceForms\Filament\Resources\FormResource\Pages;
+namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
-use Qubiqx\QcommerceForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Filament\Resources\FormResource;
 
 class CreateForm extends CreateRecord
 {

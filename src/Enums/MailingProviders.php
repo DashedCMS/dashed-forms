@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedForms\Enums;
 
-use Qubiqx\QcommerceCore\Classes\Sites;
-use Qubiqx\QcommerceForms\Classes\MailingProviders\ActiveCampaign;
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedForms\Classes\MailingProviders\ActiveCampaign;
 
 enum MailingProviders: string
 {
