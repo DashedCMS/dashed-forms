@@ -2,12 +2,12 @@
 
 namespace Dashed\DashedForms\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Form extends Model
 {
@@ -53,5 +53,13 @@ class Form extends Model
     public function emailConfirmationFormField(): BelongsTo
     {
         return $this->belongsTo(FormField::class, 'email_confirmation_form_field_id');
+    }
+
+    public function scopeSearch($query, ?string $search = null)
+    {
+        if (request()->get('search') ?: $search) {
+            $search = strtolower(request()->get('search') ?: $search);
+            return $query->where('name', 'LIKE', '%' . $search . '%');
+        }
     }
 }

@@ -2,8 +2,9 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Pages\Actions;
-use Filament\Pages\Actions\Action;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\LocaleSwitcher;
 use Filament\Resources\Pages\EditRecord;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 
@@ -16,12 +17,12 @@ class EditForm extends EditRecord
     protected function getActions(): array
     {
         return [
+            LocaleSwitcher::make(),
             Action::make('duplicate')
                 ->action('duplicate')
                 ->button()
                 ->label('Dupliceer'),
-            $this->getActiveFormLocaleSelectAction(),
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
@@ -36,6 +37,6 @@ class EditForm extends EditRecord
             $newField->save();
         }
 
-        return redirect(route('filament.resources.forms.edit', [$newRecord]));
+        return redirect(route('filament.dashed.resources.forms.edit', [$newRecord]));
     }
 }

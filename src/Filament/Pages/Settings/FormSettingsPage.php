@@ -2,23 +2,20 @@
 
 namespace Dashed\DashedForms\Filament\Pages\Settings;
 
-use Filament\Forms\Components\Placeholder;
+use Filament\Pages\Page;
+use Dashed\DashedCore\Models\User;
 use Filament\Forms\Components\Tabs;
+use Dashed\DashedCore\Classes\Sites;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Pages\Page;
-use Dashed\DashedCore\Classes\Sites;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\Placeholder;
 use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedCore\Models\User;
 use Dashed\DashedForms\Classes\MailingProviders\ActiveCampaign;
 
-class FormSettingsPage extends Page implements HasForms
+class FormSettingsPage extends Page
 {
-    use InteractsWithForms;
-
     protected static ?string $navigationIcon = 'heroicon-o-bell';
     protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationLabel = 'Formulier instellingen';
@@ -26,6 +23,7 @@ class FormSettingsPage extends Page implements HasForms
     protected static ?string $title = 'Formulier instellingen';
 
     protected static string $view = 'dashed-core::settings.pages.default-settings';
+    public array $data = [];
 
     public function mount(): void
     {
@@ -82,6 +80,11 @@ class FormSettingsPage extends Page implements HasForms
         return $tabGroups;
     }
 
+    public function getFormStatePath(): ?string
+    {
+        return 'data';
+    }
+
     public function submit()
     {
         $sites = Sites::getSites();
@@ -102,6 +105,10 @@ class FormSettingsPage extends Page implements HasForms
         }
 
         $this->form->fill($formState);
-        $this->notify('success', 'De formulier instellingen zijn opgeslagen');
+
+        Notification::make()
+            ->title('De formulier instellingen zijn opgeslagen')
+            ->success()
+            ->send();
     }
 }

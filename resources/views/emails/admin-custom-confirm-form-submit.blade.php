@@ -381,7 +381,7 @@
                                                                             role="presentation"
                                                                             style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; border: none; border-radius: 3px; cursor: auto; mso-padding-alt: 10px 25px; background: {{Translation::get('primary-color-code', 'emails', '#A0131C')}};"
                                                                             valign="middle"><a
-                                                                                href="{{route('filament.resources.forms.viewInput', [$formInput->form, $formInput])}}"
+                                                                                href="{{route('filament.dashed.resources.forms.viewInput', [$formInput->form, $formInput])}}"
                                                                                 style="display: inline-block; background: {{Translation::get('primary-color-code', 'emails', '#A0131C')}}; color: #ffffff; font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 18px; font-weight: bold; line-height: 120%; margin: 0; text-decoration: none; text-transform: none; padding: 10px 25px; mso-padding-alt: 0px; border-radius: 3px;"
                                                                                 target="_blank"> {{Translation::get('admin-form-confirmation-' . Str::slug($formInput->form->name) . '-email-view-button', 'orders', 'View input')}} </a>
                                                                         </td>

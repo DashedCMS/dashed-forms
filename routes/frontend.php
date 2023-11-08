@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Dashed\DashedCore\Middleware\FrontendMiddleware;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Dashed\DashedForms\Controllers\Frontend\FormController;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath;
 use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;

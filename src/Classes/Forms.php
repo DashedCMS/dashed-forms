@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedForms\Classes;
 
-use Filament\Forms\Components\Select;
 use Dashed\DashedForms\Models\Form;
+use Filament\Forms\Components\Select;
 
 class Forms
 {

@@ -2,12 +2,12 @@
 
 namespace Dashed\DashedForms\Mail;
 
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
-use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
 
 class AdminCustomFormSubmitConfirmationMail extends Mailable

@@ -2,9 +2,11 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Pages\Actions\Action;
-use Filament\Resources\Pages\ListRecords;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use Dashed\DashedForms\Classes\Forms;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ListRecords;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 
 class ListForm extends ListRecords
@@ -13,13 +15,17 @@ class ListForm extends ListRecords
 
     protected function getActions(): array
     {
-        return array_merge(parent::getActions(), [
+        return [
+            CreateAction::make(),
             Action::make('createContactForm')
                 ->label('Contact formulier aanmaken')
-            ->action(function () {
-                Forms::createPresetForms('contact');
-                $this->notify('success', 'Contact formulier aangemaakt');
-            }),
-        ]);
+                ->action(function () {
+                    Forms::createPresetForms('contact');
+                    Notification::make()
+                        ->title('Contact formulier aangemaakt')
+                        ->success()
+                        ->send();
+                }),
+        ];
     }
 }

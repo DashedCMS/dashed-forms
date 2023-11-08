@@ -2,10 +2,10 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Pages\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\Page;
-use Dashed\DashedForms\Filament\Resources\FormResource;
 use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedForms\Filament\Resources\FormResource;
 
 class ViewFormInput extends Page
 {
@@ -20,12 +20,12 @@ class ViewFormInput extends Page
         $this->record = $formInput;
     }
 
-    protected function getBreadcrumbs(): array
+    public function getBreadcrumbs(): array
     {
         $breadcrumbs = parent::getBreadcrumbs();
         $lastBreadcrumb = $breadcrumbs[0];
         array_pop($breadcrumbs);
-        $breadcrumbs[route('filament.resources.forms.viewInputs', [$this->record->form->id])] = "Aanvragen voor {$this->record->form->name}";
+        $breadcrumbs[route('filament.dashed.resources.forms.viewInputs', [$this->record->form->id])] = "Aanvragen voor {$this->record->form->name}";
         $breadcrumbs[] = $lastBreadcrumb;
 
         return $breadcrumbs;
@@ -33,25 +33,24 @@ class ViewFormInput extends Page
 
     protected function getActions(): array
     {
-        $actions = [];
-
-        if ($this->record->viewed == 1) {
-            $actions[] = Action::make('mark_as_not_viewed')
+        $actions = [
+            Action::make('mark_as_not_viewed')
                 ->button()
+                ->visible($this->record->viewed)
                 ->label('Markeer als niet bekeken')
-                ->action('markAsNotViewed');
-        } else {
-            $actions[] = Action::make('mark_as_viewed')
+                ->action('markAsNotViewed'),
+            Action::make('mark_as_viewed')
                 ->button()
+                ->visible(!$this->record->viewed)
                 ->label('Markeer als bekeken')
-                ->action('markAsViewed');
-        }
-
-        $actions[] = Action::make('delete')
-            ->button()
-            ->color('danger')
-            ->label('Verwijderen')
-            ->action('delete');
+                ->action('markAsViewed'),
+            Action::make('delete')
+                ->button()
+                ->requiresConfirmation()
+                ->color('danger')
+                ->label('Verwijderen')
+                ->action('delete'),
+        ];
 
         return $actions;
     }
@@ -72,10 +71,10 @@ class ViewFormInput extends Page
     {
         $this->record->delete();
 
-        return redirect()->route('filament.resources.forms.viewInputs', [$this->record->form->id]);
+        return redirect()->route('filament.dashed.resources.forms.viewInputs', [$this->record->form->id]);
     }
 
-    protected function getTitle(): string
+    public function getTitle(): string
     {
         return "Aanvraag #{$this->record->id} voor {$this->record->form->name}";
     }

@@ -2,28 +2,32 @@
 
 namespace Dashed\DashedForms\Filament\Resources;
 
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables\Actions\Action;
+use Dashed\DashedForms\Classes\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
-use Dashed\DashedForms\Classes\Forms;
+use Dashed\DashedForms\Models\FormInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Resources\Concerns\Translatable;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Dashed\DashedForms\Enums\MailingProviders;
-use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
+use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\EditForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
-use Dashed\DashedForms\Models\FormInput;
 
 class FormResource extends Resource
 {
@@ -32,15 +36,20 @@ class FormResource extends Resource
     protected static ?string $model = \Dashed\DashedForms\Models\Form::class;
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive';
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
     protected static ?string $navigationGroup = 'Formulieren';
     protected static ?string $label = 'Formulier';
     protected static ?string $pluralLabel = 'Formulieren';
     protected static bool $isGloballySearchable = false;
 
-    protected static function getNavigationLabel(): string
+    public static function getNavigationLabel(): string
     {
-        return 'Formulieren (' . FormInput::unviewed()->count() . ')';
+        return 'Formulieren';
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return FormInput::unviewed()->count();
     }
 
     public static function form(Form $form): Form
@@ -49,11 +58,7 @@ class FormResource extends Resource
             TextInput::make('name')
                 ->label('Naam')
                 ->maxLength(255)
-                ->required()
-                ->rules([
-                    'required',
-                    'max:255',
-                ]),
+                ->required(),
             Select::make('email_confirmation_form_field_id')
                 ->label('Email bevestiging veld')
                 ->options(fn ($record) => $record ? $record->fields()->where('type', 'input')->where('input_type', 'email')->pluck('name', 'id') : []),
@@ -73,42 +78,29 @@ class FormResource extends Resource
             TextInput::make('name')
                 ->label('Naam')
                 ->maxLength(255)
-                ->required()
-                ->rules([
-                    'required',
-                    'max:255',
-                ]),
+                ->required(),
             Select::make('type')
                 ->label('Type veld')
                 ->options(Forms::availableInputTypes())
                 ->required()
-                ->reactive()
-                ->rules([
-                    'required',
-                ]),
+                ->reactive(),
             Select::make('input_type')
                 ->label('Input type veld')
                 ->options(Forms::availableInputTypesForInput())
                 ->required(fn ($get) => in_array($get('type'), ['input']))
                 ->reactive()
-                ->when(fn ($get) => in_array($get('type'), ['input'])),
+                ->visible(fn ($get) => in_array($get('type'), ['input'])),
             TextInput::make('placeholder')
                 ->label('Placeholder')
                 ->maxLength(255)
-                ->when(fn ($get) => in_array($get('type'), ['input', 'textarea']))
-                ->rules([
-                    'max:255',
-                ]),
+                ->visible(fn ($get) => in_array($get('type'), ['input', 'textarea'])),
             TextInput::make('helper_text')
                 ->label('Helper tekst')
                 ->helperText('Zet hier eventueel uitleg neer over dit veld')
-                ->maxLength(255)
-                ->rules([
-                    'max:255',
-                ]),
+                ->maxLength(255),
             Toggle::make('required')
                 ->label('Verplicht in te vullen')
-                ->when(fn ($get) => ! in_array($get('type'), ['info', 'image'])),
+                ->visible(fn ($get) => ! in_array($get('type'), ['info', 'image'])),
             Toggle::make('stack_start')
                 ->label('Start van de stack'),
             Toggle::make('stack_end')
@@ -117,63 +109,39 @@ class FormResource extends Resource
                 ->label('Descriptie')
                 ->maxLength(500)
                 ->required(fn ($get) => in_array($get('type'), ['info']))
-                ->when(fn ($get) => in_array($get('type'), ['info', 'select-image']))
-                ->rules([
-                    'max:500',
-                ]),
+                ->visible(fn ($get) => in_array($get('type'), ['info', 'select-image'])),
             Repeater::make('options')
                 ->label('Opties')
                 ->required(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
-                ->when(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
-                ->orderable()
+                ->visible(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
+                ->reorderable()
                 ->schema([
                     TextInput::make('name')
                         ->label('Naam')
                         ->maxLength(255)
-                        ->required()
-                        ->rules([
-                            'required',
-                            'max:255',
-                        ]),
-                ])
-                ->rules([
-                    'required',
+                        ->required(),
                 ]),
             Repeater::make('images')
                 ->label('Afbeeldingen')
                 ->required(fn ($get) => in_array($get('type'), ['select-image']))
-                ->when(fn ($get) => in_array($get('type'), ['select-image']))
-                ->orderable()
+                ->visible(fn ($get) => in_array($get('type'), ['select-image']))
+                ->reorderable()
                 ->schema([
                     TextInput::make('name')
                         ->label('Naam')
-                        ->maxLength(255)
-                        ->rules([
-                            'max:255',
-                        ]),
+                        ->maxLength(255),
                     FileUpload::make('image')
                         ->label('Afbeelding')
                         ->required()
                         ->image()
-                        ->directory('dashed/images')
-                        ->rules([
-                            'required',
-                            'image',
-                        ]),
-                ])
-                ->rules([
-                    'required',
+                        ->directory('dashed/images'),
                 ]),
             FileUpload::make('image')
                 ->label('Afbeelding')
                 ->required(fn ($get) => in_array($get('type'), ['image']))
-                ->when(fn ($get) => in_array($get('type'), ['image']))
+                ->visible(fn ($get) => in_array($get('type'), ['image']))
                 ->image()
-                ->directory('dashed/images')
-                ->rules([
-                    'required',
-                    'image',
-                ]),
+                ->directory('dashed/images'),
         ];
 
         foreach (MailingProviders::cases() as $provider) {
@@ -186,7 +154,7 @@ class FormResource extends Resource
         $schema[] = Repeater::make('fields')
             ->relationship('fields')
             ->label('Velden')
-            ->orderable()
+            ->reorderable()
             ->cloneable()
             ->schema($repeaterSchema)
             ->mutateRelationshipDataBeforeSaveUsing(function (array $data, Model $record, $livewire) {
@@ -235,7 +203,7 @@ class FormResource extends Resource
                     ->label('Naam')
                     ->formatStateUsing(fn ($state) => ucfirst($state))
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(query: SearchQuery::make()),
                 TextColumn::make('amount_of_requests')
                     ->label('Aantal aanvragen')
                     ->getStateUsing(fn ($record) => $record->inputs->count()),
@@ -244,11 +212,20 @@ class FormResource extends Resource
                     ->getStateUsing(fn ($record) => $record->inputs()->unviewed()->count()),
             ])
             ->actions([
-                EditAction::make(),
+                EditAction::make()
+                    ->button(),
                 Action::make('viewInputs')
                     ->label('Bekijk aanvragen')
                     ->icon('heroicon-s-eye')
-                    ->url(fn ($record) => route('filament.resources.forms.viewInputs', [$record])),
+                    ->button()
+                    ->color('primary')
+                    ->url(fn ($record) => route('filament.dashed.resources.forms.viewInputs', [$record])),
+                DeleteAction::make(),
+            ])
+            ->bulkActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ])
             ->filters([
                 //

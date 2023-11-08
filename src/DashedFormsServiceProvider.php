@@ -2,14 +2,13 @@
 
 namespace Dashed\DashedForms;
 
-use Filament\PluginServiceProvider;
 use Livewire\Livewire;
-use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
-use Dashed\DashedForms\Filament\Resources\FormResource;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
 
-class DashedFormsServiceProvider extends PluginServiceProvider
+class DashedFormsServiceProvider extends PackageServiceProvider
 {
     public static string $name = 'dashed-forms';
 
@@ -41,19 +40,5 @@ class DashedFormsServiceProvider extends PluginServiceProvider
             ])
             ->hasViews();
 
-    }
-
-    protected function getPages(): array
-    {
-        return array_merge(parent::getPages(), [
-            FormSettingsPage::class,
-        ]);
-    }
-
-    protected function getResources(): array
-    {
-        return array_merge(parent::getResources(), [
-            FormResource::class,
-        ]);
     }
 }

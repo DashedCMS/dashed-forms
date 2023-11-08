@@ -2,30 +2,28 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use Illuminate\Support\Str;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Dashed\DashedForms\Models\FormInput;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
 use Dashed\DashedForms\Exports\ExportFormData;
+use Filament\Tables\Concerns\InteractsWithTable;
 use Dashed\DashedForms\Filament\Resources\FormResource;
-use Dashed\DashedForms\Models\FormInput;
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 
 class ViewForm extends Page implements HasTable
 {
     use InteractsWithRecord;
     use InteractsWithTable;
-
-    public $record;
 
     protected static string $resource = FormResource::class;
     protected static string $view = 'dashed-forms::forms.pages.view-form';
@@ -45,7 +43,7 @@ class ViewForm extends Page implements HasTable
         return $this->record->inputs()->getQuery();
     }
 
-    protected function getTitle(): string
+    public function getTitle(): string
     {
         return "Aanvragen voor {$this->record->name}";
     }
@@ -110,7 +108,7 @@ class ViewForm extends Page implements HasTable
 
         $tableColumns[] =
             IconColumn::make('viewed')
-                ->falseIcon('heroicon-o-eye-off')
+                ->falseIcon('heroicon-o-eye-slash')
                 ->trueIcon('heroicon-o-eye')
                 ->label('Bekeken')
                 ->searchable([
@@ -130,7 +128,8 @@ class ViewForm extends Page implements HasTable
     {
         return [
             Action::make('Bekijk')
-                ->url(fn (FormInput $record): string => route('filament.resources.forms.viewInput', [$record->form->id, $record])),
+                ->url(fn (FormInput $record): string => route('filament.dashed.resources.forms.viewInput', [$record->form->id, $record]))
+                ->button(),
         ];
     }
 
