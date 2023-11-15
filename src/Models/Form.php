@@ -32,7 +32,7 @@ class Form extends Model
     }
 
     public $translatable = [
-        '',
+        'fields',
     ];
 
     protected $casts = [
