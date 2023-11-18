@@ -13,7 +13,6 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Dashed\DashedForms\Models\FormInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;

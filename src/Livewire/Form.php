@@ -3,9 +3,9 @@
 namespace Dashed\DashedForms\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
-use Livewire\TemporaryUploadedFile;
 use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Mail;
 use Dashed\DashedForms\Models\FormField;
@@ -122,6 +122,12 @@ class Form extends Component
             $field = FormField::find(str($fieldName)->explode('-')->last());
             if ($field->type == 'checkbox') {
                 $value = implode(', ', $value);
+                //            } elseif ($field->type == 'file') {
+                //                if ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                //                    $value = $value->storeAs('dashed', "forms/" . Str::slug($this->form->name) . "/" . time() . '.' . $value->getClientOriginalExtension(), 'dashed');
+                //                }else{
+                //                    $value = null;
+                //                }
             }
 
             if ($value) {
@@ -171,8 +177,8 @@ class Form extends Component
 
     public function updated($name, $value)
     {
-        if ($value instanceof TemporaryUploadedFile) {
-            $path = $value->storeAs('dashed', "forms/form-{$this->form->name}-" . time() . '.' . $value->getClientOriginalExtension());
+        if ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+            $path = $value->storeAs('dashed', "forms/form-{$this->form->name}-" . time() . '.' . $value->getClientOriginalExtension(), 'dashed');
             $this->values[str($name)->explode('.')->last()] = $path;
         }
     }
