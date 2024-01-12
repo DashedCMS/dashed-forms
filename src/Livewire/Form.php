@@ -153,7 +153,7 @@ class Form extends Component
             $notificationFormInputsEmails = Customsetting::get('notification_form_inputs_emails', Sites::getActive(), '[]');
             if ($notificationFormInputsEmails) {
                 foreach (json_decode($notificationFormInputsEmails) as $notificationFormInputsEmail) {
-                    Mail::to($notificationFormInputsEmail)->send(new AdminCustomFormSubmitConfirmationMail($formInput));
+                    Mail::to($notificationFormInputsEmail)->send(new AdminCustomFormSubmitConfirmationMail($formInput, $sendToFieldValue ?? null));
                 }
             }
         } catch (\Exception $e) {
