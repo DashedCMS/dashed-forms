@@ -66,7 +66,9 @@ class Forms
     {
         if ($presetForm == 'contact') {
             $form = Form::create([
-                'name' => 'Contact formulier',
+                'name' => [
+                    app()->getLocale() => 'Contact formulier',
+                ],
             ]);
 
             $form->fields()->create([
