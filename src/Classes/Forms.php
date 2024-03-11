@@ -52,7 +52,13 @@ class Forms
         return
             Select::make($name)
                 ->label('Formulier')
-                ->options(Form::all()->pluck('name', 'id'))
+                ->options(function(){
+                    $options = [];
+                    foreach (Form::all() as $form) {
+                        $options[$form->id] = $form->name;
+                    }
+                    return $options;
+                })
                 ->required($required);
     }
 
