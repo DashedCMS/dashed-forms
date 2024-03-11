@@ -60,7 +60,7 @@ class FormResource extends Resource
                 ->required(),
             Select::make('email_confirmation_form_field_id')
                 ->label('Email bevestiging veld')
-                ->options(fn ($record) => $record ? $record->fields()->where('type', 'input')->where('input_type', 'email')->pluck('name', 'id') : []),
+                ->options(fn($record) => $record ? $record->fields()->where('type', 'input')->where('input_type', 'email')->pluck('name', 'id') : []),
         ];
 
         foreach (MailingProviders::cases() as $provider) {
@@ -86,20 +86,20 @@ class FormResource extends Resource
             Select::make('input_type')
                 ->label('Input type veld')
                 ->options(Forms::availableInputTypesForInput())
-                ->required(fn ($get) => in_array($get('type'), ['input']))
+                ->required(fn($get) => in_array($get('type'), ['input']))
                 ->reactive()
-                ->visible(fn ($get) => in_array($get('type'), ['input'])),
+                ->visible(fn($get) => in_array($get('type'), ['input'])),
             TextInput::make('placeholder')
                 ->label('Placeholder')
                 ->maxLength(255)
-                ->visible(fn ($get) => in_array($get('type'), ['input', 'textarea'])),
+                ->visible(fn($get) => in_array($get('type'), ['input', 'textarea'])),
             TextInput::make('helper_text')
                 ->label('Helper tekst')
                 ->helperText('Zet hier eventueel uitleg neer over dit veld')
                 ->maxLength(255),
             Toggle::make('required')
                 ->label('Verplicht in te vullen')
-                ->visible(fn ($get) => ! in_array($get('type'), ['info', 'image'])),
+                ->visible(fn($get) => !in_array($get('type'), ['info', 'image'])),
             Toggle::make('stack_start')
                 ->label('Start van de stack'),
             Toggle::make('stack_end')
@@ -107,12 +107,12 @@ class FormResource extends Resource
             Textarea::make('description')
                 ->label('Descriptie')
                 ->maxLength(500)
-                ->required(fn ($get) => in_array($get('type'), ['info']))
-                ->visible(fn ($get) => in_array($get('type'), ['info', 'select-image'])),
+                ->required(fn($get) => in_array($get('type'), ['info']))
+                ->visible(fn($get) => in_array($get('type'), ['info', 'select-image'])),
             Repeater::make('options')
                 ->label('Opties')
-                ->required(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
-                ->visible(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
+                ->required(fn($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
+                ->visible(fn($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
                 ->reorderable()
                 ->schema([
                     TextInput::make('name')
@@ -122,8 +122,8 @@ class FormResource extends Resource
                 ]),
             Repeater::make('images')
                 ->label('Afbeeldingen')
-                ->required(fn ($get) => in_array($get('type'), ['select-image']))
-                ->visible(fn ($get) => in_array($get('type'), ['select-image']))
+                ->required(fn($get) => in_array($get('type'), ['select-image']))
+                ->visible(fn($get) => in_array($get('type'), ['select-image']))
                 ->reorderable()
                 ->schema([
                     TextInput::make('name')
@@ -137,8 +137,8 @@ class FormResource extends Resource
                 ]),
             FileUpload::make('image')
                 ->label('Afbeelding')
-                ->required(fn ($get) => in_array($get('type'), ['image']))
-                ->visible(fn ($get) => in_array($get('type'), ['image']))
+                ->required(fn($get) => in_array($get('type'), ['image']))
+                ->visible(fn($get) => in_array($get('type'), ['image']))
                 ->image()
                 ->directory('dashed/images'),
         ];
@@ -172,15 +172,15 @@ class FormResource extends Resource
             ->columns([
                 TextColumn::make('name')
                     ->label('Naam')
-                    ->formatStateUsing(fn ($state) => ucfirst($state))
+                    ->formatStateUsing(fn($state) => ucfirst($state))
                     ->sortable()
                     ->searchable(query: SearchQuery::make()),
                 TextColumn::make('amount_of_requests')
                     ->label('Aantal aanvragen')
-                    ->getStateUsing(fn ($record) => $record->inputs->count()),
+                    ->getStateUsing(fn($record) => $record->inputs->count()),
                 TextColumn::make('amount_of_unviewed_requests')
                     ->label('Aantal openstaande aanvragen')
-                    ->getStateUsing(fn ($record) => $record->inputs()->unviewed()->count()),
+                    ->getStateUsing(fn($record) => $record->inputs()->unviewed()->count()),
             ])
             ->actions([
                 EditAction::make()
@@ -190,7 +190,7 @@ class FormResource extends Resource
                     ->icon('heroicon-s-eye')
                     ->button()
                     ->color('primary')
-                    ->url(fn ($record) => route('filament.dashed.resources.forms.viewInputs', [$record])),
+                    ->url(fn($record) => route('filament.dashed.resources.forms.viewInputs', [$record])),
                 DeleteAction::make(),
             ])
             ->bulkActions([
