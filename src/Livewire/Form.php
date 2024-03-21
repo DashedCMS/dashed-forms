@@ -169,6 +169,10 @@ class Form extends Component
         $this->resetForm();
         $this->formSent = true;
 
+        $this->dispatch('form-submitted', [
+            'formId' => $this->form->id,
+        ]);
+
         Notification::make()
             ->success()
             ->body('Je bericht is verzonden!')
