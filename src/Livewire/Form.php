@@ -169,7 +169,7 @@ class Form extends Component
         $this->resetForm();
         $this->formSent = true;
 
-        $this->dispatch('form-submitted', [
+        $this->dispatch('formSubmitted', [
             'formId' => $this->form->id,
         ]);
 
