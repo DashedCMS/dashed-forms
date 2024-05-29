@@ -167,6 +167,9 @@ class FormResource extends Resource
             ->relationship('fields')
             ->label('Velden')
             ->reorderable()
+            ->orderColumn()
+            ->reorderableWithButtons()
+            ->reorderableWithDragAndDrop()
             ->cloneable()
             ->schema($repeaterSchema)
             ->columns([
