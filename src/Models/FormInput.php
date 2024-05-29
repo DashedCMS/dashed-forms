@@ -24,6 +24,15 @@ class FormInput extends Model
         'content' => 'array',
     ];
 
+    public static function booted()
+    {
+        static::creating(function (FormInput $formInput) {
+            if($formInput->form->webhook_url) {
+                $formInput->should_send_webhook = true;
+            }
+        });
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();
@@ -42,5 +51,10 @@ class FormInput extends Model
     public function scopeUnviewed($query)
     {
         $query->where('viewed', 0);
+    }
+
+    public function sendWebhook()
+    {
+        $this->form->webhook_class::dispatch($this);
     }
 }

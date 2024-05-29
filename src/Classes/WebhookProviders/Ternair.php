@@ -1,0 +1,40 @@
+<?php
+
+namespace Dashed\DashedForms\Classes\WebhookProviders;
+
+use Exception;
+use Illuminate\Support\Facades\Http;
+use Filament\Forms\Components\Select;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedCore\Models\Customsetting;
+
+class Ternair
+{
+    public $name = 'Ternair';
+    public $slug = 'ternair';
+
+    public static function dispatch(FormInput $formInput)
+    {
+        $data = [];
+        $data['ip'] = $formInput->ip;
+        $data['user_agent'] = $formInput->user_agent;
+        $data['from_url'] = $formInput->from_url;
+        $data['site_id'] = $formInput->site_id;
+        $data['locale'] = $formInput->locale;
+        $data['created_at'] = $formInput->created_at;
+
+        foreach ($formInput->formFields as $field) {
+            $data['data'][$field->formField->name] = $field->value;
+        }
+
+        $response = Http::post($formInput->form->webhook_url, $data);
+
+        if ($response->failed()) {
+            dd($response->body());
+            $formInput->webhook_error = $response->body();
+        }
+
+        $formInput->webhook_send = $response->successful() ? 1 : 2;
+        $formInput->save();
+    }
+}

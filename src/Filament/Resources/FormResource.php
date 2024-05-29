@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Filament\Resources;
 
+use Dashed\DashedForms\Classes\WebhookProviders\Ternair;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -61,6 +62,18 @@ class FormResource extends Resource
             Select::make('email_confirmation_form_field_id')
                 ->label('Email bevestiging veld')
                 ->options(fn($record) => $record ? $record->fields()->where('type', 'input')->where('input_type', 'email')->pluck('name', 'id') : []),
+            TextInput::make('webhook_url')
+                ->label('Webhook URL')
+                ->helperText('Vul hier de URL in waar de webhook naartoe gestuurd moet worden')
+            ->reactive(),
+            Select::make('webhook_class')
+                ->label('Webhook class')
+                ->options([
+                    Ternair::class => 'Ternair',
+                ])
+                ->required(fn($get) => $get('webhook_url'))
+                ->visible(fn($get) => $get('webhook_url'))
+                ->reactive(),
         ];
 
         foreach (MailingProviders::cases() as $provider) {

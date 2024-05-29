@@ -2,6 +2,11 @@
 
 namespace Dashed\DashedForms;
 
+use Dashed\DashedCore\Commands\CreateSitemap;
+use Dashed\DashedCore\Commands\InvalidatePasswordResetTokens;
+use Dashed\DashedCore\Commands\RunUrlHistoryCheckCommand;
+use Dashed\DashedForms\Commands\SendWebhooksForFormInputs;
+use Illuminate\Console\Scheduling\Schedule;
 use Livewire\Livewire;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
@@ -15,6 +20,11 @@ class DashedFormsServiceProvider extends PackageServiceProvider
     public function bootingPackage()
     {
         Livewire::component('dashed-forms.form', Form::class);
+
+        $this->app->booted(function () {
+            $schedule = app(Schedule::class);
+            $schedule->command(SendWebhooksForFormInputs::class)->everyFiveMinutes();
+        });
     }
 
     public function configurePackage(Package $package): void
@@ -37,6 +47,9 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             ->name('dashed-forms')
             ->hasRoutes([
                 'frontend',
+            ])
+            ->hasCommands([
+                SendWebhooksForFormInputs::class,
             ])
             ->hasViews();
 
