@@ -11,7 +11,7 @@ class DashedFormsPlugin implements Plugin
 {
     public function getId(): string
     {
-        return 'dashed-files';
+        return 'dashed-forms';
     }
 
     public function register(Panel $panel): void
