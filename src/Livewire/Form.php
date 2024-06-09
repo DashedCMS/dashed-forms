@@ -29,6 +29,10 @@ class Form extends Component
     public bool $singleColumn = false;
     public ?string $buttonTitle = '';
 
+    protected $listeners = [
+        'setValue'
+    ];
+
     public function mount(\Dashed\DashedForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
     {
         $this->singleColumn = $singleColumn;
@@ -94,6 +98,11 @@ class Form extends Component
         return collect($this->formFields)
             ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
             ->toArray();
+    }
+
+    public function setValue($field, $value)
+    {
+        $this->values[$field] = $value;
     }
 
     public function submit()
