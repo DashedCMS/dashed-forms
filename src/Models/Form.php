@@ -37,6 +37,7 @@ class Form extends Model
 
     protected $casts = [
         'external_options' => 'array',
+        'redirect_after_form' => 'array',
     ];
 
     public function fields(): HasMany

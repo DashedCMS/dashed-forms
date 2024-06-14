@@ -186,6 +186,11 @@ class Form extends Component
             ->success()
             ->body('Je bericht is verzonden!')
             ->send();
+
+        $redirectUrl = linkHelper()->getUrl($data['redirect_after_form']);
+        if($redirectUrl){
+            return redirect($redirectUrl);
+        }
     }
 
     public function updated($name, $value)

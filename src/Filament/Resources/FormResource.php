@@ -3,6 +3,7 @@
 namespace Dashed\DashedForms\Filament\Resources;
 
 use Dashed\DashedForms\Classes\WebhookProviders\Ternair;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -65,7 +66,7 @@ class FormResource extends Resource
             TextInput::make('webhook_url')
                 ->label('Webhook URL')
                 ->helperText('Vul hier de URL in waar de webhook naartoe gestuurd moet worden')
-            ->reactive(),
+                ->reactive(),
             Select::make('webhook_class')
                 ->label('Webhook class')
                 ->options([
@@ -74,6 +75,7 @@ class FormResource extends Resource
                 ->required(fn($get) => $get('webhook_url'))
                 ->visible(fn($get) => $get('webhook_url'))
                 ->reactive(),
+            linkHelper()->field('redirect_after_form', false, 'Redirect na formulier'),
         ];
 
         foreach (MailingProviders::cases() as $provider) {

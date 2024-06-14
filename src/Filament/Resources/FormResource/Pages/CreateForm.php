@@ -19,4 +19,18 @@ class CreateForm extends CreateRecord
             LocaleSwitcher::make(),
         ];
     }
+
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (str($key)->contains('redirect_after_form')) {
+                $key = str($key)->replace('redirect_after_form_', '');
+                $data['redirect_after_form']['url_' . $key] = $data['redirect_after_form_' . $key] ?? '';
+                unset($data['redirect_after_form_' . $key]);
+            }
+        }
+
+        return $data;
+    }
 }
