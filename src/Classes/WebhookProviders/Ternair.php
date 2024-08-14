@@ -30,8 +30,8 @@ class Ternair
 
         foreach(str(str($formInput->from_url)->explode('?')->last())->explode('&') as $query) {
             $query = str($query)->explode('=');
-            $data[$query[0]] = $query[1];
-            $data['queryParams'][$query[0]] = $query[1];
+            $data[$query[0]] = $query[1] ?? '';
+            $data['queryParams'][$query[0]] = $query[1] ?? '';
         }
 
         $response = Http::post($formInput->form->webhook_url, $data);
