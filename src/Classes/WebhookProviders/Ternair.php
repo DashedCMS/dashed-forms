@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Filament\Forms\Components\Select;
 use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedCore\Models\Customsetting;
+use Illuminate\Support\Facades\Storage;
 
 class Ternair
 {
@@ -24,8 +25,8 @@ class Ternair
         $data['created_at'] = $formInput->created_at;
 
         foreach ($formInput->formFields as $field) {
-            $data['data'][$field->formField->name] = $field->value;
-            $data[$field->formField->name] = $field->value;
+            $data['data'][$field->formField->name] = $field->formField->type == 'file' ? Storage::disk('dashed')->url($field->value) : $field->value;
+            $data[$field->formField->name] = $field->formField->type == 'file' ? Storage::disk('dashed')->url($field->value) : $field->value;
         }
 
         foreach(str(str($formInput->from_url)->explode('?')->last())->explode('&') as $query) {
