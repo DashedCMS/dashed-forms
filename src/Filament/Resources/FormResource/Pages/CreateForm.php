@@ -21,7 +21,7 @@ class CreateForm extends CreateRecord
     }
 
 
-    protected function mutateFormDataBeforeSave(array $data): array
+    protected function mutateFormDataBeforeCreate(array $data): array
     {
         foreach ($data as $key => $value) {
             if (str($key)->contains('redirect_after_form')) {
