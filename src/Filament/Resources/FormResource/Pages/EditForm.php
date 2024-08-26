@@ -55,12 +55,27 @@ class EditForm extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        foreach($data['redirect_after_form'] ?? [] as $key => $value){
+        foreach ($data['redirect_after_form'] ?? [] as $key => $value) {
             $data['redirect_after_form_' . str($key)->replace('url_', '')] = $value;
         }
 
         unset($data['redirect_after_form']);
 
         return parent::mutateFormDataBeforeFill($data);
+    }
+
+    public function updatingActiveLocale($newVal): void
+    {
+        $this->oldActiveLocale = $this->activeLocale;
+        $this->save();
+
+        foreach ($this->data['fields'] ?? [] as $key => $fieldArray) {
+            $relation = $this->getRecord()->fields()->find($fieldArray['id'] ?? 0);
+            if ($relation) {
+                foreach ($relation->translatable as $attribute) {
+                    $this->data['fields'][$key][$attribute] = $relation->getTranslation($attribute, $newVal);
+                }
+            }
+        }
     }
 }
