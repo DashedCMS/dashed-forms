@@ -32,7 +32,7 @@ class Form extends Model
     }
 
     public $translatable = [
-//        'name',
+        'mustHaveSomethingDefined',
     ];
 
     protected $casts = [

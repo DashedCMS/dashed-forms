@@ -23,6 +23,7 @@ class CreateForm extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        unset($data['mustHaveSomethingDefined']);
         foreach ($data as $key => $value) {
             if (str($key)->contains('redirect_after_form')) {
                 $key = str($key)->replace('redirect_after_form_', '');
