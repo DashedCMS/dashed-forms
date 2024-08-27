@@ -113,7 +113,7 @@ class FormResource extends Resource
                 ->maxLength(255),
             Toggle::make('required')
                 ->label('Verplicht in te vullen')
-                ->visible(fn ($get) => !in_array($get('type'), ['info', 'image'])),
+                ->visible(fn ($get) => ! in_array($get('type'), ['info', 'image'])),
             Toggle::make('stack_start')
                 ->label('Start van de stack'),
             Toggle::make('stack_end')

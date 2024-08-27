@@ -57,6 +57,7 @@ class Forms
                     foreach (Form::all() as $form) {
                         $options[$form->id] = $form->name;
                     }
+
                     return $options;
                 })
                 ->required($required);

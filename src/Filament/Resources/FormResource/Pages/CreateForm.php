@@ -20,7 +20,6 @@ class CreateForm extends CreateRecord
         ];
     }
 
-
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         unset($data['mustHaveSomethingDefined']);

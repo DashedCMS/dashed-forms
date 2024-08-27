@@ -3,11 +3,11 @@
 namespace Dashed\DashedForms\Models;
 
 use Spatie\Activitylog\LogOptions;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model
 {
@@ -60,6 +60,7 @@ class Form extends Model
     {
         if (request()->get('search') ?: $search) {
             $search = strtolower(request()->get('search') ?: $search);
+
             return $query->where('name', 'LIKE', '%' . $search . '%');
         }
     }

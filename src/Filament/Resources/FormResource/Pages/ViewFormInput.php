@@ -58,7 +58,7 @@ class ViewFormInput extends Page implements HasForms, HasInfolists
                 ->action('markAsNotViewed'),
             Action::make('mark_as_viewed')
                 ->button()
-                ->visible(!$this->record->viewed)
+                ->visible(! $this->record->viewed)
                 ->label('Markeer als bekeken')
                 ->action('markAsViewed'),
             Action::make('delete')
@@ -187,7 +187,7 @@ class ViewFormInput extends Page implements HasForms, HasInfolists
                             ->default('Onbekend'),
                     ]),
                 ])
-                    ->from('md')
+                    ->from('md'),
             ]);
     }
 

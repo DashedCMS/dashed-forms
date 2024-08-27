@@ -30,7 +30,7 @@ class Form extends Component
     public ?string $buttonTitle = '';
 
     protected $listeners = [
-        'setValue'
+        'setValue',
     ];
 
     public function mount(\Dashed\DashedForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
