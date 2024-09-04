@@ -108,13 +108,13 @@ class ViewFormInput extends Page implements HasForms, HasInfolists
         } else {
             foreach ($this->record->formFields as $field) {
                 if ($field->isImage()) {
-                    if($field->formField->type == 'select-image') {
+                    if ($field->formField->type == 'select-image') {
                         $inputFields[] = ImageEntry::make($field->formField->id)
                             ->label($field->formField->name)
                             ->helperText(collect($field->formField->images)->where('image', $field->value)->first()['name'])
                             ->state($field->value);
                     } else {
-                        if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg'])) {
+                        if (str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg'])) {
                             $inputFields[] = ImageEntry::make($field->formField->id)
                                 ->label($field->formField->name)
                                 ->url(Storage::disk('dashed')->url($field->value))

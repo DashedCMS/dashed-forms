@@ -27,7 +27,7 @@ class FormInput extends Model
     public static function booted()
     {
         static::creating(function (FormInput $formInput) {
-            if($formInput->form->webhook_url) {
+            if ($formInput->form->webhook_url) {
                 $formInput->should_send_webhook = true;
             }
         });

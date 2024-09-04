@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -12,6 +11,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Dashed\DashedForms\Models\FormInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -86,7 +86,7 @@ class ViewForm extends Page implements HasTable
                 if ($inputCount < 4) {
                     $tableColumns[] = TextColumn::make($key)
                         ->label(Str::of($key)->replace('_', ' ')->title())
-                        ->getStateUsing(fn($record) => $record->content[$key] ?? 'Niet ingevuld');
+                        ->getStateUsing(fn ($record) => $record->content[$key] ?? 'Niet ingevuld');
                 }
                 $inputCount++;
             }
@@ -96,11 +96,11 @@ class ViewForm extends Page implements HasTable
                     if ($item->isImage()) {
                         $tableColumns[] = ImageColumn::make($item->name)
                             ->label($item->name)
-                            ->getStateUsing(fn($record) => $record->formFields()->where('form_field_id', $item->id)->first()->value ?? 'Niet ingevuld');
+                            ->getStateUsing(fn ($record) => $record->formFields()->where('form_field_id', $item->id)->first()->value ?? 'Niet ingevuld');
                     } else {
                         $tableColumns[] = TextColumn::make($item->name)
                             ->label($item->name)
-                            ->getStateUsing(fn($record) => $record->formFields()->where('form_field_id', $item->id)->first()->value ?? 'Niet ingevuld');
+                            ->getStateUsing(fn ($record) => $record->formFields()->where('form_field_id', $item->id)->first()->value ?? 'Niet ingevuld');
                     }
                 }
                 $inputCount++;
@@ -129,7 +129,7 @@ class ViewForm extends Page implements HasTable
     {
         return [
             Action::make('Bekijk')
-                ->url(fn(FormInput $record): string => route('filament.dashed.resources.forms.viewInput', [$record->form->id, $record]))
+                ->url(fn (FormInput $record): string => route('filament.dashed.resources.forms.viewInput', [$record->form->id, $record]))
                 ->button(),
         ];
     }
