@@ -16,14 +16,14 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable
     use SerializesModels;
 
     public FormInput $formInput;
-    public string $replyToEmail;
+    public ?string $replyToEmail;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(FormInput $formInput, string $replyToEmail = '')
+    public function __construct(FormInput $formInput, ?string $replyToEmail = '')
     {
         $this->formInput = $formInput;
         $this->replyToEmail = $replyToEmail;
