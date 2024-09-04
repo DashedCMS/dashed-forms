@@ -23,7 +23,7 @@ class Ternair
 
         foreach ($formInput->formFields as $field) {
             $data['data'][$field->formField->name] = $field->formField->type == 'file' ? Storage::disk('dashed')->url($field->value) : $field->value;
-            $data[$field->formField->name] = $field->formField->type == 'file' ? Storage::disk('dashed')->url($field->value) : $field->value;
+//            $data[$field->formField->name] = $field->formField->type == 'file' ? Storage::disk('dashed')->url($field->value) : $field->value;
         }
 
         foreach (str(str($formInput->from_url)->explode('?')->last())->explode('&') as $query) {
