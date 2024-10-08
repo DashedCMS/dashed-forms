@@ -239,7 +239,7 @@
                                                                                    style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; padding: 0 10px;">
                                                                         <img alt="{{Customsetting::get('site_name')}}"
                                                                              height="auto"
-                                                                             src="{{mediaHelper()->getSingleImage($logo, 'medium')->url ?? ''}}"
+                                                                             src="{{mediaHelper()->getSingleMedia($logo, 'medium')->url ?? ''}}"
                                                                              style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;"
                                                                              width="160"> </a></td>
                                                             @endif
@@ -336,7 +336,7 @@
                                                                 style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 0px; padding: 0; word-break: break-word;">
                                                                 <div
                                                                     style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 26px; font-weight: bold; line-height: 30px; text-align: left; color: #4F4F4F;">
-                                                                    {{Translation::get('form-confirmation-' . Str::slug($form->name) . '-email-title', 'forms', 'We have received your form submit!')}}
+                                                                    {{Translation::get('form-confirmation-' . Str::slug($form->name) . '-email-title', 'forms', 'We hebben je aanvraag ontvangen!')}}
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -346,7 +346,7 @@
                                                                 <div
                                                                     style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px; text-align: left; color: #4F4F4F;">
                                                                     <br>
-                                                                    {!! nl2br(Translation::get('form-confirmation-' . Str::slug($form->name) . '-email-content', 'forms', 'We will try to respond within 2 business days.', 'textarea')) !!}
+                                                                    {!! nl2br(Translation::get('form-confirmation-' . Str::slug($form->name) . '-email-content', 'forms', 'We proberen binnen 2 werkdagen te reageren.', 'textarea')) !!}
                                                                     <hr>
                                                                     @foreach($formInput->content as $field => $value)
                                                                         <h4>{{str_replace('_', ' ', ucfirst($field)) . ':'}}</h4>

@@ -239,7 +239,7 @@
                                                                                    style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; padding: 0 10px;">
                                                                         <img alt="{{Customsetting::get('site_name')}}"
                                                                              height="auto"
-                                                                             src="{{mediaHelper()->getSingleImage($logo, 'medium')->url ?? ''}}"
+                                                                             src="{{mediaHelper()->getSingleMedia($logo, 'medium')->url ?? ''}}"
                                                                              style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;"
                                                                              width="160"> </a></td>
                                                             @endif
@@ -336,7 +336,7 @@
                                                                 style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 0px; padding: 0; word-break: break-word;">
                                                                 <div
                                                                     style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 26px; font-weight: bold; line-height: 30px; text-align: left; color: #4F4F4F;">
-                                                                    {{Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-title', 'forms', 'You have received a new form submit!')}}
+                                                                    {{Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-title', 'forms', 'Er is een formulier ingevuld!')}}
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -346,7 +346,7 @@
                                                                 <div
                                                                     style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px; text-align: left; color: #4F4F4F;">
                                                                     <br>
-                                                                    {!! nl2br(Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-content', 'forms', 'Try to respond to this form submit within 2 business days.', 'textarea')) !!}
+                                                                    {!! nl2br(Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-content', 'forms', 'Probeer binnen 2 werkdagen te reageren.', 'textarea')) !!}
                                                                     <hr>
                                                                     @foreach($formInput->content as $field => $value)
                                                                         <h4>{{str_replace('_', ' ', ucfirst($field)) . ':'}}</h4>
@@ -370,7 +370,7 @@
                                                                             valign="middle"><a
                                                                                 href="{{route('filament.dashed.resources.forms.viewInput', [$form, $formInput])}}"
                                                                                 style="display: inline-block; background: {{Translation::get('primary-color-code', 'emails', '#A0131C')}}; color: #ffffff; font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 18px; font-weight: bold; line-height: 120%; margin: 0; text-decoration: none; text-transform: none; padding: 10px 25px; mso-padding-alt: 0px; border-radius: 3px;"
-                                                                                target="_blank"> {{Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-view-button', 'orders', 'View input')}} </a>
+                                                                                target="_blank"> {{Translation::get('admin-form-confirmation-' . Str::slug($form->name) . '-email-view-button', 'orders', 'Bekijk formulier')}} </a>
                                                                         </td>
                                                                     </tr>
                                                                 </table>

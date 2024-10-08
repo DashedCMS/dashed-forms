@@ -17,7 +17,7 @@
                 </div>
                 <div class="ml-3">
                     <p class="text-sm font-bold text-green-800">
-                        {{ 'Het formulier is verzonden' }}
+                        {{ Translation::get('form-sent', 'forms', 'Het formulier is verzonden') }}
                     </p>
                 </div>
             </div>
