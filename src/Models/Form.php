@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Models;
 
+use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
@@ -13,6 +14,7 @@ class Form extends Model
 {
     use LogsActivity;
     use HasTranslations;
+    use HasCustomBlocks;
 
     protected static $logFillable = true;
 

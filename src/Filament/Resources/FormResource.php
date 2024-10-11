@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Filament\Resources;
 
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -32,6 +33,7 @@ use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
 class FormResource extends Resource
 {
     use Translatable;
+    use HasCustomBlocksTab;
 
     protected static ?string $model = \Dashed\DashedForms\Models\Form::class;
     protected static ?string $recordTitleAttribute = 'name';
@@ -77,6 +79,7 @@ class FormResource extends Resource
             linkHelper()->field('redirect_after_form', false, 'Redirect na formulier'),
         ];
 
+
         foreach (MailingProviders::cases() as $provider) {
             $provider = $provider->getClass();
             if ($provider->connected) {
@@ -86,6 +89,8 @@ class FormResource extends Resource
                 $schema = array_merge($schema, $provider->getFormSchema());
             }
         }
+
+        $schema = array_merge($schema, static::customBlocksTab(cms()->builder('formBlocks')));
 
         $repeaterSchema = [
             TextInput::make('name')
