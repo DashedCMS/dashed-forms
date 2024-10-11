@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedForms\Filament\Resources;
 
-use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -24,6 +23,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Dashed\DashedForms\Enums\MailingProviders;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedForms\Classes\WebhookProviders\Ternair;
+use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\EditForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
