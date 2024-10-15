@@ -29,6 +29,7 @@ use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
+use FilamentTiptapEditor\TiptapEditor;
 
 class FormResource extends Resource
 {
@@ -123,9 +124,8 @@ class FormResource extends Resource
                 ->label('Start van de stack'),
             Toggle::make('stack_end')
                 ->label('Einde van de stack'),
-            Textarea::make('description')
+            TiptapEditor::make('description')
                 ->label('Descriptie')
-                ->maxLength(500)
                 ->required(fn ($get) => in_array($get('type'), ['info']))
                 ->visible(fn ($get) => in_array($get('type'), ['info', 'select-image'])),
             Repeater::make('options')
