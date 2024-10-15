@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
+use Dashed\DashedForms\Models\FormField;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\LocaleSwitcher;
@@ -49,6 +50,10 @@ class EditForm extends EditRecord
                 $data['redirect_after_form']['url_' . $key] = $data['redirect_after_form_' . $key] ?? '';
                 unset($data['redirect_after_form_' . $key]);
             }
+        }
+
+        if(!FormField::find($data['email_confirmation_form_field_id'])) {
+            $data['email_confirmation_form_field_id'] = null;
         }
 
         return $data;
