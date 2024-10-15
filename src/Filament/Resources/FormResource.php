@@ -9,8 +9,8 @@ use Filament\Tables\Actions\Action;
 use Dashed\DashedForms\Classes\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use FilamentTiptapEditor\TiptapEditor;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Dashed\DashedForms\Models\FormInput;
@@ -29,7 +29,6 @@ use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
-use FilamentTiptapEditor\TiptapEditor;
 
 class FormResource extends Resource
 {
