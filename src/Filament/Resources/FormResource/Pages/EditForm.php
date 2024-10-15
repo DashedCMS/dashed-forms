@@ -52,7 +52,7 @@ class EditForm extends EditRecord
             }
         }
 
-        if (! FormField::find($data['email_confirmation_form_field_id'])) {
+        if (! FormField::find($data['email_confirmation_form_field_id'] ?? 0)) {
             $data['email_confirmation_form_field_id'] = null;
         }
 
