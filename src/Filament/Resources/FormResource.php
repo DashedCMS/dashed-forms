@@ -44,6 +44,8 @@ class FormResource extends Resource
     protected static ?string $pluralLabel = 'Formulieren';
     protected static bool $isGloballySearchable = false;
 
+    protected static ?int $navigationSort = 5;
+
     public static function getNavigationLabel(): string
     {
         return 'Formulieren';
