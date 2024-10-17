@@ -190,8 +190,9 @@ class Form extends Component
         $redirectUrl = $this->form->redirect_after_form ? linkHelper()->getUrl($this->form->redirect_after_form) : '';
         if ($redirectUrl) {
             $this->dispatch('redirect', [
-                'url' => $redirectUrl
+                'url' => $redirectUrl,
             ]);
+
             return redirect($redirectUrl);
         }
     }
