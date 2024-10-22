@@ -90,14 +90,14 @@ class Form extends Component
     protected function validationAttributes()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
             ->toArray();
     }
 
     protected function rules()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
             ->toArray();
     }
 
@@ -196,9 +196,9 @@ class Form extends Component
             'data' => $formValues,
         ]);
 
-        //        if ($redirectUrl) {
-        //            return redirect($redirectUrl);
-        //        }
+        if ($redirectUrl) {
+            return redirect($redirectUrl);
+        }
     }
 
     public function updated($name, $value)
