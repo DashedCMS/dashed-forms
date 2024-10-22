@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Livewire;
 
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
@@ -118,6 +119,8 @@ class Form extends Component
                 ->send();
         }
 
+        $formValues = [];
+
         $formInput = new FormInput();
         $formInput->form_id = $this->form->id;
         $formInput->ip = request()->ip();
@@ -148,6 +151,8 @@ class Form extends Component
                 if ($formInput->form->emailConfirmationFormField && $field->id == $formInput->form->emailConfirmationFormField->id) {
                     $sendToFieldValue = $value;
                 }
+
+                $formValues[$field->name] = $field->type == 'file' ? Storage::disk('dashed')->url($value) : $value;
             }
         }
 
@@ -178,23 +183,22 @@ class Form extends Component
         $this->resetForm();
         $this->formSent = true;
 
-        $this->dispatch('formSubmitted', [
-            'formId' => $this->form->id,
-        ]);
-
         Notification::make()
             ->success()
             ->body('Je bericht is verzonden!')
             ->send();
 
         $redirectUrl = $this->form->redirect_after_form ? linkHelper()->getUrl($this->form->redirect_after_form) : '';
-        if ($redirectUrl) {
-            $this->dispatch('redirect', [
-                'url' => $redirectUrl,
-            ]);
 
-            return redirect($redirectUrl);
-        }
+        $this->dispatch('formSubmitted', [
+            'formId' => $this->form->id,
+            'redirectUrl' => $redirectUrl,
+            'data' => $formValues,
+        ]);
+
+//        if ($redirectUrl) {
+//            return redirect($redirectUrl);
+//        }
     }
 
     public function updated($name, $value)
