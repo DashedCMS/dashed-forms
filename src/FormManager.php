@@ -2,8 +2,6 @@
 
 namespace Dashed\DashedForms;
 
-use Filament\Forms\Components\Builder;
-
 class FormManager
 {
     protected static $builders = [
