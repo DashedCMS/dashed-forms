@@ -3,7 +3,6 @@
 namespace Dashed\DashedForms\Livewire;
 
 use Livewire\Component;
-use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
 use Dashed\DashedCore\Classes\Sites;
@@ -94,14 +93,14 @@ class Form extends Component
     protected function validationAttributes()
     {
         return collect($this->formFields)
-            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
+            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
             ->toArray();
     }
 
     protected function rules()
     {
         return collect($this->formFields)
-            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
+            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
             ->toArray();
     }
 
