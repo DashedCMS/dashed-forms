@@ -30,7 +30,10 @@
         "psr-4": {
             "Dashed\\DashedForms\\": "src",
             "Dashed\\DashedForms\\Database\\Factories\\": "database/factories"
-        }
+        },
+        "files": [
+            "src/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
