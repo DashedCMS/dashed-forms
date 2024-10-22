@@ -2,6 +2,8 @@
 
 namespace Dashed\DashedForms\Filament\Pages\Settings;
 
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Toggle;
 use Filament\Pages\Page;
 use Dashed\DashedCore\Models\User;
 use Filament\Forms\Components\Tabs;
@@ -32,6 +34,7 @@ class FormSettingsPage extends Page
         $sites = Sites::getSites();
         foreach ($sites as $site) {
             $formData["notification_form_inputs_emails_{$site['id']}"] = json_decode(Customsetting::get('notification_form_inputs_emails', $site['id'], '{}'));
+            $formData["form_redirect_server_side"] = Customsetting::get('form_redirect_server_side', null, true);
             $formData["form_activecampaign_url_{$site['id']}"] = Customsetting::get('form_activecampaign_url', $site['id']);
             $formData["form_activecampaign_key_{$site['id']}"] = Customsetting::get('form_activecampaign_key', $site['id']);
         }
@@ -77,7 +80,13 @@ class FormSettingsPage extends Page
         $tabGroups[] = Tabs::make('Sites')
             ->tabs($tabs);
 
-        return $tabGroups;
+        return array_merge($tabGroups, [
+            Section::make('Algemene formulier instellingen')
+                ->schema([
+                    Toggle::make("form_redirect_server_side")
+                        ->label('Doe de redirects server side'),
+                ])
+        ]);
     }
 
     public function getFormStatePath(): ?string
@@ -93,7 +102,7 @@ class FormSettingsPage extends Page
         foreach ($sites as $site) {
             $emails = $this->form->getState()["notification_form_inputs_emails_{$site['id']}"];
             foreach ($emails as $key => $email) {
-                if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     unset($emails[$key]);
                 }
             }
@@ -102,6 +111,7 @@ class FormSettingsPage extends Page
 
             Customsetting::set('form_activecampaign_url', $this->form->getState()["form_activecampaign_url_{$site['id']}"], $site['id']);
             Customsetting::set('form_activecampaign_key', $this->form->getState()["form_activecampaign_key_{$site['id']}"], $site['id']);
+            Customsetting::set('form_redirect_server_side', $this->form->getState()["form_redirect_server_side"], $site['id']);
         }
 
         $this->form->fill($formState);
