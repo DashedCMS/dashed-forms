@@ -77,12 +77,12 @@ class FormResource extends Resource
             Repeater::make('webhooks')
                 ->label('Webhooks')
                 ->schema([
-                    TextInput::make('webhook_url')
+                    TextInput::make('url')
                         ->label('Webhook URL')
                         ->helperText('Vul hier de URL in waar de webhook naartoe gestuurd moet worden')
                         ->reactive()
                         ->required(),
-                    Select::make('webhook_class')
+                    Select::make('class')
                         ->label('Webhook class')
                         ->options([
                             Ternair::class => 'Ternair',
