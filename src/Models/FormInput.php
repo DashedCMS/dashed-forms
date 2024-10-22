@@ -27,7 +27,7 @@ class FormInput extends Model
     public static function booted()
     {
         static::creating(function (FormInput $formInput) {
-            if ($formInput->form->webhook_url) {
+            if ($formInput->form->webhooks) {
                 $formInput->should_send_webhook = true;
             }
         });
@@ -53,8 +53,10 @@ class FormInput extends Model
         $query->where('viewed', 0);
     }
 
-    public function sendWebhook()
+    public function sendWebhooks()
     {
-        $this->form->webhook_class::dispatch($this);
+        foreach($this->form->webhooks as $webhook) {
+            $webhook['class']::dispatch($this, $webhook);
+        }
     }
 }

@@ -11,7 +11,7 @@ class Ternair
     public $name = 'Ternair';
     public $slug = 'ternair';
 
-    public static function dispatch(FormInput $formInput)
+    public static function dispatch(FormInput $formInput, $webhook)
     {
         $data = [];
         $data['ip'] = $formInput->ip;
@@ -31,7 +31,7 @@ class Ternair
             $data['queryParams'][$query[0]] = $query[1] ?? '';
         }
 
-        $response = Http::post($formInput->form->webhook_url, $data);
+        $response = Http::post($webhook['url'], $data);
 
         if ($response->failed()) {
             $formInput->webhook_error = $response->body();

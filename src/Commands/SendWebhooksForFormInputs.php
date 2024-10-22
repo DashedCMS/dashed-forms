@@ -43,7 +43,7 @@ class SendWebhooksForFormInputs extends Command
             ->get();
 
         foreach ($formInputs as $formInput) {
-            $formInput->sendWebhook();
+            $formInput->sendWebhooks();
         }
 
         return 0;
