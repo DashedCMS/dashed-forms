@@ -114,6 +114,11 @@ class FormResource extends Resource
                 ->label('Placeholder')
                 ->maxLength(255)
                 ->visible(fn ($get) => in_array($get('type'), ['input', 'textarea'])),
+            TextInput::make('regex')
+                ->label('Regex validatie')
+                ->helperText('Zet hier eventueel uitleg neer over dit veld')
+                ->maxLength(255)
+                ->visible(fn ($get) => in_array($get('type'), ['input'])),
             TextInput::make('helper_text')
                 ->label('Helper tekst')
                 ->helperText('Zet hier eventueel uitleg neer over dit veld')

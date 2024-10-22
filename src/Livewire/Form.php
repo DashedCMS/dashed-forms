@@ -77,6 +77,10 @@ class Form extends Component
         if ($field->type === 'input') {
             $rules[] = 'max:255';
             $rules[] = 'string';
+
+            if ($field->regex) {
+                $rules[] = 'regex:' . $field->regex;
+            }
         }
 
         if ($field->type === 'textarea') {
@@ -90,14 +94,14 @@ class Form extends Component
     protected function validationAttributes()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
             ->toArray();
     }
 
     protected function rules()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
             ->toArray();
     }
 
