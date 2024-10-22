@@ -2,12 +2,12 @@
 
 namespace Dashed\DashedForms\Filament\Pages\Settings;
 
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Toggle;
 use Filament\Pages\Page;
 use Dashed\DashedCore\Models\User;
 use Filament\Forms\Components\Tabs;
 use Dashed\DashedCore\Classes\Sites;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -85,7 +85,7 @@ class FormSettingsPage extends Page
                 ->schema([
                     Toggle::make("form_redirect_server_side")
                         ->label('Doe de redirects server side'),
-                ])
+                ]),
         ]);
     }
 
@@ -102,7 +102,7 @@ class FormSettingsPage extends Page
         foreach ($sites as $site) {
             $emails = $this->form->getState()["notification_form_inputs_emails_{$site['id']}"];
             foreach ($emails as $key => $email) {
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     unset($emails[$key]);
                 }
             }
