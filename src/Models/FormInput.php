@@ -55,7 +55,7 @@ class FormInput extends Model
 
     public function sendWebhooks()
     {
-        foreach($this->form->webhooks as $webhook) {
+        foreach ($this->form->webhooks as $webhook) {
             $webhook['class']::dispatch($this, $webhook);
         }
     }
