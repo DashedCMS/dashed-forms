@@ -40,6 +40,8 @@ class Form extends Model
     protected $casts = [
         'external_options' => 'array',
         'redirect_after_form' => 'array',
+        'notification_form_inputs_emails' => 'array',
+        'webhooks' => 'array',
     ];
 
     public function fields(): HasMany

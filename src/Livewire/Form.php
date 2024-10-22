@@ -94,14 +94,14 @@ class Form extends Component
     protected function validationAttributes()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
             ->toArray();
     }
 
     protected function rules()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
+            ->flatMap(fn(FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
             ->toArray();
     }
 
@@ -138,12 +138,6 @@ class Form extends Component
             $field = FormField::find(str($fieldName)->explode('-')->last());
             if ($field->type == 'checkbox') {
                 $value = implode(', ', $value);
-                //            } elseif ($field->type == 'file') {
-                //                if ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                //                    $value = $value->storeAs('dashed', "forms/" . Str::slug($this->form->name) . "/" . time() . '.' . $value->getClientOriginalExtension(), 'dashed');
-                //                }else{
-                //                    $value = null;
-                //                }
             }
 
             if ($value) {
@@ -168,9 +162,9 @@ class Form extends Component
         }
 
         try {
-            $notificationFormInputsEmails = Customsetting::get('notification_form_inputs_emails', Sites::getActive(), '[]');
-            if ($notificationFormInputsEmails) {
-                foreach (json_decode($notificationFormInputsEmails) as $notificationFormInputsEmail) {
+            $notificationFormInputsEmails = $this->form->notification_form_inputs_emails ?: json_decode(Customsetting::get('notification_form_inputs_emails', Sites::getActive(), '[]'));
+            if (count($notificationFormInputsEmails)) {
+                foreach ($notificationFormInputsEmails as $notificationFormInputsEmail) {
                     Mail::to($notificationFormInputsEmail)->send(new AdminCustomFormSubmitConfirmationMail($formInput, $sendToFieldValue ?? null));
                 }
             }
