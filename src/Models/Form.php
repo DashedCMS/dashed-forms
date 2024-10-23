@@ -42,6 +42,7 @@ class Form extends Model
         'redirect_after_form' => 'array',
         'notification_form_inputs_emails' => 'array',
         'webhooks' => 'array',
+        'apis' => 'array',
     ];
 
     public function fields(): HasMany

@@ -30,6 +30,9 @@ class FormInput extends Model
             if ($formInput->form->webhooks) {
                 $formInput->should_send_webhook = true;
             }
+            if ($formInput->form->apis) {
+                $formInput->should_send_api = true;
+            }
         });
     }
 
@@ -57,6 +60,13 @@ class FormInput extends Model
     {
         foreach ($this->form->webhooks as $webhook) {
             $webhook['class']::dispatch($this, $webhook);
+        }
+    }
+
+    public function sendApis()
+    {
+        foreach ($this->form->apis as $api) {
+            $api['class']::dispatch($this, $api);
         }
     }
 }
