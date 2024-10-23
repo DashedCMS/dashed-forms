@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms;
 
+use Dashed\DashedForms\Commands\SendApisForFormInputs;
 use Livewire\Livewire;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
@@ -21,7 +22,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
         $this->app->booted(function () {
             $schedule = app(Schedule::class);
             $schedule->command(SendWebhooksForFormInputs::class)->everyMinute();
-            $schedule->command(SendWebhooksForFormInputs::class)->everyMinute();
+            $schedule->command(SendApisForFormInputs::class)->everyMinute();
         });
     }
 
@@ -53,6 +54,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             ])
             ->hasCommands([
                 SendWebhooksForFormInputs::class,
+                SendApisForFormInputs::class,
             ])
             ->hasViews();
 
