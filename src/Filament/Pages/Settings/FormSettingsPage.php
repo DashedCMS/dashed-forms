@@ -33,7 +33,7 @@ class FormSettingsPage extends Page
 
         $sites = Sites::getSites();
         foreach ($sites as $site) {
-            $formData["notification_form_inputs_emails_{$site['id']}"] = json_decode(Customsetting::get('notification_form_inputs_emails', $site['id'], '{}'));
+            $formData["notification_form_inputs_emails_{$site['id']}"] = Customsetting::get('notification_form_inputs_emails', $site['id'], []);
             $formData["form_redirect_server_side"] = Customsetting::get('form_redirect_server_side', null, true);
             $formData["form_activecampaign_url_{$site['id']}"] = Customsetting::get('form_activecampaign_url', $site['id']);
             $formData["form_activecampaign_key_{$site['id']}"] = Customsetting::get('form_activecampaign_key', $site['id']);
@@ -106,7 +106,7 @@ class FormSettingsPage extends Page
                     unset($emails[$key]);
                 }
             }
-            Customsetting::set('notification_form_inputs_emails', json_encode($emails), $site['id']);
+            Customsetting::set('notification_form_inputs_emails', $emails, $site['id']);
             $formState["notification_form_inputs_emails_{$site['id']}"] = $emails;
 
             Customsetting::set('form_activecampaign_url', $this->form->getState()["form_activecampaign_url_{$site['id']}"], $site['id']);
