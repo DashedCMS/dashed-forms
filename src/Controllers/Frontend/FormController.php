@@ -73,9 +73,9 @@ class FormController extends FrontendController
                 }
 
                 try {
-                    $notificationFormInputsEmails = Customsetting::get('notification_form_inputs_emails', Sites::getActive(), '[]');
+                    $notificationFormInputsEmails = Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []);
                     if ($notificationFormInputsEmails) {
-                        foreach (json_decode($notificationFormInputsEmails) as $notificationFormInputsEmail) {
+                        foreach ($notificationFormInputsEmails as $notificationFormInputsEmail) {
                             Mail::to($notificationFormInputsEmail)->send(new AdminFormSubmitConfirmationMail($form, $formInput, $sendToFieldValue));
                         }
                     }
