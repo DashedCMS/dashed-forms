@@ -160,8 +160,9 @@ class Form extends Component
             }
         }
 
+        dd(Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []));
         try {
-            $notificationFormInputsEmails = $this->form->notification_form_inputs_emails ?: Customsetting::get('notification_form_inputs_emails', Sites::getActive(), '[]');
+            $notificationFormInputsEmails = $this->form->notification_form_inputs_emails ?: Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []);
             if (count($notificationFormInputsEmails)) {
                 foreach ($notificationFormInputsEmails as $notificationFormInputsEmail) {
                     Mail::to($notificationFormInputsEmail)->send(new AdminCustomFormSubmitConfirmationMail($formInput, $sendToFieldValue ?? null));
