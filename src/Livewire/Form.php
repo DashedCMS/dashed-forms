@@ -160,8 +160,6 @@ class Form extends Component
             }
         }
 
-        dd(Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []));
-
         try {
             $notificationFormInputsEmails = $this->form->notification_form_inputs_emails ?: Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []);
             if (count($notificationFormInputsEmails)) {
