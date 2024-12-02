@@ -54,7 +54,7 @@ class ActiveCampaign
                 ->options(collect($this->getTags())->pluck('tag', 'id'))
                 ->multiple()
                 ->preload()
-                ->visible(fn($get) => $get("external_options.send_to_$this->slug")),
+                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
         ];
     }
 
@@ -65,7 +65,7 @@ class ActiveCampaign
                 ->label('Kies een contact veld')
                 ->options(collect($this->getContactFields())->pluck('title', 'id'))
                 ->preload()
-                ->visible(fn($get) => $get("../../external_options.send_to_$this->slug")),
+                ->visible(fn ($get) => $get("../../external_options.send_to_$this->slug")),
         ];
     }
 
@@ -166,7 +166,7 @@ class ActiveCampaign
             }
 
             $contact = $this->getContactByEmail($email);
-            if (!$contact) {
+            if (! $contact) {
                 $contact = Http::withHeaders([
                     'Api-Token' => $this->key,
                     'accept' => 'application/json',
@@ -201,7 +201,7 @@ class ActiveCampaign
             }
 
             return $response;
-        }else{
+        } else {
             return null;
         }
     }
