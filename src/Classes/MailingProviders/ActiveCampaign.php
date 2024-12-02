@@ -54,7 +54,7 @@ class ActiveCampaign
                 ->options(collect($this->getTags())->pluck('tag', 'id'))
                 ->multiple()
                 ->preload()
-                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
+                ->visible(fn($get) => $get("external_options.send_to_$this->slug")),
         ];
     }
 
@@ -65,7 +65,7 @@ class ActiveCampaign
                 ->label('Kies een contact veld')
                 ->options(collect($this->getContactFields())->pluck('title', 'id'))
                 ->preload()
-                ->visible(fn ($get) => $get("../../external_options.send_to_$this->slug")),
+                ->visible(fn($get) => $get("../../external_options.send_to_$this->slug")),
         ];
     }
 
@@ -140,65 +140,70 @@ class ActiveCampaign
 
     public function createContactFromFormInput(FormInput $formInput)
     {
-        $email = '';
-        $firstName = '';
-        $lastName = '';
-        $phone = '';
-        $fieldValues = [];
+        if ($formInput->external_options['send_to_active_campaign'] ?? false) {
 
-        foreach ($formInput->formFields as $formField) {
-            if ($formField->formField->external_options["{$this->slug}_contact_field"] === 'email') {
-                $email = $formField->value;
-            } elseif ($formField->formField->external_options["{$this->slug}_contact_field"] === 'firstName') {
-                $firstName = $formField->value;
-            } elseif ($formField->formField->external_options["{$this->slug}_contact_field"] === 'lastName') {
-                $lastName = $formField->value;
-            } elseif ($formField->formField->external_options["{$this->slug}_contact_field"] === 'phone') {
-                $phone = $formField->value;
-            } else {
-                $fieldValues[] = [
-                    'field' => $formField->formField->external_options["{$this->slug}_contact_field"],
-                    'value' => $formField->value,
-                ];
+            $email = '';
+            $firstName = '';
+            $lastName = '';
+            $phone = '';
+            $fieldValues = [];
+
+            foreach ($formInput->formFields as $formField) {
+                if ($formField->formField->external_options["{$this->slug}_contact_field"] === 'email') {
+                    $email = $formField->value;
+                } elseif ($formField->formField->external_options["{$this->slug}_contact_field"] === 'firstName') {
+                    $firstName = $formField->value;
+                } elseif ($formField->formField->external_options["{$this->slug}_contact_field"] === 'lastName') {
+                    $lastName = $formField->value;
+                } elseif ($formField->formField->external_options["{$this->slug}_contact_field"] === 'phone') {
+                    $phone = $formField->value;
+                } else {
+                    $fieldValues[] = [
+                        'field' => $formField->formField->external_options["{$this->slug}_contact_field"],
+                        'value' => $formField->value,
+                    ];
+                }
             }
-        }
 
-        $contact = $this->getContactByEmail($email);
-        if (! $contact) {
-            $contact = Http::withHeaders([
-                'Api-Token' => $this->key,
-                'accept' => 'application/json',
-            ])
-                ->post("$this->url/api/3/contacts", [
-                    'contact' => [
-                        'email' => $email,
-                        'firstName' => $firstName,
-                        'lastName' => $lastName,
-                        'phone' => $phone,
-                        'fieldValues' => $fieldValues,
-                    ],
-                ])
-                ->json();
-            $contact = $contact['contact'];
-        }
-
-        if ($formInput->form->external_options["{$this->slug}_tags"]) {
-            foreach ($formInput->form->external_options["{$this->slug}_tags"] as $tagId) {
-                $response = Http::withHeaders([
+            $contact = $this->getContactByEmail($email);
+            if (!$contact) {
+                $contact = Http::withHeaders([
                     'Api-Token' => $this->key,
                     'accept' => 'application/json',
                 ])
-                    ->post("$this->url/api/3/contactTags", [
-                        'contactTag' => [
-                            'contact' => $contact['id'],
-                            'tag' => $tagId,
+                    ->post("$this->url/api/3/contacts", [
+                        'contact' => [
+                            'email' => $email,
+                            'firstName' => $firstName,
+                            'lastName' => $lastName,
+                            'phone' => $phone,
+                            'fieldValues' => $fieldValues,
                         ],
                     ])
                     ->json();
+                $contact = $contact['contact'];
             }
-        }
 
-        return $response;
+            if ($formInput->form->external_options["{$this->slug}_tags"]) {
+                foreach ($formInput->form->external_options["{$this->slug}_tags"] as $tagId) {
+                    $response = Http::withHeaders([
+                        'Api-Token' => $this->key,
+                        'accept' => 'application/json',
+                    ])
+                        ->post("$this->url/api/3/contactTags", [
+                            'contactTag' => [
+                                'contact' => $contact['id'],
+                                'tag' => $tagId,
+                            ],
+                        ])
+                        ->json();
+                }
+            }
+
+            return $response;
+        }else{
+            return null;
+        }
     }
 
     public function getContactByEmail(string $email): ?array
