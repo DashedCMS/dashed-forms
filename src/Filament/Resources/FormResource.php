@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Filament\Resources;
 
+use Closure;
 use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -169,6 +170,16 @@ class FormResource extends Resource
                         ->label('Test regex')
                         ->url('https://regex101.com')
                         ->openUrlInNewTab(),
+                ])
+                ->rules([
+                    fn (): Closure => function (string $attribute, $value, Closure $fail) {
+                        try {
+                            // Test the regex by attempting to compile it
+                            preg_match($value, '');
+                        } catch (\Throwable $e) {
+                            $fail("The $attribute is not a valid regular expression.");
+                        }
+                    },
                 ])
                 ->helperText('Bij foutieve regex geeft het formulier een foutmelding bij versturen en wordt de invoer niet opgeslagen')
                 ->maxLength(255)
