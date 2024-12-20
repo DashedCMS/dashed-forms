@@ -141,7 +141,7 @@ class FormResource extends Resource
         $schema = array_merge([
             Section::make()
                 ->schema($schema),
-        ], static::customBlocksTab(cms()->builder('formBlocks')));
+        ], static::customBlocksTab('formBlocks'));
 
         $repeaterSchema = [
             TextInput::make('name')
