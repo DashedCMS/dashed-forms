@@ -22,7 +22,17 @@ class ExportFormData implements FromArray
         $data = [];
 
         foreach ($this->records as $record) {
-            $data[] = $record->content;
+            if ($record->content) {
+                $data[] = $record->content;
+            } else {
+                $inputData = [];
+
+                foreach ($record->formFields as $field) {
+                    $inputData[] = $field->value;
+                }
+
+                $data[] = $inputData;
+            }
         }
 
         return $data;
