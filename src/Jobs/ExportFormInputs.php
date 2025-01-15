@@ -2,23 +2,17 @@
 
 namespace Dashed\DashedForms\Jobs;
 
-use Carbon\Carbon;
-use Dashed\DashedForms\Exports\ExportFormData;
-use Dashed\DashedForms\Mail\FormInputsExportMail;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Dashed\DashedEcommerceCore\Models\Order;
-use Dashed\DashedEcommerceCore\Models\Product;
-use Dashed\DashedEcommerceCore\Mail\FinanceExportMail;
-use Maatwebsite\Excel\Facades\Excel;
+use Dashed\DashedForms\Exports\ExportFormData;
+use Dashed\DashedForms\Mail\FormInputsExportMail;
 
 class ExportFormInputs implements ShouldQueue
 {
