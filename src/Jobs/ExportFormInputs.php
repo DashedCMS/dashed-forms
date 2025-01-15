@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Jobs;
 
+use Dashed\DashedForms\Models\FormInput;
 use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Mail;
@@ -33,7 +34,7 @@ class ExportFormInputs implements ShouldQueue
      */
     public function __construct($records, string $email)
     {
-        $this->records = $records;
+        $this->records = FormInput::whereIn('id', $records)->get();
         $this->email = $email;
         $this->hash = Str::random();
     }

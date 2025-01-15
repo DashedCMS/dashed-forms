@@ -152,7 +152,7 @@ class ViewForm extends Page implements HasTable
             BulkAction::make('export')
                 ->label('Exporteer')
                 ->action(function (Collection $records) {
-                    ExportFormInputs::dispatch($records, auth()->user()->email);
+                    ExportFormInputs::dispatch($records->pluck('id'), auth()->user()->email);
 
                     Notification::make()
                         ->success()
