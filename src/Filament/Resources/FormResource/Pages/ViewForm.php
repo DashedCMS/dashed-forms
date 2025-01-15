@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
+use Dashed\DashedEcommerceCore\Jobs\ExportInvoicesJob;
 use Illuminate\Support\Str;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Actions\Action;
@@ -153,12 +154,12 @@ class ViewForm extends Page implements HasTable
             BulkAction::make('export')
                 ->label('Exporteer')
                 ->action(function (Collection $records) {
+                    ExportInvoicesJob::dispatch($records, auth()->user()->email);
+
                     Notification::make()
                         ->success()
-                        ->body('Resultaten geëxporteerd')
+                        ->body('Resultaten worden gemaild')
                         ->send();
-
-                    return Excel::download(new ExportFormData($records), 'form-data.xlsx');
                 })
                 ->deselectRecordsAfterCompletion(),
         ];
