@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms;
 
+use Dashed\DashedCore\DashedCorePlugin;
 use Livewire\Livewire;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
@@ -58,5 +59,8 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             ])
             ->hasViews();
 
+        cms()->builder('plugins', [
+            new DashedFormsPlugin(),
+        ]);
     }
 }
