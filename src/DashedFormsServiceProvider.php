@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedForms;
 
-use Dashed\DashedCore\DashedCorePlugin;
 use Livewire\Livewire;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
