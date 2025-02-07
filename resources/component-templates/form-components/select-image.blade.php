@@ -20,10 +20,10 @@
         'border-4 border-green-500' => $image['image'] == $values[$field->fieldName],
 ])
                  wire:click="setValueForField('{{$field->fieldName}}', '{{ $image['image'] }}')">
-                <x-drift::image
+                <x-dashed-files::image
                         class="w-full h-fit rounded-lg"
                         config="dashed"
-                        :path="$image['image']"
+                        :mediaId="$image['image']"
                         :alt="$image['name'] ?? ''"
                         :manipulations="[
                             'fit' => [400,400],

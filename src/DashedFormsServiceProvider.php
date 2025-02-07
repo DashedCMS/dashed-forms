@@ -35,17 +35,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             __DIR__ . '/../resources/component-templates' => resource_path('views/components'),
         ], 'dashed-templates');
 
-        cms()->builder(
-            'settingPages',
-            array_merge(cms()->builder('settingPages'), [
-                'formNotifications' => [
-                    'name' => 'Formulier instellingen',
-                    'description' => 'Beheer instellingen voor de formulieren',
-                    'icon' => 'bell',
-                    'page' => FormSettingsPage::class,
-                ],
-            ])
-        );
+        cms()->registerSettingsPage(FormSettingsPage::class, 'Formulier instellingen', 'bell', 'Beheer instellingen voor de formulieren');
 
         $package
             ->name('dashed-forms')
