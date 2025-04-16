@@ -67,7 +67,7 @@ class FormResource extends Resource
         foreach (forms()->builder('apiClasses') as $api) {
             foreach ($api['class']::formFields() as $field) {
                 $apiFields[] = $field
-                ->visible(fn (Get $get) => $get('class') == $api['class']);
+                    ->visible(fn (Get $get) => $get('class') == $api['class']);
             }
         }
 
@@ -102,10 +102,10 @@ class FormResource extends Resource
                         ->required()
                         ->reactive(),
                 ])
-            ->columns([
-                'default' => 1,
-                'lg' => 2,
-            ]),
+                ->columns([
+                    'default' => 1,
+                    'lg' => 2,
+                ]),
             Repeater::make('apis')
                 ->label('APIs')
                 ->visible(count(forms()->builder('apiClasses')))
@@ -249,7 +249,7 @@ class FormResource extends Resource
             ->reorderableWithDragAndDrop()
             ->cloneable()
             ->reactive()
-            ->schema($repeaterSchema)
+            ->schema(array_merge($repeaterSchema, static::customBlocksTab('formFieldBlocks')))
             ->columns([
                 'default' => 1,
                 'lg' => 2,

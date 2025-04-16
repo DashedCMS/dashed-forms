@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Models;
 
+use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Translatable\HasTranslations;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ class FormField extends Model
 {
     use HasFactory;
     use HasTranslations;
+    use HasCustomBlocks;
 
     protected $table = 'dashed__form_fields';
 
