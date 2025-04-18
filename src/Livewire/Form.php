@@ -136,7 +136,8 @@ class Form extends Component
         foreach ($this->values as $fieldName => $value) {
             $field = FormField::find(str($fieldName)->explode('-')->last());
             if ($field->type == 'checkbox') {
-                $value = implode(', ', $value);
+                $value = array_keys($value);
+                $value = str(implode(', ', $value))->headline();
             }
 
             if ($value) {
