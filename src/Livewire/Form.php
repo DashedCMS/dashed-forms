@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedForms\Livewire;
 
-use Dashed\DashedTranslations\Models\Translation;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
@@ -14,6 +13,7 @@ use Dashed\DashedForms\Models\FormInput;
 use Filament\Notifications\Notification;
 use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
 
