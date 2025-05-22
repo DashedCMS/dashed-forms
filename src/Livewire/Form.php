@@ -184,7 +184,7 @@ class Form extends Component
 
         Notification::make()
             ->success()
-            ->body(Translation::get('your-form-' . str($this->name)->slug() . '-has-been-sent', 'form', 'Je bericht is verzonden!'))
+            ->body(Translation::get('your-form-' . str($this->form->name)->slug() . '-has-been-sent', 'form', 'Je bericht is verzonden!'))
             ->send();
 
         $redirectUrl = $this->form->redirect_after_form ? linkHelper()->getUrl($this->form->redirect_after_form) : '';
