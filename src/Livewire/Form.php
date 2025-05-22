@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Livewire;
 
+use Dashed\DashedTranslations\Models\Translation;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
