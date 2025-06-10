@@ -13,7 +13,6 @@ use Dashed\DashedForms\Classes\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
-use FilamentTiptapEditor\TiptapEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
