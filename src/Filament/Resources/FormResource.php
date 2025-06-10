@@ -195,8 +195,7 @@ class FormResource extends Resource
                 ->label('Start van de stack'),
             Toggle::make('stack_end')
                 ->label('Einde van de stack'),
-            TiptapEditor::make('description')
-                ->label('Descriptie')
+            cms()->editorField('description', 'Descriptie')
                 ->required(fn ($get) => in_array($get('type'), ['info']))
                 ->visible(fn ($get) => in_array($get('type'), ['info', 'select-image'])),
             Repeater::make('options')
