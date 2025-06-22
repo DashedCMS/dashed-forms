@@ -42,7 +42,7 @@ class FormInputsExportMail extends Mailable
                 'logo' => Customsetting::get('site_logo', Sites::getActive(), ''),
             ]);
 
-        $mail->attachFromStorageDisk('public', 'dashed/tmp-exports/' . $this->hash . '/forms/form-data.xlsx', Customsetting::get('site_name') . ' - geëxporteerde formulier invoeren.xlsx');
+        $mail->attachFromStorageDisk('public', 'dashed/tmp-exports/' . $this->hash . '/forms/form-data.xlsx', Customsetting::get('company_name') . ' - geëxporteerde formulier invoeren.xlsx');
 
         return $mail;
     }

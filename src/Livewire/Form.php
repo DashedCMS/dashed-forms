@@ -53,9 +53,9 @@ class Form extends Component
     {
         foreach ($this->formFields as $field) {
             match ($field->type) {
-                'radio' => $field->required ? $this->values[$field->fieldName] = $field->options[0]['name'] : null,
-                'select' => $this->values[$field->fieldName] = $field->options[0]['name'],
-                'select-image' => $this->values[$field->fieldName] = $field->images[0]['image'],
+                'radio' => $field->required ? $this->values[$field->fieldName] = ($field->options[0]['name'] ?? []) : [],
+                'select' => $this->values[$field->fieldName] = ($field->options[0]['name'] ?? null),
+                'select-image' => $this->values[$field->fieldName] = ($field->options[0]['image'] ?? null),
                 'input' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[(string)str($field->name)->slug()] ?? ''),
                 'textarea' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[(string)str($field->name)->slug()] ?? ''),
                 'file' => $this->values[$field->fieldName] = '',

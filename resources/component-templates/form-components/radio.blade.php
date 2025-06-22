@@ -5,7 +5,7 @@
         </h3>
     </header>
     @php($parentLoop = $loop)
-    @foreach($field->options as $option)
+    @foreach($field->options ?: [] as $option)
         <div class="focus:ring-2 focus:ring-primary transition border-none placeholder:text-coal/50 flex gap-2 items-center">
             <input @if($field->required)
                        required
