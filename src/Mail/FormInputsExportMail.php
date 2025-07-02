@@ -36,13 +36,13 @@ class FormInputsExportMail extends Mailable
         $view = view()->exists(env('SITE_THEME', 'dashed') . '.emails.exported-form-inputs') ? env('SITE_THEME', 'dashed') . '.emails.exported-form-inputs' : 'dashed-forms::emails.exported-form-inputs';
 
         $mail = $this->view($view)
-            ->from(Customsetting::get('site_from_email'), Customsetting::get('company_name'))
+            ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))
             ->subject(Translation::get('exported-form-inputs-email-subject', 'orders', 'Geëxporteerde formulier invoeren'))
             ->with([
                 'logo' => Customsetting::get('site_logo', Sites::getActive(), ''),
             ]);
 
-        $mail->attachFromStorageDisk('public', 'dashed/tmp-exports/' . $this->hash . '/forms/form-data.xlsx', Customsetting::get('company_name') . ' - geëxporteerde formulier invoeren.xlsx');
+        $mail->attachFromStorageDisk('public', 'dashed/tmp-exports/' . $this->hash . '/forms/form-data.xlsx', Customsetting::get('site_name') . ' - geëxporteerde formulier invoeren.xlsx');
 
         return $mail;
     }
