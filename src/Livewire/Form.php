@@ -193,6 +193,7 @@ class Form extends Component
             'formId' => $this->form->id,
             'redirectUrl' => $redirectUrl,
             'data' => $formValues,
+            'formTitle' => $this->form->name,
         ]);
 
         if ($redirectUrl && Customsetting::get('form_redirect_server_side', null, true)) {
