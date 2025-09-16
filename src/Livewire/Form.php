@@ -217,9 +217,9 @@ class Form extends Component
     public function render()
     {
         if (view()->exists('dashed.forms.' . str($this->form->name)->slug() . '-form')) {
-            return view(env('SITE_THEME', 'dashed') . '.forms.' . str($this->form->name)->slug() . '-form');
+            return view(config('dashed-core.site_theme') . '.forms.' . str($this->form->name)->slug() . '-form');
         } else {
-            return view(env('SITE_THEME', 'dashed') . '.forms.form');
+            return view(config('dashed-core.site_theme') . '.forms.form');
         }
     }
 }

@@ -31,7 +31,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         $this->publishes([
-            __DIR__ . '/../resources/templates' => resource_path('views/' . env('SITE_THEME', 'dashed')),
+            __DIR__ . '/../resources/templates' => resource_path('views/' . config('dashed-core.site_theme')),
             __DIR__ . '/../resources/component-templates' => resource_path('views/components'),
         ], 'dashed-templates');
 

@@ -33,7 +33,7 @@ class FormInputsExportMail extends Mailable
      */
     public function build()
     {
-        $view = view()->exists(env('SITE_THEME', 'dashed') . '.emails.exported-form-inputs') ? env('SITE_THEME', 'dashed') . '.emails.exported-form-inputs' : 'dashed-forms::emails.exported-form-inputs';
+        $view = view()->exists(config('dashed-core.site_theme') . '.emails.exported-form-inputs') ? config('dashed-core.site_theme') . '.emails.exported-form-inputs' : 'dashed-forms::emails.exported-form-inputs';
 
         $mail = $this->view($view)
             ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))
