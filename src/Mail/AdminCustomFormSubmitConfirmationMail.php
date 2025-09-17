@@ -37,7 +37,9 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable
     public function build()
     {
         $mail = $this->view(config('dashed-core.site_theme') . '.emails.admin-custom-confirm-form-submit')
-            ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))->subject(Translation::get('admin-form-confirmation-'.Str::slug($this->formInput->form->name).'-email-subject', 'forms', 'You received a new form submit!'))
+            ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))->subject(Translation::get('admin-form-confirmation-'.Str::slug($this->formInput->form->name).'-email-subject', 'forms', 'Het formulier :name: is ingevuld!', 'text', [
+                'name' => $this->formInput->form->name,
+            ]))
             ->with([
                 'formInput' => $this->formInput,
             ]);

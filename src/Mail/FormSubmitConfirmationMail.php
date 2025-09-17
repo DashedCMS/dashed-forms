@@ -35,7 +35,9 @@ class FormSubmitConfirmationMail extends Mailable
     public function build()
     {
         return $this->view(config('dashed-core.site_theme') . '.emails.confirm-form-submit')
-            ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))->subject(Translation::get('form-confirmation-'.Str::slug($this->form->name).'-email-subject', 'forms', 'We received your form submit!'))
+            ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))->subject(Translation::get('form-confirmation-'.Str::slug($this->form->name).'-email-subject', 'forms', 'We hebben je aanvraag voor formulier :name: ontvangen!', 'text', [
+                'name' => $this->form->name,
+            ]))
             ->with([
                 'form' => $this->form,
                 'formInput' => $this->formInput,
