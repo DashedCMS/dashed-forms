@@ -2,10 +2,10 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Actions\LocaleSwitcher;
 use Filament\Resources\Pages\CreateRecord;
 use Dashed\DashedForms\Filament\Resources\FormResource;
-use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
+use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
+use LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable;
 
 class CreateForm extends CreateRecord
 {

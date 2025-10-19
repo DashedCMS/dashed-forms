@@ -2,29 +2,32 @@
 
 namespace Dashed\DashedForms\Filament\Pages\Settings;
 
+use UnitEnum;
+use BackedEnum;
 use Filament\Pages\Page;
+use Filament\Schemas\Schema;
 use Dashed\DashedCore\Models\User;
-use Filament\Forms\Components\Tabs;
 use Dashed\DashedCore\Classes\Sites;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Tabs\Tab;
+use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Forms\Components\Placeholder;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs\Tab;
 use Dashed\DashedCore\Models\Customsetting;
+use Filament\Infolists\Components\TextEntry;
 use Dashed\DashedForms\Classes\MailingProviders\ActiveCampaign;
 
 class FormSettingsPage extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-bell';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-bell';
     protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationLabel = 'Formulier instellingen';
-    protected static ?string $navigationGroup = 'Overige';
+    protected static string | UnitEnum | null $navigationGroup = 'Overige';
     protected static ?string $title = 'Formulier instellingen';
 
-    protected static string $view = 'dashed-core::settings.pages.default-settings';
+    protected string $view = 'dashed-core::settings.pages.default-settings';
     public array $data = [];
 
     public function mount(): void
@@ -42,7 +45,7 @@ class FormSettingsPage extends Page
         $this->form->fill($formData);
     }
 
-    protected function getFormSchema(): array
+    public function form(Schema $schema): Schema
     {
         $sites = Sites::getSites();
         $tabGroups = [];
@@ -51,10 +54,9 @@ class FormSettingsPage extends Page
         foreach ($sites as $site) {
             $activeCampaign = new ActiveCampaign($site['id']);
 
-            $schema = [
-                Placeholder::make('label')
-                    ->label("Formulier instellingen voor {$site['name']}")
-                    ->content('Stel extra opties in voor de formulieren.'),
+            $newSchema = [
+                TextEntry::make("Formulier instellingen voor {$site['name']}")
+                    ->state('Stel extra opties in voor de formulieren.'),
                 TagsInput::make("notification_form_inputs_emails_{$site['id']}")
                     ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
                     ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
@@ -71,7 +73,7 @@ class FormSettingsPage extends Page
 
             $tabs[] = Tab::make($site['id'])
                 ->label(ucfirst($site['name']))
-                ->schema($schema)
+                ->schema($newSchema)
                 ->columns([
                     'default' => 1,
                     'lg' => 2,
@@ -80,18 +82,14 @@ class FormSettingsPage extends Page
         $tabGroups[] = Tabs::make('Sites')
             ->tabs($tabs);
 
-        return array_merge($tabGroups, [
-            Section::make('Algemene formulier instellingen')
+        return $schema->schema(array_merge($tabGroups, [
+            Section::make('Algemene formulier instellingen')->columnSpanFull()
                 ->schema([
                     Toggle::make("form_redirect_server_side")
                         ->label('Doe de redirects server side'),
                 ]),
-        ]);
-    }
-
-    public function getFormStatePath(): ?string
-    {
-        return 'data';
+        ]))
+            ->statePath('data');
     }
 
     public function submit()

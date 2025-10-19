@@ -4,31 +4,27 @@ namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
 use Illuminate\Support\Str;
 use Filament\Actions\Action;
-use Filament\Infolists\Infolist;
+use Filament\Schemas\Schema;
 use Filament\Resources\Pages\Page;
 use Dashed\DashedCore\Classes\Sites;
+use Filament\Schemas\Components\Flex;
 use Dashed\DashedCore\Classes\Locales;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Support\Enums\FontWeight;
 use Illuminate\Support\Facades\Storage;
 use Dashed\DashedForms\Models\FormInput;
-use Filament\Infolists\Components\Split;
-use Filament\Infolists\Components\Section;
+use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Forms\Concerns\InteractsWithForms;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 
-class ViewFormInput extends Page implements HasForms, HasInfolists
+class ViewFormInput extends Page implements HasInfolists
 {
-    use InteractsWithForms;
     use InteractsWithInfolists;
 
     protected static string $resource = FormResource::class;
 
-    protected static string $view = 'dashed-forms::forms.pages.view-form-input';
+    protected string $view = 'dashed-forms::forms.pages.view-form-input';
 
     public $record;
 
@@ -50,7 +46,7 @@ class ViewFormInput extends Page implements HasForms, HasInfolists
 
     protected function getActions(): array
     {
-        $actions = [
+        return [
             Action::make('mark_as_not_viewed')
                 ->button()
                 ->visible($this->record->viewed)
@@ -68,8 +64,6 @@ class ViewFormInput extends Page implements HasForms, HasInfolists
                 ->label('Verwijderen')
                 ->action('delete'),
         ];
-
-        return $actions;
     }
 
     public function markAsNotViewed(): void
@@ -91,103 +85,96 @@ class ViewFormInput extends Page implements HasForms, HasInfolists
         return redirect()->route('filament.dashed.resources.forms.viewInputs', [$this->record->form->id]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
         $inputFields = [];
-        $inputFields[] = TextEntry::make('')
-            ->hiddenLabel()
-            ->weight(FontWeight::Bold)
-            ->size(TextEntry\TextEntrySize::Large)
-            ->state('Ingevoerde informatie');
+
         if ($this->record->content) {
             foreach ($this->record->content as $key => $value) {
-                $inputFields[] = TextEntry::make($key)
-                    ->label(Str::of($key)->replace('_', ' ')->title())
-                    ->state($value);
+                $label = Str::of($key)->replace('_', ' ')->title();
+                $name = 'content_' . Str::slug((string) $key, '_');
+
+                $inputFields[] = TextEntry::make($name)
+                    ->state($label)
+                    ->state(is_array($value) ? json_encode($value) : $value);
             }
         } else {
             foreach ($this->record->formFields as $field) {
+                $id = (string) ($field->formField->id ?? Str::random(8));
+                $name = 'field_' . $id;
+
                 if ($field->isImage()) {
-                    if ($field->formField->type == 'select-image') {
-                        $inputFields[] = ImageEntry::make($field->formField->id)
+                    if ($field->formField->type === 'select-image') {
+                        $inputFields[] = ImageEntry::make($name)
                             ->label($field->formField->name)
-                            ->helperText(collect($field->formField->images)->where('image', $field->value)->first()['name'])
+                            ->helperText(collect($field->formField->images)->where('image', $field->value)->first()['name'] ?? null)
                             ->state($field->value);
                     } else {
-                        if (str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg'])) {
-                            $inputFields[] = ImageEntry::make($field->formField->id)
+                        if (str($field->value)->contains(['.jpg', '.jpeg', '.png', '.gif', '.svg'])) {
+                            $inputFields[] = ImageEntry::make($name)
                                 ->label($field->formField->name)
                                 ->url(Storage::disk('dashed')->url($field->value))
                                 ->openUrlInNewTab()
                                 ->helperText('Klik de afbeelding om te openen')
                                 ->state($field->value);
                         } else {
-                            $inputFields[] = TextEntry::make($field->formField->id)
-                                ->label(Str::of($field->value)->lower()->replace(' ', '_'))
+                            $inputFields[] = TextEntry::make($name . '_download')
+                                ->state($field->formField->name)
+                                ->state('Download bestand')
                                 ->url(Storage::disk('dashed')->url($field->value))
-                                ->openUrlInNewTab()
-                                ->state('Download bestand');
+                                ->openUrlInNewTab();
                         }
                     }
                 } else {
-                    $inputFields[] = TextEntry::make($field->formField->id)
-                        ->label($field->formField->name)
+                    $inputFields[] = TextEntry::make($name)
+                        ->state($field->formField->name)
                         ->state($field->value)
                         ->prose();
                 }
             }
         }
 
-        $inputFields[] =
-            TextEntry::make('viewed')
-                ->label('Bekeken')
-                ->badge()
-                ->formatStateUsing(fn (string $state): string => match ($state) {
-                    '1' => 'Ja',
-                    '0' => 'Nee',
-                })
-                ->color(fn (string $state): string => match ($state) {
-                    '1' => 'success',
-                    '0' => 'danger',
-                });
+        $inputFields[] = TextEntry::make('viewed_status_badge')
+            ->state('Bekeken')
+            ->badge()
+            ->formatStateUsing(fn (): string => $this->record->viewed ? 'Ja' : 'Nee')
+            ->color(fn (): string => $this->record->viewed ? 'success' : 'danger');
 
-        return $infolist
+        return $schema
             ->record($this->record)
             ->schema([
-                Split::make([
-                    Section::make($inputFields)
+                Flex::make([
+                    Section::make('Ingevoerde informatie')
+                        ->schema($inputFields)
+                        ->columnSpanFull()
                         ->grow(),
-                    Section::make([
-                        TextEntry::make('')
-                            ->hiddenLabel()
-                            ->weight(FontWeight::Bold)
-                            ->size(TextEntry\TextEntrySize::Large)
-                            ->state('Overige informatie'),
-                        TextEntry::make('ip')
-                            ->label('IP')
-                            ->default('Onbekend'),
-                        TextEntry::make('user_agent')
-                            ->label('User agent')
-                            ->default('Onbekend'),
-                        TextEntry::make('from_url')
-                            ->label('Ingevoerd vanaf')
-                            ->url($this->record->from_url)
-                            ->openUrlInNewTab()
-                            ->default('Onbekend'),
-                        TextEntry::make('created_at')
-                            ->label('Ingevoerd op')
-                            ->default('Onbekend'),
-                        TextEntry::make('site_id')
-                            ->label('Site ID')
-                            ->visible(count(Sites::getSites()) > 1)
-                            ->default('Onbekend'),
-                        TextEntry::make('locale')
-                            ->label('Taal')
-                            ->visible(count(Locales::getLocales()) > 1)
-                            ->default('Onbekend'),
-                    ]),
-                ])
-                    ->from('md'),
+                    Section::make('Overige informatie')
+                        ->schema([
+                            TextEntry::make('ip')
+                                ->state('IP')
+                                ->default('Onbekend'),
+                            TextEntry::make('user_agent')
+                                ->state('User agent')
+                                ->default('Onbekend'),
+                            TextEntry::make('from_url')
+                                ->state('Ingevoerd vanaf')
+                                ->url(fn () => $this->record->from_url)
+                                ->openUrlInNewTab()
+                                ->default('Onbekend'),
+                            TextEntry::make('created_at')
+                                ->state('Ingevoerd op')
+                                ->default('Onbekend'),
+                            TextEntry::make('site_id')
+                                ->state('Site ID')
+                                ->visible(count(Sites::getSites()) > 1)
+                                ->default('Onbekend'),
+                            TextEntry::make('locale')
+                                ->state('Taal')
+                                ->visible(count(Locales::getLocales()) > 1)
+                                ->default('Onbekend'),
+                        ])
+                        ->columnSpanFull(),
+                ])->from('md'),
             ]);
     }
 

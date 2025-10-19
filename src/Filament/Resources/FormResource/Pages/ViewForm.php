@@ -3,9 +3,9 @@
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
 use Illuminate\Support\Str;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
 use Filament\Resources\Pages\Page;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -26,7 +26,7 @@ class ViewForm extends Page implements HasTable
     use InteractsWithTable;
 
     protected static string $resource = FormResource::class;
-    protected static string $view = 'dashed-forms::forms.pages.view-form';
+    protected string $view = 'dashed-forms::forms.pages.view-form';
 
     public function getTableSortColumn(): ?string
     {

@@ -3,30 +3,32 @@
 namespace Dashed\DashedForms\Filament\Resources;
 
 use Closure;
-use Filament\Forms\Get;
-use Filament\Forms\Form;
+use UnitEnum;
+use BackedEnum;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Dashed\DashedCore\Models\User;
-use Filament\Tables\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Dashed\DashedForms\Classes\Forms;
+use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Repeater;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Dashed\DashedForms\Models\FormInput;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Resources\Concerns\Translatable;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Dashed\DashedForms\Enums\MailingProviders;
+use Filament\Schemas\Components\Utilities\Get;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\EditForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
@@ -41,8 +43,8 @@ class FormResource extends Resource
     protected static ?string $model = \Dashed\DashedForms\Models\Form::class;
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
-    protected static ?string $navigationGroup = 'Formulieren';
+    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-archive-box';
+    protected static string | UnitEnum | null $navigationGroup = 'Formulieren';
     protected static ?string $label = 'Formulier';
     protected static ?string $pluralLabel = 'Formulieren';
     protected static bool $isGloballySearchable = false;
@@ -59,7 +61,7 @@ class FormResource extends Resource
         return FormInput::unviewed()->count();
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         $apiFields = [];
 
@@ -70,7 +72,7 @@ class FormResource extends Resource
             }
         }
 
-        $schema = [
+        $newSchema = [
             TextInput::make('name')
                 ->label('Naam')
                 ->maxLength(255)
@@ -126,7 +128,6 @@ class FormResource extends Resource
             linkHelper()->field('redirect_after_form', false, 'Redirect na formulier'),
         ];
 
-
         foreach (MailingProviders::cases() as $provider) {
             $provider = $provider->getClass();
             if ($provider->connected) {
@@ -137,9 +138,9 @@ class FormResource extends Resource
             }
         }
 
-        $schema = array_merge([
-            Section::make()
-                ->schema($schema),
+        $newSchema = array_merge([
+            Section::make()->columnSpanFull()
+                ->schema($newSchema),
         ], static::customBlocksTab('formBlocks'));
 
         $repeaterSchema = [
@@ -165,7 +166,7 @@ class FormResource extends Resource
             TextInput::make('regex')
                 ->label('Regex validatie')
                 ->hintActions([
-                    \Filament\Forms\Components\Actions\Action::make('testRegex')
+                    \Filament\Actions\Action::make('testRegex')
                         ->label('Test regex')
                         ->url('https://regex101.com')
                         ->openUrlInNewTab(),
@@ -238,7 +239,7 @@ class FormResource extends Resource
             }
         }
 
-        $schema[] = Repeater::make('fields')
+        $newSchema[] = Repeater::make('fields')
             ->relationship('fields')
             ->label('Velden')
             ->reorderable()
@@ -254,8 +255,8 @@ class FormResource extends Resource
             ])
             ->columnSpan(2);
 
-        return $form
-            ->schema($schema);
+        return $schema
+            ->schema($newSchema);
     }
 
     public static function table(Table $table): Table
@@ -274,7 +275,7 @@ class FormResource extends Resource
                     ->label('Aantal openstaande aanvragen')
                     ->getStateUsing(fn ($record) => $record->inputs()->unviewed()->count()),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->button(),
                 Action::make('viewInputs')
@@ -285,7 +286,7 @@ class FormResource extends Resource
                     ->url(fn ($record) => route('filament.dashed.resources.forms.viewInputs', [$record])),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
