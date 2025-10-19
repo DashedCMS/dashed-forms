@@ -2,9 +2,13 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
+use Dashed\DashedCore\Classes\Locales;
+use Dashed\DashedTranslations\Classes\AutomatedTranslation;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Dashed\DashedForms\Models\FormField;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
@@ -19,11 +23,39 @@ class EditForm extends EditRecord
     {
         return [
             LocaleSwitcher::make(),
+            Action::make('translate')
+                ->icon('heroicon-m-language')
+                ->label('Vertaal')
+                ->visible(AutomatedTranslation::automatedTranslationsEnabled())
+                ->form([
+                    Select::make('to_locales')
+                        ->options(Locales::getLocalesArray())
+                        ->preload()
+                        ->searchable()
+                        ->default(collect(Locales::getLocalesArrayWithoutCurrent())->keys()->toArray())
+                        ->required()
+                        ->label('Naar talen')
+                        ->multiple(),
+                ])
+                ->action(function (array $data) {
+                    foreach ($this->record->fields as $field) {
+                        AutomatedTranslation::translateModel($field, $this->activeLocale, $data['to_locales']);
+                    }
+
+                    Notification::make()
+                        ->title('Item wordt vertaald, dit kan even duren. Sla de pagina niet op tot de vertalingen klaar zijn.')
+                        ->warning()
+                        ->send();
+
+                    return redirect()->to(request()->header('Referer'));
+                }),
             Action::make('duplicate')
                 ->action('duplicate')
+                ->icon('heroicon-m-document-duplicate')
                 ->button()
                 ->label('Dupliceer'),
-            DeleteAction::make(),
+            DeleteAction::make()
+                ->icon('heroicon-m-trash'),
         ];
     }
 
@@ -52,7 +84,7 @@ class EditForm extends EditRecord
             }
         }
 
-        if (! FormField::find($data['email_confirmation_form_field_id'] ?? 0)) {
+        if (!FormField::find($data['email_confirmation_form_field_id'] ?? 0)) {
             $data['email_confirmation_form_field_id'] = null;
         }
 
