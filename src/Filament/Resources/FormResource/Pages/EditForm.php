@@ -2,16 +2,16 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedTranslations\Classes\AutomatedTranslation;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
-use Dashed\DashedForms\Models\FormField;
 use Filament\Forms\Components\Select;
+use Dashed\DashedCore\Classes\Locales;
+use Dashed\DashedForms\Models\FormField;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
+use Dashed\DashedTranslations\Classes\AutomatedTranslation;
 use LaraZeus\SpatieTranslatable\Resources\Pages\EditRecord\Concerns\Translatable;
 
 class EditForm extends EditRecord
@@ -27,7 +27,7 @@ class EditForm extends EditRecord
                 ->icon('heroicon-m-language')
                 ->label('Vertaal')
                 ->visible(AutomatedTranslation::automatedTranslationsEnabled())
-                ->form([
+                ->schema([
                     Select::make('to_locales')
                         ->options(Locales::getLocalesArray())
                         ->preload()
@@ -84,7 +84,7 @@ class EditForm extends EditRecord
             }
         }
 
-        if (!FormField::find($data['email_confirmation_form_field_id'] ?? 0)) {
+        if (! FormField::find($data['email_confirmation_form_field_id'] ?? 0)) {
             $data['email_confirmation_form_field_id'] = null;
         }
 
