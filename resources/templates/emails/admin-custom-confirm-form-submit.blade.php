@@ -351,10 +351,10 @@
                                                                     @foreach($formInput->formFields as $field)
                                                                         <h4><b>{{$field->formField->name . ':'}}</b></h4>
                                                                         @if($field->isImage())
-                                                                            @if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg']))
-                                                                                <img style="max-width: 400px;" src="{{ url('/storage/' . $field->value) }}">
+                                                                            @if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg', '.JPG','.JPEG','.PNG','.GIF','.SVG']))
+                                                                                <img style="max-width: 400px;" src="{{ \Illuminate\Support\Facades\Storage::disk('dashed')->url($field->value) }}">
                                                                             @else
-                                                                                <a href="{{ url('/storage/' . $field->value) }}">Bekijk bestand</a>
+                                                                                <a href="{{ \Illuminate\Support\Facades\Storage::disk('dashed')->url($field->value) }}">Bekijk bestand</a>
                                                                             @endif
                                                                             @if($field->formField->type == 'select-image')
                                                                                 <div>{{ collect($field->formField->images)->where('image', $field->value)->first()['name'] }}</div>
