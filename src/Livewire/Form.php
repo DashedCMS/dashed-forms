@@ -26,9 +26,9 @@ class Form extends Component
     public array $blockData = [];
     public array $inputData = [];
     public bool $formSent = false;
-    public ?string $myName = '';
     public bool $singleColumn = false;
     public ?string $buttonTitle = '';
+    public string $gRecaptchaResponse;
 
     protected $listeners = [
         'setValue',
@@ -110,18 +110,10 @@ class Form extends Component
         $this->values[$field] = $value;
     }
 
+    #[ValidatesRecaptcha]
     public function submit()
     {
         $this->validate();
-
-        if ($this->myName) {
-            $this->addError('values.' . $this->form->fields()->where('type', '!=', 'info')->first()->fieldName, 'Je bent een bot!');
-
-            return Notification::make()
-                ->danger()
-                ->body('Je bent een bot!')
-                ->send();
-        }
 
         $formValues = [];
 

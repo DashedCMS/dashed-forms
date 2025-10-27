@@ -1,6 +1,4 @@
 <form class="space-y-8 text-white rounded-lg w-full" wire:submit="submit">
-    <label for="my_name" class="sr-only">Naam</label>
-    <input wire:model.live="myName" type="text" name="my_name" id="my_name" class="weird_input"/>
 {{--    @if($blockData['title'] ?? false)--}}
 {{--        <h2 class="text-2xl font-bold tracking-tight md:text-3xl font-headline">{{ $blockData['title'] }}</h2>--}}
 {{--    @endif--}}

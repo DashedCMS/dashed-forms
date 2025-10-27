@@ -1,6 +1,4 @@
-<form class="space-y-8 p-4 bg-primary-800 text-white rounded-lg" wire:submit="submit">
-    <label for="my_name" class="sr-only">Naam</label>
-    <input wire:model.live="myName" type="text" name="my_name" id="my_name" class="weird_input"/>
+<form class="space-y-8 p-4 bg-primary-800 text-white rounded-lg" wire:submit="submit" @if(Customsetting::get('google_recaptcha_site_key')) wire:recaptcha @endif>
 {{--    @if($blockData['title'] ?? false)--}}
 {{--        <h2 class="text-2xl font-bold tracking-tight md:text-3xl font-headline">{{ $blockData['title'] }}</h2>--}}
 {{--    @endif--}}
@@ -23,6 +21,10 @@
                 </div>
             </div>
         </div>
+    @endif
+
+    @if($errors->has('gRecaptchaResponse'))
+        <div class="alert alert-danger">{{ $errors->first('gRecaptchaResponse') }}</div>
     @endif
 
     <div class="grid gap-4 md:grid-cols-2">
@@ -63,5 +65,13 @@
             </button>
             @if($buttonTitle)
         </div>
+    @endif
+    @if(Customsetting::get('google_recaptcha_site_key'))
+        @livewireRecaptcha(
+        version: 'v3',
+        siteKey: '{{ Customsetting::get('google_recaptcha_site_key') }}',
+        secretKey: '{{ Customsetting::get('google_recaptcha_secret_key') }}',
+        size: 'compact',
+        )
     @endif
 </form>

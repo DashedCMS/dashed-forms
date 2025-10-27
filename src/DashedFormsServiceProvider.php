@@ -2,6 +2,8 @@
 
 namespace Dashed\DashedForms;
 
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedCore\Models\Customsetting;
 use Livewire\Livewire;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
@@ -24,6 +26,9 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             $schedule->command(SendWebhooksForFormInputs::class)->everyMinute();
             $schedule->command(SendApisForFormInputs::class)->everyMinute();
         });
+
+        config(['services.google.recaptcha.site_key' => Customsetting::get('google_recaptcha_site_key', Sites::getActive(), '')]);
+        config(['services.google.recaptcha.secret_key' => Customsetting::get('google_recaptcha_secret_key', Sites::getActive(), '')]);
     }
 
     public function configurePackage(Package $package): void
