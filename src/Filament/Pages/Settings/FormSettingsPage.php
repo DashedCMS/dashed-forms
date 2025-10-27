@@ -2,6 +2,7 @@
 
 namespace Dashed\DashedForms\Filament\Pages\Settings;
 
+use Filament\Schemas\Components\Utilities\Get;
 use UnitEnum;
 use BackedEnum;
 use Filament\Pages\Page;
@@ -40,6 +41,8 @@ class FormSettingsPage extends Page
             $formData["form_redirect_server_side"] = Customsetting::get('form_redirect_server_side', null, true);
             $formData["form_activecampaign_url_{$site['id']}"] = Customsetting::get('form_activecampaign_url', $site['id']);
             $formData["form_activecampaign_key_{$site['id']}"] = Customsetting::get('form_activecampaign_key', $site['id']);
+            $formData["google_recaptcha_site_key_{$site['id']}"] = Customsetting::get('google_recaptcha_site_key', $site['id']);
+            $formData["google_recaptcha_secret_key_{$site['id']}"] = Customsetting::get('google_recaptcha_secret_key', $site['id']);
         }
 
         $this->form->fill($formData);
@@ -62,6 +65,14 @@ class FormSettingsPage extends Page
                     ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
                     ->placeholder('Voer een email in')
                     ->reactive(),
+                TextInput::make("google_recaptcha_site_key_{$site['id']}")
+                    ->label('Google Recaptcha site key')
+                    ->reactive()
+                    ->maxLength(255),
+                TextInput::make("google_recaptcha_secret_key_{$site['id']}")
+                    ->label('Google Recaptcha secret key')
+                    ->required(fn (Get $get) => $get("google_recaptcha_site_key_{$site['id']}"))
+                    ->maxLength(255),
                 TextInput::make("form_activecampaign_url_{$site['id']}")
                     ->label('ActiveCampaign API url')
                     ->helperText('ActiveCampaign actief: ' . ($activeCampaign->connected ? 'Ja' : 'Nee'))
@@ -107,6 +118,8 @@ class FormSettingsPage extends Page
             Customsetting::set('notification_form_inputs_emails', $emails, $site['id']);
             $formState["notification_form_inputs_emails_{$site['id']}"] = $emails;
 
+            Customsetting::set('google_recaptcha_site_key', $this->form->getState()["google_recaptcha_site_key_{$site['id']}"], $site['id']);
+            Customsetting::set('google_recaptcha_secret_key', $this->form->getState()["google_recaptcha_secret_key_{$site['id']}"], $site['id']);
             Customsetting::set('form_activecampaign_url', $this->form->getState()["form_activecampaign_url_{$site['id']}"], $site['id']);
             Customsetting::set('form_activecampaign_key', $this->form->getState()["form_activecampaign_key_{$site['id']}"], $site['id']);
             Customsetting::set('form_redirect_server_side', $this->form->getState()["form_redirect_server_side"], $site['id']);

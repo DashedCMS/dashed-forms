@@ -69,8 +69,7 @@
     @if(Customsetting::get('google_recaptcha_site_key'))
         @livewireRecaptcha(
         version: 'v3',
-        siteKey: '{{ Customsetting::get('google_recaptcha_site_key') }}',
-        secretKey: '{{ Customsetting::get('google_recaptcha_secret_key') }}',
+        siteKey: Customsetting::get('google_recaptcha_site_key'),
         size: 'compact',
         )
     @endif
