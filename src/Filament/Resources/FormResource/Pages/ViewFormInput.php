@@ -95,7 +95,7 @@ class ViewFormInput extends Page implements HasInfolists
                 $name = 'content_' . Str::slug((string) $key, '_');
 
                 $inputFields[] = TextEntry::make($name)
-                    ->state($label)
+                    ->label($label)
                     ->state(is_array($value) ? json_encode($value) : $value);
             }
         } else {
@@ -120,14 +120,14 @@ class ViewFormInput extends Page implements HasInfolists
                         } else {
                             $inputFields[] = TextEntry::make($name . '_download')
                                 ->state($field->formField->name)
-                                ->state('Download bestand')
+                                ->label('Download bestand')
                                 ->url(Storage::disk('dashed')->url($field->value))
                                 ->openUrlInNewTab();
                         }
                     }
                 } else {
                     $inputFields[] = TextEntry::make($name)
-                        ->state($field->formField->name)
+                        ->label($field->formField->name)
                         ->state($field->value)
                         ->prose();
                 }
@@ -135,7 +135,7 @@ class ViewFormInput extends Page implements HasInfolists
         }
 
         $inputFields[] = TextEntry::make('viewed_status_badge')
-            ->state('Bekeken')
+            ->label('Bekeken')
             ->badge()
             ->formatStateUsing(fn (): string => $this->record->viewed ? 'Ja' : 'Nee')
             ->color(fn (): string => $this->record->viewed ? 'success' : 'danger');
@@ -151,25 +151,25 @@ class ViewFormInput extends Page implements HasInfolists
                     Section::make('Overige informatie')
                         ->schema([
                             TextEntry::make('ip')
-                                ->state('IP')
+                                ->label('IP')
                                 ->default('Onbekend'),
                             TextEntry::make('user_agent')
-                                ->state('User agent')
+                                ->label('User agent')
                                 ->default('Onbekend'),
                             TextEntry::make('from_url')
-                                ->state('Ingevoerd vanaf')
+                                ->label('Ingevoerd vanaf')
                                 ->url(fn () => $this->record->from_url)
                                 ->openUrlInNewTab()
                                 ->default('Onbekend'),
                             TextEntry::make('created_at')
-                                ->state('Ingevoerd op')
+                                ->label('Ingevoerd op')
                                 ->default('Onbekend'),
                             TextEntry::make('site_id')
-                                ->state('Site ID')
+                                ->label('Site ID')
                                 ->visible(count(Sites::getSites()) > 1)
                                 ->default('Onbekend'),
                             TextEntry::make('locale')
-                                ->state('Taal')
+                                ->label('Taal')
                                 ->visible(count(Locales::getLocales()) > 1)
                                 ->default('Onbekend'),
                         ])
