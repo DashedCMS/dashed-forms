@@ -44,6 +44,14 @@ class SendApisForFormInputs extends Command
 
         foreach ($formInputs as $formInput) {
             $formInput->sendApis();
+            $formInput->refresh();
+            if( $formInput->api_send == 1 ) {
+                $this->info("APIs sent for Form Input ID: {$formInput->id}");
+                $formInput->viewed = 1;
+                $formInput->save();
+            } else {
+                $this->error("Failed to send APIs for Form Input ID: {$formInput->id}");
+            }
         }
 
         return 0;

@@ -44,6 +44,14 @@ class SendWebhooksForFormInputs extends Command
 
         foreach ($formInputs as $formInput) {
             $formInput->sendWebhooks();
+            $formInput->refresh();
+            if ($formInput->webhook_send == 1) {
+                $this->info("Webhooks sent for Form Input ID: {$formInput->id}");
+                $formInput->viewed = 1;
+                $formInput->save();
+            } else {
+                $this->error("Failed to send Webhooks for Form Input ID: {$formInput->id}");
+            }
         }
 
         return 0;
