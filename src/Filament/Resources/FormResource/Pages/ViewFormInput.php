@@ -47,16 +47,19 @@ class ViewFormInput extends Page implements HasInfolists
     protected function getActions(): array
     {
         return [
-            Action::make('mark_as_not_viewed')
+            Action::make('toggleViewed')
                 ->button()
-                ->visible($this->record->viewed)
-                ->label('Markeer als niet bekeken')
-                ->action('markAsNotViewed'),
-            Action::make('mark_as_viewed')
-                ->button()
-                ->visible(! $this->record->viewed)
-                ->label('Markeer als bekeken')
-                ->action('markAsViewed'),
+                ->label($this->record->viewed ? 'Markeer als niet bekeken' : 'Markeer als bekeken')
+                ->color($this->record->viewed ? 'warning' : 'success')
+                ->action(function () {
+                    if ($this->record->viewed) {
+                        $this->markAsNotViewed();
+                    } else {
+                        $this->markAsViewed();
+                    }
+
+                    return redirect()->route('filament.dashed.resources.forms.viewInput', [$this->record->form->id, $this->record->id]);
+                }),
             Action::make('delete')
                 ->button()
                 ->requiresConfirmation()
@@ -92,7 +95,7 @@ class ViewFormInput extends Page implements HasInfolists
         if ($this->record->content) {
             foreach ($this->record->content as $key => $value) {
                 $label = Str::of($key)->replace('_', ' ')->title();
-                $name = 'content_' . Str::slug((string) $key, '_');
+                $name = 'content_' . Str::slug((string)$key, '_');
 
                 $inputFields[] = TextEntry::make($name)
                     ->label($label)
@@ -100,7 +103,7 @@ class ViewFormInput extends Page implements HasInfolists
             }
         } else {
             foreach ($this->record->formFields as $field) {
-                $id = (string) ($field->formField->id ?? Str::random(8));
+                $id = (string)($field->formField->id ?? Str::random(8));
                 $name = 'field_' . $id;
 
                 if ($field->isImage()) {
@@ -137,8 +140,8 @@ class ViewFormInput extends Page implements HasInfolists
         $inputFields[] = TextEntry::make('viewed_status_badge')
             ->label('Bekeken')
             ->badge()
-            ->formatStateUsing(fn (): string => $this->record->viewed ? 'Ja' : 'Nee')
-            ->color(fn (): string => $this->record->viewed ? 'success' : 'danger');
+            ->formatStateUsing(fn(): string => $this->record->viewed ? 'Ja' : 'Nee')
+            ->color(fn(): string => $this->record->viewed ? 'success' : 'danger');
 
         return $schema
             ->record($this->record)
@@ -158,7 +161,7 @@ class ViewFormInput extends Page implements HasInfolists
                                 ->default('Onbekend'),
                             TextEntry::make('from_url')
                                 ->label('Ingevoerd vanaf')
-                                ->url(fn () => $this->record->from_url)
+                                ->url(fn() => $this->record->from_url)
                                 ->openUrlInNewTab()
                                 ->default('Onbekend'),
                             TextEntry::make('created_at')
