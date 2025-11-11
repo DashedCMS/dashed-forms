@@ -7,6 +7,7 @@ class FormManager
     protected static $builders = [
         'webhookClasses' => [],
         'apiClasses' => [],
+        'orderApiClasses' => [],
     ];
 
     public function builder(string $name, null|string|array $blocks = null): self|array

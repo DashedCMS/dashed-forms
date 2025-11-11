@@ -64,11 +64,11 @@ class FormSettingsPage extends Page
                 TagsInput::make("notification_form_inputs_emails_{$site['id']}")
                     ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
                     ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
-                    ->helperText(new HtmlString('Dit moet specifiek ingebouwd worden in de formulieren. Maak een key en secret aan via <a href="https://www.google.com/recaptcha/admin/create" target="_blank" class="underline"><u>Google Recaptcha</u></a>.'))
                     ->placeholder('Voer een email in')
                     ->reactive(),
                 TextInput::make("google_recaptcha_site_key_{$site['id']}")
                     ->label('Google Recaptcha site key')
+                    ->helperText(new HtmlString('Dit moet specifiek ingebouwd worden in de formulieren. Maak een key en secret aan via <a href="https://www.google.com/recaptcha/admin/create" target="_blank" class="underline"><u>Google Recaptcha</u></a>.'))
                     ->reactive()
                     ->maxLength(255),
                 TextInput::make("google_recaptcha_secret_key_{$site['id']}")

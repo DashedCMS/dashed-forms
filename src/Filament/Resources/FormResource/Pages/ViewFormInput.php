@@ -140,8 +140,8 @@ class ViewFormInput extends Page implements HasInfolists
         $inputFields[] = TextEntry::make('viewed_status_badge')
             ->label('Bekeken')
             ->badge()
-            ->formatStateUsing(fn(): string => $this->record->viewed ? 'Ja' : 'Nee')
-            ->color(fn(): string => $this->record->viewed ? 'success' : 'danger');
+            ->formatStateUsing(fn (): string => $this->record->viewed ? 'Ja' : 'Nee')
+            ->color(fn (): string => $this->record->viewed ? 'success' : 'danger');
 
         return $schema
             ->record($this->record)
@@ -161,7 +161,7 @@ class ViewFormInput extends Page implements HasInfolists
                                 ->default('Onbekend'),
                             TextEntry::make('from_url')
                                 ->label('Ingevoerd vanaf')
-                                ->url(fn() => $this->record->from_url)
+                                ->url(fn () => $this->record->from_url)
                                 ->openUrlInNewTab()
                                 ->default('Onbekend'),
                             TextEntry::make('created_at')
