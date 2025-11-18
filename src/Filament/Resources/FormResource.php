@@ -3,6 +3,7 @@
 namespace Dashed\DashedForms\Filament\Resources;
 
 use Closure;
+use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use UnitEnum;
 use BackedEnum;
 use Filament\Tables\Table;
@@ -286,11 +287,7 @@ class FormResource extends Resource
                     ->url(fn ($record) => route('filament.dashed.resources.forms.viewInputs', [$record])),
                 DeleteAction::make(),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
+            ->toolbarActions(ToolbarActions::getActions())
             ->filters([
                 //
             ]);
