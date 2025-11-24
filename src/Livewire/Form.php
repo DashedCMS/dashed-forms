@@ -5,17 +5,18 @@ namespace Dashed\DashedForms\Livewire;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
-use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Models\FormField;
 use Dashed\DashedForms\Models\FormInput;
-use Filament\Notifications\Notification;
-use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Enums\MailingProviders;
-use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
+use Dashed\DashedTranslations\Models\Translation;
+use Filament\Notifications\Notification;
+use DutchCodingCompany\LivewireRecaptcha\ValidatesRecaptcha;
 
 class Form extends Component
 {
@@ -28,7 +29,8 @@ class Form extends Component
     public bool $formSent = false;
     public bool $singleColumn = false;
     public ?string $buttonTitle = '';
-    public string $gRecaptchaResponse;
+
+    public string $gRecaptchaResponse = ''; // wordt door de package gebruikt
 
     protected $listeners = [
         'setValue',
@@ -36,6 +38,13 @@ class Form extends Component
 
     public function mount(\Dashed\DashedForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
     {
+        if (Customsetting::get('google_recaptcha_site_key')) {
+            config([
+                'services.google.recaptcha.site_key'   => Customsetting::get('google_recaptcha_site_key'),
+                'services.google.recaptcha.secret_key' => Customsetting::get('google_recaptcha_secret_key'),
+            ]);
+        }
+
         $this->singleColumn = $singleColumn;
         $this->form = $formId;
         $this->blockData = $blockData;
@@ -98,7 +107,7 @@ class Form extends Component
             ->toArray();
     }
 
-    protected function rules()
+    public function rules()
     {
         return collect($this->formFields)
             ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
@@ -115,6 +124,7 @@ class Form extends Component
     {
         $this->validate();
 
+        // 2. Rest van je oorspronkelijke flow
         $formValues = [];
 
         $formInput = new FormInput();
@@ -128,12 +138,16 @@ class Form extends Component
 
         foreach ($this->values as $fieldName => $value) {
             $field = FormField::find(str($fieldName)->explode('-')->last());
-            if ($field->type == 'checkbox') {
+            if (! $field) {
+                continue;
+            }
+
+            if ($field->type == 'checkbox' && is_array($value)) {
                 $value = array_keys($value);
                 $value = str(implode(', ', $value))->headline();
             }
 
-            if ($value) {
+            if ($value !== null && $value !== '') {
                 $formInput->formFields()->create([
                     'value' => $value,
                     'form_field_id' => $field->id,
@@ -143,7 +157,9 @@ class Form extends Component
                     $sendToFieldValue = $value;
                 }
 
-                $formValues[$field->name] = $field->type == 'file' ? Storage::disk('dashed')->url($value) : $value;
+                $formValues[$field->name] = $field->type == 'file'
+                    ? Storage::disk('dashed')->url($value)
+                    : $value;
             }
         }
 
@@ -182,10 +198,10 @@ class Form extends Component
         $redirectUrl = $this->form->redirect_after_form ? linkHelper()->getUrl($this->form->redirect_after_form) : '';
 
         $this->dispatch('formSubmitted', [
-            'formId' => $this->form->id,
+            'formId'      => $this->form->id,
             'redirectUrl' => $redirectUrl,
-            'data' => $formValues,
-            'formName' => $this->form->name,
+            'data'        => $formValues,
+            'formName'    => $this->form->name,
         ]);
 
         if ($redirectUrl && Customsetting::get('form_redirect_server_side', null, true)) {
@@ -196,7 +212,12 @@ class Form extends Component
     public function updated($name, $value)
     {
         if ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-            $path = $value->storeAs('dashed', "forms/form-{$this->form->name}-" . time() . '.' . $value->getClientOriginalExtension(), 'dashed');
+            $path = $value->storeAs(
+                'dashed',
+                "forms/form-{$this->form->name}-" . time() . '.' . $value->getClientOriginalExtension(),
+                'dashed'
+            );
+
             $this->values[str($name)->explode('.')->last()] = $path;
         }
     }
@@ -210,8 +231,8 @@ class Form extends Component
     {
         if (view()->exists('dashed.forms.' . str($this->form->name)->slug() . '-form')) {
             return view(config('dashed-core.site_theme') . '.forms.' . str($this->form->name)->slug() . '-form');
-        } else {
-            return view(config('dashed-core.site_theme') . '.forms.form');
         }
+
+        return view(config('dashed-core.site_theme') . '.forms.form');
     }
 }
