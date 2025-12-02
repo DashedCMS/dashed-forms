@@ -32,7 +32,7 @@ class EditForm extends EditRecord
                         ->options(Locales::getLocalesArray())
                         ->preload()
                         ->searchable()
-                        ->default(collect(Locales::getLocalesArrayWithoutCurrent())->keys()->toArray())
+                        ->default(fn ($livewire) => collect(Locales::getLocalesArrayWithoutCurrent($livewire->activeLocale))->keys()->toArray())
                         ->required()
                         ->label('Naar talen')
                         ->multiple(),

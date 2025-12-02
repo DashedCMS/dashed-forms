@@ -2,21 +2,21 @@
 
 namespace Dashed\DashedForms\Livewire;
 
+use Dashed\DashedForms\Validations\ValidatesRecaptcha;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
+use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Dashed\DashedCore\Classes\Sites;
-use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Models\FormField;
 use Dashed\DashedForms\Models\FormInput;
+use Filament\Notifications\Notification;
+use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
-use Dashed\DashedTranslations\Models\Translation;
-use Filament\Notifications\Notification;
-use DutchCodingCompany\LivewireRecaptcha\ValidatesRecaptcha;
 
 class Form extends Component
 {
@@ -40,7 +40,7 @@ class Form extends Component
     {
         if (Customsetting::get('google_recaptcha_site_key')) {
             config([
-                'services.google.recaptcha.site_key'   => Customsetting::get('google_recaptcha_site_key'),
+                'services.google.recaptcha.site_key' => Customsetting::get('google_recaptcha_site_key'),
                 'services.google.recaptcha.secret_key' => Customsetting::get('google_recaptcha_secret_key'),
             ]);
         }
@@ -198,10 +198,10 @@ class Form extends Component
         $redirectUrl = $this->form->redirect_after_form ? linkHelper()->getUrl($this->form->redirect_after_form) : '';
 
         $this->dispatch('formSubmitted', [
-            'formId'      => $this->form->id,
+            'formId' => $this->form->id,
             'redirectUrl' => $redirectUrl,
-            'data'        => $formValues,
-            'formName'    => $this->form->name,
+            'data' => $formValues,
+            'formName' => $this->form->name,
         ]);
 
         if ($redirectUrl && Customsetting::get('form_redirect_server_side', null, true)) {
