@@ -28,6 +28,7 @@ class ValidatesRecaptcha extends LivewireAttribute
      */
     public function call(array $params, Closure $returnEarly): void
     {
+        dd($this->secretKey);
         if(!$this->secretKey){
             return;
         }
