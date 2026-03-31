@@ -3,12 +3,12 @@
 namespace Dashed\DashedForms;
 
 use Livewire\Livewire;
+use Illuminate\Support\Facades\Gate;
 use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
 use Dashed\DashedCore\Models\Customsetting;
 use Illuminate\Console\Scheduling\Schedule;
-use Dashed\DashedCore\Support\MeasuresServiceProvider;
 use Dashed\DashedForms\Commands\SendApisForFormInputs;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Dashed\DashedForms\Commands\SendWebhooksForFormInputs;
@@ -16,12 +16,10 @@ use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
 
 class DashedFormsServiceProvider extends PackageServiceProvider
 {
-    use MeasuresServiceProvider;
     public static string $name = 'dashed-forms';
 
     public function bootingPackage()
     {
-        $this->logProviderMemory('bootingPackage:start');
         Livewire::component('dashed-forms.form', Form::class);
 
         $this->app->booted(function () {
@@ -32,16 +30,21 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
         config(['services.google.recaptcha.site_key' => Customsetting::get('google_recaptcha_site_key', Sites::getActive(), '')]);
         config(['services.google.recaptcha.secret_key' => Customsetting::get('google_recaptcha_secret_key', Sites::getActive(), '')]);
-        $this->logProviderMemory('bootingPackage:start');
+        Gate::policy(\Dashed\DashedForms\Models\Form::class, \Dashed\DashedForms\Policies\FormPolicy::class);
+
+        cms()->registerRolePermissions('Formulieren', [
+            'view_form' => 'Formulieren bekijken',
+            'edit_form' => 'Formulieren bewerken',
+            'delete_form' => 'Formulieren verwijderen',
+        ]);
     }
 
     public function configurePackage(Package $package): void
     {
-        $this->logProviderMemory('configurePackage:start');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         $this->publishes([
-            __DIR__ . '/../resources/templates' => resource_path('views/' . config('dashed-core.site_theme')),
+            __DIR__ . '/../resources/templates' => resource_path('views/' . config('dashed-core.site_theme', 'dashed')),
             __DIR__ . '/../resources/component-templates' => resource_path('views/components'),
         ], 'dashed-templates');
 
@@ -61,6 +64,5 @@ class DashedFormsServiceProvider extends PackageServiceProvider
         cms()->builder('plugins', [
             new DashedFormsPlugin(),
         ]);
-        $this->logProviderMemory('configurePackage:end');
     }
 }

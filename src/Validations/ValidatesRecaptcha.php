@@ -2,13 +2,15 @@
 
 namespace Dashed\DashedForms\Validations;
 
-use Attribute;
 use Closure;
+use Attribute;
+
+use function Livewire\wrap;
+use function Livewire\trigger;
+
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
-use function Livewire\trigger;
-use function Livewire\wrap;
 
 #[Attribute]
 class ValidatesRecaptcha extends LivewireAttribute
@@ -28,7 +30,7 @@ class ValidatesRecaptcha extends LivewireAttribute
      */
     public function call(array $params, Closure $returnEarly): void
     {
-        if(!$this->secretKey){
+        if (! $this->secretKey) {
             return;
         }
 

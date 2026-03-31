@@ -1,6 +1,6 @@
 <div class="md:col-span-2 flex flex-col gap-2">
     <label for="{{ $field->fieldName }}" class="font-semibold">{{ $field->labelName }}</label>
-    <textarea class="form-input" name="{{ $field->fieldName }}"
+    <textarea class="custom-form-input" name="{{ $field->fieldName }}"
               id="{{ $field->fieldName }}"
               @if($field->required) required @endif
               rows="7"

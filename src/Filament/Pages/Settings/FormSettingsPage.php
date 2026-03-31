@@ -19,10 +19,13 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Dashed\DashedCore\Models\Customsetting;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Utilities\Get;
+use Dashed\DashedCore\Traits\HasSettingsPermission;
 use Dashed\DashedForms\Classes\MailingProviders\ActiveCampaign;
 
 class FormSettingsPage extends Page
 {
+    use HasSettingsPermission;
+
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-bell';
     protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationLabel = 'Formulier instellingen';

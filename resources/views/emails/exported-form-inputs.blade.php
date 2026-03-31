@@ -335,7 +335,7 @@
                                                                 style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 0px; padding: 0; word-break: break-word;">
                                                                 <div
                                                                     style="font-family: Open Sans, Helvetica, Tahoma, Arial, sans-serif; font-size: 26px; font-weight: bold; line-height: 30px; text-align: left; color: #4F4F4F;">
-                                                                    {{Translation::get('exported-form-inputs-email-title', 'orders', 'Hier is de aangevraagde export!')}}
+                                                                    {{Translation::get('exported-custom-form-inputs-email-title', 'orders', 'Hier is de aangevraagde export!')}}
                                                                 </div>
                                                             </td>
                                                         </tr>

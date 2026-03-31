@@ -1,7 +1,7 @@
 <div class="flex flex-col gap-2">
     <label for="{{ $field->fieldName }}" class="font-semibold">{{ $field->labelName }}</label>
     <input
-        class="form-input"
+        class="custom-form-input"
         name="{{ $field->fieldName }}"
         id="{{ $field->fieldName }}" type="{{ $field->input_type }}"
         wire:model.live="values.{{ $field->fieldName }}"

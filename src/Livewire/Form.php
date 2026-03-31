@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedForms\Livewire;
 
-use Dashed\DashedForms\Validations\ValidatesRecaptcha;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
@@ -15,6 +14,7 @@ use Filament\Notifications\Notification;
 use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Enums\MailingProviders;
 use Dashed\DashedTranslations\Models\Translation;
+use Dashed\DashedForms\Validations\ValidatesRecaptcha;
 use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
 
@@ -230,9 +230,9 @@ class Form extends Component
     public function render()
     {
         if (view()->exists('dashed.forms.' . str($this->form->name)->slug() . '-form')) {
-            return view(config('dashed-core.site_theme') . '.forms.' . str($this->form->name)->slug() . '-form');
+            return view(config('dashed-core.site_theme', 'dashed') . '.forms.' . str($this->form->name)->slug() . '-form');
         }
 
-        return view(config('dashed-core.site_theme') . '.forms.form');
+        return view(config('dashed-core.site_theme', 'dashed') . '.forms.form');
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Dashed\DashedForms\Models\Form;
 use Illuminate\Support\Facades\App;
+use App\Http\Controllers\Controller;
 use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Mail;
 use Dashed\DashedForms\Models\FormInput;
@@ -13,9 +14,10 @@ use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedForms\Mail\FormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminFormSubmitConfirmationMail;
-use Dashed\DashedCore\Controllers\Frontend\FrontendController;
 
-class FormController extends FrontendController
+;
+
+class FormController extends Controller
 {
     public function store(Request $request)
     {
