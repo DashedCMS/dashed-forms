@@ -9,40 +9,96 @@ use Illuminate\Queue\SerializesModels;
 use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
+use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
+use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
 
-class AdminCustomFormSubmitConfirmationMail extends Mailable
+class AdminCustomFormSubmitConfirmationMail extends Mailable implements RegistersEmailTemplate
 {
+    use HasEmailTemplate;
     use Queueable;
     use SerializesModels;
 
     public FormInput $formInput;
+
     public ?string $replyToEmail;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public function __construct(FormInput $formInput, ?string $replyToEmail = '')
     {
         $this->formInput = $formInput;
         $this->replyToEmail = $replyToEmail;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
+    public static function emailTemplateName(): string
+    {
+        return 'Formulier bevestiging (custom, beheerder)';
+    }
+
+    public static function emailTemplateDescription(): ?string
+    {
+        return 'Verzonden naar de beheerder als een custom formulier is ingediend.';
+    }
+
+    public static function availableVariables(): array
+    {
+        return ['formName', 'siteName', 'primaryColor'];
+    }
+
+    public static function defaultSubject(): string
+    {
+        return 'Het formulier :formName: is ingevuld!';
+    }
+
+    public static function defaultBlocks(): array
+    {
+        return [
+            ['type' => 'heading', 'data' => ['text' => 'Nieuw formulier ingediend', 'level' => 'h1']],
+            ['type' => 'text', 'data' => ['body' => '<p>Het formulier <strong>:formName:</strong> is ingevuld. Log in op de beheeromgeving om de ingevoerde gegevens te bekijken.</p>']],
+        ];
+    }
+
+    public static function sampleData(): array
+    {
+        $formInput = FormInput::query()->latest()->first();
+
+        return [
+            'formInput' => $formInput,
+            'formName' => $formInput?->form?->name ?? 'Contactformulier',
+            'siteName' => Customsetting::get('site_name'),
+        ];
+    }
+
+    public static function makeForTest(): ?self
+    {
+        $formInput = FormInput::query()->latest()->first();
+
+        return $formInput ? new self($formInput) : null;
+    }
+
     public function build()
     {
-        $mail = $this->view(config('dashed-core.site_theme', 'dashed') . '.emails.admin-custom-confirm-form-submit')
-            ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))->subject(Translation::get('admin-form-confirmation-'.Str::slug($this->formInput->form->name).'-email-subject', 'forms', 'Het formulier :name: is ingevuld!', 'text', [
-                'name' => $this->formInput->form->name,
-            ]))
-            ->with([
-                'formInput' => $this->formInput,
-            ]);
+        $context = [
+            'formInput' => $this->formInput,
+            'formName' => $this->formInput->form?->name ?? '',
+            'siteName' => Customsetting::get('site_name'),
+        ];
+
+        $fallbackSubject = Translation::get('admin-form-confirmation-' . Str::slug($this->formInput->form->name) . '-email-subject', 'forms', 'Het formulier :name: is ingevuld!', 'text', [
+            'name' => $this->formInput->form->name,
+        ]);
+
+        $templateHtml = $this->renderFromTemplate($context);
+
+        if ($templateHtml !== null) {
+            [$fromEmail, $fromName] = $this->templateFrom(Customsetting::get('site_from_email'), Customsetting::get('site_name'));
+            $mail = $this->html($templateHtml)
+                ->from($fromEmail, $fromName)
+                ->subject($this->templateSubject($fallbackSubject, $context));
+        } else {
+            $mail = $this->view(config('dashed-core.site_theme', 'dashed') . '.emails.admin-custom-confirm-form-submit')
+                ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))
+                ->subject($fallbackSubject)
+                ->with(['formInput' => $this->formInput]);
+        }
 
         if ($this->replyToEmail) {
             $mail->replyTo($this->replyToEmail);

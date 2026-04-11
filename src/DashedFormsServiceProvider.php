@@ -3,8 +3,8 @@
 namespace Dashed\DashedForms;
 
 use Livewire\Livewire;
-use Illuminate\Support\Facades\Gate;
 use Dashed\DashedCore\Classes\Sites;
+use Illuminate\Support\Facades\Gate;
 use Dashed\DashedForms\Livewire\Form;
 use Spatie\LaravelPackageTools\Package;
 use Dashed\DashedCore\Models\Customsetting;
@@ -20,6 +20,13 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage()
     {
+        cms()
+            ->registerMailable(\Dashed\DashedForms\Mail\FormSubmitConfirmationMail::class)
+            ->registerMailable(\Dashed\DashedForms\Mail\AdminFormSubmitConfirmationMail::class)
+            ->registerMailable(\Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail::class)
+            ->registerMailable(\Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail::class)
+            ->registerMailable(\Dashed\DashedForms\Mail\FormInputsExportMail::class);
+
         Livewire::component('dashed-forms.form', Form::class);
 
         $this->app->booted(function () {
