@@ -17,6 +17,7 @@ use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedForms\Validations\ValidatesRecaptcha;
 use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
+use Dashed\DashedCore\Notifications\AdminNotifier;
 
 class Form extends Component
 {
@@ -174,7 +175,7 @@ class Form extends Component
             $notificationFormInputsEmails = $this->form->notification_form_inputs_emails ?: Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []);
             if (count($notificationFormInputsEmails)) {
                 foreach ($notificationFormInputsEmails as $notificationFormInputsEmail) {
-                    Mail::to($notificationFormInputsEmail)->send(new AdminCustomFormSubmitConfirmationMail($formInput, $sendToFieldValue ?? null));
+                    AdminNotifier::send(new AdminCustomFormSubmitConfirmationMail($formInput, $sendToFieldValue ?? null), $notificationFormInputsEmail);
                 }
             }
         } catch (\Exception $e) {

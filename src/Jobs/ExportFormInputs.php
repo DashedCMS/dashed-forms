@@ -14,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Dashed\DashedForms\Exports\ExportFormData;
 use Dashed\DashedForms\Mail\FormInputsExportMail;
+use Dashed\DashedCore\Notifications\AdminNotifier;
 
 class ExportFormInputs implements ShouldQueue
 {
@@ -45,7 +46,7 @@ class ExportFormInputs implements ShouldQueue
     public function handle(): void
     {
         Excel::store(new ExportFormData($this->records), '/dashed/tmp-exports/' . $this->hash . '/forms/form-data.xlsx', 'public');
-        Mail::to($this->email)->send(new FormInputsExportMail($this->hash));
+        AdminNotifier::send(new FormInputsExportMail($this->hash), $this->email);
         Storage::disk('public')->deleteDirectory('/dashed/tmp-exports/' . $this->hash);
     }
 }

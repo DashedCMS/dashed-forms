@@ -14,6 +14,7 @@ use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedForms\Mail\FormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminFormSubmitConfirmationMail;
+use Dashed\DashedCore\Notifications\AdminNotifier;
 
 ;
 
@@ -78,7 +79,7 @@ class FormController extends Controller
                     $notificationFormInputsEmails = Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []);
                     if ($notificationFormInputsEmails) {
                         foreach ($notificationFormInputsEmails as $notificationFormInputsEmail) {
-                            Mail::to($notificationFormInputsEmail)->send(new AdminFormSubmitConfirmationMail($form, $formInput, $sendToFieldValue));
+                            AdminNotifier::send(new AdminFormSubmitConfirmationMail($form, $formInput, $sendToFieldValue), $notificationFormInputsEmail);
                         }
                     }
                 } catch (\Exception $e) {

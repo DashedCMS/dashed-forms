@@ -10,8 +10,10 @@ use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
 use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
+use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
+use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
 
-class FormInputsExportMail extends Mailable implements RegistersEmailTemplate
+class FormInputsExportMail extends Mailable implements RegistersEmailTemplate, SendsToTelegram
 {
     use HasEmailTemplate;
     use Queueable;
@@ -80,5 +82,21 @@ class FormInputsExportMail extends Mailable implements RegistersEmailTemplate
         $mail->attachFromStorageDisk('public', 'dashed/tmp-exports/' . $this->hash . '/forms/form-data.xlsx', Customsetting::get('site_name') . ' - geëxporteerde formulier invoer.xlsx');
 
         return $mail;
+    }
+
+    public function telegramSummary(): TelegramSummary
+    {
+        return new TelegramSummary(
+            title: 'Formulier export gereed',
+            fields: [
+                'Status' => 'Bestand staat klaar in de mail',
+            ],
+            emoji: '📋',
+        );
+    }
+
+    public static function makeForTest(): ?self
+    {
+        return new self(hash: 'test-hash');
     }
 }

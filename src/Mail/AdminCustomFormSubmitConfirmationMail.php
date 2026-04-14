@@ -11,8 +11,10 @@ use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
 use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
+use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
+use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
 
-class AdminCustomFormSubmitConfirmationMail extends Mailable implements RegistersEmailTemplate
+class AdminCustomFormSubmitConfirmationMail extends Mailable implements RegistersEmailTemplate, SendsToTelegram
 {
     use HasEmailTemplate;
     use Queueable;
@@ -105,5 +107,23 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
         }
 
         return $mail;
+    }
+
+    public function telegramSummary(): TelegramSummary
+    {
+        $values = collect($this->formInput->content ?? [])
+            ->filter(fn ($v) => is_scalar($v) && $v !== '')
+            ->take(3);
+
+        $fields = [];
+        foreach ($values as $key => $value) {
+            $fields[(string) $key] = (string) $value;
+        }
+
+        return new TelegramSummary(
+            title: 'Custom form inzending',
+            fields: $fields ?: ['Status' => 'Inzending ontvangen'],
+            emoji: '📝',
+        );
     }
 }
