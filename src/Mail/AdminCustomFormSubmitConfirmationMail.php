@@ -10,9 +10,9 @@ use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
+use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
 use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
 use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
-use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
 
 class AdminCustomFormSubmitConfirmationMail extends Mailable implements RegistersEmailTemplate, SendsToTelegram
 {

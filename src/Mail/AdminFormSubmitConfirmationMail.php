@@ -11,9 +11,9 @@ use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
+use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
 use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
 use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
-use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
 
 class AdminFormSubmitConfirmationMail extends Mailable implements RegistersEmailTemplate, SendsToTelegram
 {
@@ -129,7 +129,7 @@ class AdminFormSubmitConfirmationMail extends Mailable implements RegistersEmail
             ->take(3);
 
         $fields = [
-            'Formulier' => $this->form->name ?? '—',
+            'Formulier' => $this->form->name ?? '-',
         ];
         foreach ($values as $key => $value) {
             $fields[(string) $key] = (string) $value;
