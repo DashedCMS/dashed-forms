@@ -36,7 +36,7 @@ class AdminFormSubmitConfirmationMail extends Mailable implements RegistersEmail
 
     public static function emailTemplateName(): string
     {
-        return 'Formulier bevestiging (beheerder)';
+        return 'Formulier bevestiging beheerder (legacy)';
     }
 
     public static function emailTemplateDescription(): ?string
@@ -125,9 +125,7 @@ class AdminFormSubmitConfirmationMail extends Mailable implements RegistersEmail
 
     public function telegramSummary(): TelegramSummary
     {
-        $fields = [
-            'Formulier' => $this->form->name ?? '-',
-        ];
+        $fields = [];
         foreach ($this->formInput->content ?? [] as $key => $value) {
             if (is_array($value)) {
                 $value = implode(', ', array_map(fn ($v) => is_scalar($v) ? (string) $v : '', $value));
@@ -138,8 +136,12 @@ class AdminFormSubmitConfirmationMail extends Mailable implements RegistersEmail
             $fields[(string) $key] = (string) $value;
         }
 
+        $formName = $this->form->name ?? null;
+        $formName = is_array($formName) ? ($formName[app()->getLocale()] ?? reset($formName)) : $formName;
+        $formName = (string) ($formName ?: 'Formulier');
+
         return new TelegramSummary(
-            title: 'Nieuwe formulier inzending',
+            title: $formName,
             fields: $fields,
             emoji: '📝',
         );

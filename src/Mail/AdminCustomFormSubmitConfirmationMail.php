@@ -32,7 +32,7 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
 
     public static function emailTemplateName(): string
     {
-        return 'Formulier bevestiging (custom, beheerder)';
+        return 'Formulier bevestiging beheerder v2';
     }
 
     public static function emailTemplateDescription(): ?string
@@ -136,8 +136,12 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
             }
         }
 
+        $formName = $this->formInput->form?->name;
+        $formName = is_array($formName) ? ($formName[app()->getLocale()] ?? reset($formName)) : $formName;
+        $formName = (string) ($formName ?: 'Formulier');
+
         return new TelegramSummary(
-            title: 'Custom form inzending',
+            title: $formName,
             fields: $fields ?: ['Status' => 'Inzending ontvangen'],
             emoji: '📝',
         );

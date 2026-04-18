@@ -31,7 +31,7 @@ class FormSubmitConfirmationMail extends Mailable implements RegistersEmailTempl
 
     public static function emailTemplateName(): string
     {
-        return 'Formulier bevestiging (klant)';
+        return 'Formulier bevestiging klant (legacy)';
     }
 
     public static function emailTemplateDescription(): ?string
@@ -53,7 +53,9 @@ class FormSubmitConfirmationMail extends Mailable implements RegistersEmailTempl
     {
         return [
             ['type' => 'heading', 'data' => ['text' => 'Bedankt voor je aanvraag!', 'level' => 'h1']],
-            ['type' => 'text', 'data' => ['body' => '<p>We hebben je aanvraag voor het formulier <strong>:formName:</strong> in goede orde ontvangen. We nemen zo snel mogelijk contact met je op.</p><p>Met vriendelijke groet,<br>Het team van :siteName:</p>']],
+            ['type' => 'text', 'data' => ['body' => '<p>We hebben je aanvraag voor het formulier <strong>:formName:</strong> in goede orde ontvangen. We nemen zo snel mogelijk contact met je op.</p>']],
+            ['type' => 'form-submission', 'data' => ['title' => 'Jouw ingevoerde gegevens']],
+            ['type' => 'text', 'data' => ['body' => '<p>Met vriendelijke groet,<br>Het team van :siteName:</p>']],
         ];
     }
 
