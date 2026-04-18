@@ -58,7 +58,8 @@ class AdminFormSubmitConfirmationMail extends Mailable implements RegistersEmail
     {
         return [
             ['type' => 'heading', 'data' => ['text' => 'Nieuw formulier ingediend', 'level' => 'h1']],
-            ['type' => 'text', 'data' => ['body' => '<p>Het formulier <strong>:formName:</strong> is ingevuld. Log in op de beheeromgeving om de ingevoerde gegevens te bekijken.</p>']],
+            ['type' => 'text', 'data' => ['body' => '<p>Het formulier <strong>:formName:</strong> is ingevuld. Hieronder de ingevoerde gegevens:</p>']],
+            ['type' => 'form-submission', 'data' => ['title' => 'Ingevoerde gegevens']],
         ];
     }
 
@@ -124,14 +125,16 @@ class AdminFormSubmitConfirmationMail extends Mailable implements RegistersEmail
 
     public function telegramSummary(): TelegramSummary
     {
-        $values = collect($this->formInput->content ?? [])
-            ->filter(fn ($v) => is_scalar($v) && $v !== '')
-            ->take(3);
-
         $fields = [
             'Formulier' => $this->form->name ?? '-',
         ];
-        foreach ($values as $key => $value) {
+        foreach ($this->formInput->content ?? [] as $key => $value) {
+            if (is_array($value)) {
+                $value = implode(', ', array_map(fn ($v) => is_scalar($v) ? (string) $v : '', $value));
+            }
+            if (! is_scalar($value) || $value === '') {
+                continue;
+            }
             $fields[(string) $key] = (string) $value;
         }
 

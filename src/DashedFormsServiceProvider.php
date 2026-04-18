@@ -25,7 +25,8 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             ->registerMailable(\Dashed\DashedForms\Mail\AdminFormSubmitConfirmationMail::class)
             ->registerMailable(\Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail::class)
             ->registerMailable(\Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail::class)
-            ->registerMailable(\Dashed\DashedForms\Mail\FormInputsExportMail::class);
+            ->registerMailable(\Dashed\DashedForms\Mail\FormInputsExportMail::class)
+            ->emailBlock(\Dashed\DashedForms\Mail\EmailBlocks\FormSubmissionBlock::key(), \Dashed\DashedForms\Mail\EmailBlocks\FormSubmissionBlock::class);
 
         Livewire::component('dashed-forms.form', Form::class);
 
