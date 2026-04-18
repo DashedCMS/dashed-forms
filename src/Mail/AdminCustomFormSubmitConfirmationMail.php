@@ -113,14 +113,27 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
     public function telegramSummary(): TelegramSummary
     {
         $fields = [];
-        foreach ($this->formInput->content ?? [] as $key => $value) {
-            if (is_array($value)) {
-                $value = implode(', ', array_map(fn ($v) => is_scalar($v) ? (string) $v : '', $value));
-            }
-            if (! is_scalar($value) || $value === '') {
+
+        foreach ($this->formInput->formFields ?? [] as $inputField) {
+            $label = $inputField->formField?->name;
+            $label = is_array($label) ? ($label[app()->getLocale()] ?? reset($label)) : $label;
+            $value = $inputField->value;
+            if ($value === null || $value === '') {
                 continue;
             }
-            $fields[(string) $key] = (string) $value;
+            $fields[(string) ($label ?: '—')] = (string) $value;
+        }
+
+        if (empty($fields)) {
+            foreach ($this->formInput->content ?? [] as $key => $value) {
+                if (is_array($value)) {
+                    $value = implode(', ', array_map(fn ($v) => is_scalar($v) ? (string) $v : '', $value));
+                }
+                if (! is_scalar($value) || $value === '') {
+                    continue;
+                }
+                $fields[(string) $key] = (string) $value;
+            }
         }
 
         return new TelegramSummary(

@@ -33,22 +33,42 @@ class FormSubmissionBlock extends EmailBlock
     public static function render(array $blockData, array $context): string
     {
         $formInput = $context['formInput'] ?? null;
-        $content = is_object($formInput) ? ($formInput->content ?? []) : (is_array($formInput) ? ($formInput['content'] ?? []) : []);
-
         $rows = [];
-        foreach ((array) $content as $key => $value) {
-            if (is_array($value)) {
-                $value = implode(', ', array_map(fn ($v) => is_scalar($v) ? (string) $v : '', $value));
-            }
 
-            if (! is_scalar($value)) {
-                continue;
-            }
+        if (is_object($formInput) && method_exists($formInput, 'formFields') && $formInput->formFields?->isNotEmpty()) {
+            foreach ($formInput->formFields as $field) {
+                $label = $field->formField?->name;
+                $label = is_array($label) ? ($label[app()->getLocale()] ?? reset($label)) : $label;
+                $value = $field->value;
 
-            $rows[] = [
-                'label' => (string) $key,
-                'value' => (string) $value,
-            ];
+                if ($value === null || $value === '') {
+                    continue;
+                }
+
+                $rows[] = [
+                    'label' => (string) ($label ?: '—'),
+                    'value' => (string) $value,
+                ];
+            }
+        }
+
+        if (empty($rows)) {
+            $content = is_object($formInput) ? ($formInput->content ?? []) : (is_array($formInput) ? ($formInput['content'] ?? []) : []);
+
+            foreach ((array) $content as $key => $value) {
+                if (is_array($value)) {
+                    $value = implode(', ', array_map(fn ($v) => is_scalar($v) ? (string) $v : '', $value));
+                }
+
+                if (! is_scalar($value) || $value === '') {
+                    continue;
+                }
+
+                $rows[] = [
+                    'label' => (string) $key,
+                    'value' => (string) $value,
+                ];
+            }
         }
 
         return view('dashed-forms::emails.blocks.form-submission', [
