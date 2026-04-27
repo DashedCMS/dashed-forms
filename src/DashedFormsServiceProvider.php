@@ -20,6 +20,8 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage()
     {
+        cms()->registerNavigationGroup('Formulieren', 50);
+
         cms()
             ->registerMailable(\Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail::class)
             ->registerMailable(\Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail::class)
