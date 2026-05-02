@@ -8,6 +8,7 @@ class FormManager
         'webhookClasses' => [],
         'apiClasses' => [],
         'orderApiClasses' => [],
+        'popupApiClasses' => [],
     ];
 
     public function builder(string $name, null|string|array $blocks = null): self|array

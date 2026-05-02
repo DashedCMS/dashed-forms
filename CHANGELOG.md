@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.0.22 - 2026-05-02
+
+### Added
+- `popupApiClasses` builder-key in `FormManager`. Provider-packages (`dashed-laposta`, `dashed-ternair`) registreren hier hun popup-newsletter API class zodat `dashed-popups` per popup een repeater kan opbouwen met de geregistreerde providers. Identiek patroon als `apiClasses` (forms) en `orderApiClasses` (orders).
+
 ## v4.0.21 - 2026-04-27
 
 - `DashedFormsServiceProvider::bootingPackage()` registreert de "Formulieren" navigatiegroep via `cms()->registerNavigationGroup('Formulieren', 50)`. Vereist dashed-core v4.2.0+.
