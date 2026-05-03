@@ -46,7 +46,7 @@ class FormSubmissionBlock extends EmailBlock
                 }
 
                 $rows[] = [
-                    'label' => (string) ($label ?: '—'),
+                    'label' => (string) ($label ?: '-'),
                     'value' => (string) $value,
                 ];
             }

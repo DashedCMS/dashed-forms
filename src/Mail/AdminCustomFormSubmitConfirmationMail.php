@@ -121,7 +121,7 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
             if ($value === null || $value === '') {
                 continue;
             }
-            $fields[(string) ($label ?: '—')] = (string) $value;
+            $fields[(string) ($label ?: '-')] = (string) $value;
         }
 
         if (empty($fields)) {
