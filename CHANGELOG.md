@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.1.0 - 2026-05-07
+
+### Added
+- `FormSummaryContributor` (`src/Services/Summary/FormSummaryContributor.php`) voor de admin samenvatting-mails. Levert een sectie "Formulieren" met het totaal aantal nieuwe inzendingen in de periode plus een tabel met de verdeling per formulier (kolommen: Formulier, Aantal inzendingen). Gegroepeerd op `form_id`, met `whereBetween` op `created_at` zodat de standaard timestamp-index gebruikt wordt. Returnt `null` als er geen inzendingen zijn zodat de sectie wordt overgeslagen. Geregistreerd via `cms()->builder('summaryContributors', ...)` in `DashedFormsServiceProvider::bootingPackage()`. Vereist dashed-core v4.5.0+.
+
 ## v4.0.23 - 2026-05-03
 
 ### Added
