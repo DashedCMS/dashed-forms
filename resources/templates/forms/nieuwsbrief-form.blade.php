@@ -1,4 +1,4 @@
-<form class="space-y-8 text-white rounded-lg w-full" wire:submit="submit" @if(Customsetting::get('google_recaptcha_site_key')) wire:recaptcha @endif>
+<form class="space-y-8 text-white rounded-lg w-full" wire:submit="submit" @captchaFormAttributes>
 {{--    @if($blockData['title'] ?? false)--}}
 {{--        <h2 class="text-2xl font-bold tracking-tight md:text-3xl font-headline">{{ $blockData['title'] }}</h2>--}}
 {{--    @endif--}}
@@ -23,9 +23,7 @@
         </div>
     @endif
 
-    @if($errors->has('gRecaptchaResponse'))
-        <div class="alert alert-danger">{{ $errors->first('gRecaptchaResponse') }}</div>
-    @endif
+    <x-dashed-forms::captcha-errors />
 
     <div class="grid md:grid-cols-3 gap-2">
         <div class="grid gap-4 md:col-span-2">
@@ -68,11 +66,5 @@
             </div>
         @endif
     </div>
-    @if(Customsetting::get('google_recaptcha_site_key'))
-        @livewireRecaptcha(
-        version: 'v3',
-        siteKey: Customsetting::get('google_recaptcha_site_key'),
-        size: 'compact',
-        )
-    @endif
+    <x-dashed-forms::captcha />
 </form>
