@@ -3,6 +3,7 @@
 namespace Dashed\DashedForms;
 
 use Livewire\Livewire;
+use Illuminate\Support\Facades\Blade;
 use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Gate;
 use Dashed\DashedForms\Livewire\Form;
@@ -38,6 +39,25 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
         config(['services.google.recaptcha.site_key' => Customsetting::get('google_recaptcha_site_key', Sites::getActive(), '')]);
         config(['services.google.recaptcha.secret_key' => Customsetting::get('google_recaptcha_secret_key', Sites::getActive(), '')]);
+        config(['services.mcaptcha.instance_url' => Customsetting::get('mcaptcha_instance_url', Sites::getActive(), '')]);
+        config(['services.mcaptcha.site_key' => Customsetting::get('mcaptcha_site_key', Sites::getActive(), '')]);
+        config(['services.mcaptcha.secret' => Customsetting::get('mcaptcha_secret', Sites::getActive(), '')]);
+
+        Blade::anonymousComponentPath(__DIR__ . '/../resources/views/components', 'dashed-forms');
+
+        Blade::directive('captchaFormAttributes', function () {
+            return "<?php
+                \$__captchaProvider = \\Dashed\\DashedCore\\Models\\Customsetting::get(
+                    'captcha_provider',
+                    \\Dashed\\DashedCore\\Classes\\Sites::getActive(),
+                    'google_recaptcha'
+                );
+                if (\$__captchaProvider === 'google_recaptcha' && \\Dashed\\DashedCore\\Models\\Customsetting::get('google_recaptcha_site_key')) {
+                    echo 'wire:recaptcha';
+                }
+            ?>";
+        });
+
         Gate::policy(\Dashed\DashedForms\Models\Form::class, \Dashed\DashedForms\Policies\FormPolicy::class);
 
         cms()->registerRolePermissions('Formulieren', [
@@ -93,14 +113,18 @@ MARKDOWN,
         cms()->registerSettingsDocs(
             page: \Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage::class,
             title: 'Formulieren instellingen',
-            intro: 'Hier regel je alles rond formulier inzendingen: naar welke e-mailadressen meldingen gaan, of je Google reCAPTCHA gebruikt tegen spam en of inzendingen automatisch in ActiveCampaign komen. De meeste velden zijn per site, zodat elke website zijn eigen ontvangers en koppelingen heeft.',
+            intro: 'Hier regel je alles rond formulier inzendingen: naar welke e-mailadressen meldingen gaan, welke captcha (Google reCAPTCHA of zelf-gehoste mCaptcha) er gebruikt wordt tegen spam, en of inzendingen automatisch in ActiveCampaign komen. De meeste velden zijn per site.',
             sections: [
                 [
                     'heading' => 'Wat kun je hier instellen?',
                     'body' => 'Je legt per site de notificatie e-mailadressen vast, koppelt eventueel Google reCAPTCHA en vult ActiveCampaign credentials in. Daarnaast kies je globaal of formulier redirects via de server of via JavaScript verlopen.',
                 ],
                 [
-                    'heading' => 'Hoe koppel je reCAPTCHA?',
+                    'heading' => 'Welke captcha kies je?',
+                    'body' => 'Bij **Captcha provider** kies je per site welke captcha er actief is. **Geen** schakelt captcha uit. **Google reCAPTCHA** vraagt een site key en secret key. **mCaptcha** is zelf-gehost (proof-of-work, geen Google) en vraagt een instance URL, sitekey en secret.',
+                ],
+                [
+                    'heading' => 'Hoe koppel je Google reCAPTCHA?',
                     'body' => <<<MARKDOWN
 1. Ga naar [google.com/recaptcha/admin](https://www.google.com/recaptcha/admin) en log in met je Google account.
 2. Klik op **Een site toevoegen** en geef je website een herkenbare naam.
@@ -108,6 +132,16 @@ MARKDOWN,
 4. Accepteer de voorwaarden en klik op opslaan.
 5. Kopieer de **Site key** en de **Secret key** en plak ze hieronder.
 6. Test een formulier op je site om te controleren of de bescherming werkt.
+MARKDOWN,
+                ],
+                [
+                    'heading' => 'Hoe koppel je mCaptcha?',
+                    'body' => <<<MARKDOWN
+1. Zorg dat er een mCaptcha-instance draait (zie [mcaptcha.org](https://mcaptcha.org)).
+2. Maak in mCaptcha een sitekey aan voor het domein van deze website.
+3. Kopieer de **instance URL** (bijv. `https://captcha.example.com`), de **sitekey** en de **secret**.
+4. Plak ze in de bijbehorende velden hieronder.
+5. Test een formulier op je site om te controleren of de proof-of-work werkt.
 MARKDOWN,
                 ],
                 [
@@ -123,8 +157,12 @@ MARKDOWN,
             ],
             fields: [
                 'Notificatie e-mailadressen' => 'De e-mailadressen die een melding krijgen zodra iemand een formulier invult. Je kunt meerdere adressen toevoegen door telkens op enter te drukken.',
-                'reCAPTCHA site key' => 'De publieke site key van Google reCAPTCHA. Deze haal je op uit de reCAPTCHA admin nadat je je domein hebt toegevoegd. De site key wordt zichtbaar in de browser geladen.',
-                'reCAPTCHA secret key' => 'De geheime sleutel van Google reCAPTCHA, hoort bij dezelfde site als de site key. Deze sleutel mag niet openbaar worden gedeeld en is verplicht zodra je een site key invult.',
+                'Captcha provider' => 'Kies per site welke captcha er actief is: Geen, Google reCAPTCHA of mCaptcha (self-hosted). De velden hieronder verschijnen op basis van de keuze.',
+                'Google Recaptcha site key' => 'De publieke site key van Google reCAPTCHA. Deze haal je op uit de reCAPTCHA admin nadat je je domein hebt toegevoegd. De site key wordt zichtbaar in de browser geladen.',
+                'Google Recaptcha secret key' => 'De geheime sleutel van Google reCAPTCHA, hoort bij dezelfde site als de site key. Deze sleutel mag niet openbaar worden gedeeld en is verplicht zodra je een site key invult.',
+                'mCaptcha instance URL' => 'De basis URL van je zelf-gehoste mCaptcha-instance, bv. https://captcha.example.com. Widget en verify endpoints worden hieruit afgeleid.',
+                'mCaptcha sitekey' => 'De publieke sitekey van mCaptcha. Wordt in de browser geladen om het widget te tonen.',
+                'mCaptcha secret' => 'De geheime sleutel die hoort bij de sitekey. Wordt alleen server-side gebruikt en niet in de HTML geladen.',
                 'ActiveCampaign API URL' => 'De API URL van je ActiveCampaign account. Deze vind je in ActiveCampaign onder Settings, sectie Developer. Het is de basis URL waar inzendingen naartoe worden gestuurd.',
                 'ActiveCampaign API key' => 'De API sleutel die hoort bij je ActiveCampaign account. Ook deze vind je onder Settings, sectie Developer. Zonder geldige sleutel komen er geen contacten in ActiveCampaign terecht.',
                 'Server side redirects' => 'Aan zorgt dat de redirect na een succesvolle inzending door de server wordt gedaan, wat netter is voor zoekmachines. Uit doet de redirect via JavaScript in de browser, handig als je een single page achtige flow gebruikt.',
@@ -132,6 +170,7 @@ MARKDOWN,
             tips: [
                 'Vul minstens een notificatie e-mailadres in, anders krijgt niemand bericht van nieuwe inzendingen.',
                 'Vul nooit alleen een reCAPTCHA site key in zonder secret key. Het formulier weigert dan alle inzendingen.',
+                'Bij mCaptcha geldt: als de mCaptcha-server tijdelijk onbereikbaar is, laat het formulier de inzending door. Anders kan niemand het formulier nog gebruiken bij een storing.',
             ],
         );
     }
