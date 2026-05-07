@@ -16,6 +16,7 @@ use Dashed\DashedForms\Enums\MailingProviders;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedCore\Notifications\AdminNotifier;
 use Dashed\DashedForms\Validations\ValidatesRecaptcha;
+use Dashed\DashedForms\Validations\ValidatesMcaptcha;
 use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
 
@@ -32,6 +33,7 @@ class Form extends Component
     public ?string $buttonTitle = '';
 
     public string $gRecaptchaResponse = ''; // wordt door de package gebruikt
+    public string $mcaptchaToken = ''; // gevuld door mCaptcha vanilla-glue script
 
     protected $listeners = [
         'setValue',
@@ -43,6 +45,14 @@ class Form extends Component
             config([
                 'services.google.recaptcha.site_key' => Customsetting::get('google_recaptcha_site_key'),
                 'services.google.recaptcha.secret_key' => Customsetting::get('google_recaptcha_secret_key'),
+            ]);
+        }
+
+        if (Customsetting::get('mcaptcha_site_key')) {
+            config([
+                'services.mcaptcha.instance_url' => Customsetting::get('mcaptcha_instance_url'),
+                'services.mcaptcha.site_key' => Customsetting::get('mcaptcha_site_key'),
+                'services.mcaptcha.secret' => Customsetting::get('mcaptcha_secret'),
             ]);
         }
 
@@ -121,6 +131,7 @@ class Form extends Component
     }
 
     #[ValidatesRecaptcha]
+    #[ValidatesMcaptcha]
     public function submit()
     {
         $this->validate();
