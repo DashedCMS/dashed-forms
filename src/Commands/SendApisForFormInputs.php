@@ -4,6 +4,7 @@ namespace Dashed\DashedForms\Commands;
 
 use Illuminate\Console\Command;
 use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
 
 class SendApisForFormInputs extends Command
 {
@@ -19,7 +20,7 @@ class SendApisForFormInputs extends Command
      *
      * @var string
      */
-    protected $description = 'Send apis for form inputs that have not been sent yet';
+    protected $description = 'Reaper voor form-inputs waarvan de API-sync niet via de submit-job is gelukt; dispatcht SyncFormInputApisJob per achterblijver';
 
     /**
      * Create a new command instance.
@@ -40,18 +41,11 @@ class SendApisForFormInputs extends Command
     {
         $formInputs = FormInput::where('should_send_api', 1)
             ->where('api_send', '!=', 1)
-            ->get();
+            ->pluck('id');
 
-        foreach ($formInputs as $formInput) {
-            $formInput->sendApis();
-            $formInput->refresh();
-            if ($formInput->api_send == 1) {
-                $this->info("APIs sent for Form Input ID: {$formInput->id}");
-                $formInput->viewed = 1;
-                $formInput->save();
-            } else {
-                $this->error("Failed to send APIs for Form Input ID: {$formInput->id}");
-            }
+        foreach ($formInputs as $formInputId) {
+            SyncFormInputApisJob::dispatch($formInputId);
+            $this->info("Dispatched SyncFormInputApisJob for Form Input ID: {$formInputId}");
         }
 
         return 0;

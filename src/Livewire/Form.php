@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Dashed\DashedForms\Models\FormField;
 use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
 use Filament\Notifications\Notification;
 use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Enums\MailingProviders;
@@ -173,6 +174,10 @@ class Form extends Component
                     ? Storage::disk('dashed')->url($value)
                     : $value;
             }
+        }
+
+        if ($formInput->should_send_api && (int) $formInput->api_send !== 1) {
+            SyncFormInputApisJob::dispatch($formInput->id);
         }
 
         if ($sendToFieldValue ?? false) {

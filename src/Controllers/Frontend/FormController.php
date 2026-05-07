@@ -11,6 +11,7 @@ use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Mail;
 use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
 use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedCore\Notifications\AdminNotifier;
 use Dashed\DashedForms\Mail\FormSubmitConfirmationMail;
@@ -67,6 +68,10 @@ class FormController extends Controller
                 $formInput->site_id = Sites::getActive();
                 $formInput->locale = App::getLocale();
                 $formInput->save();
+
+                if ($formInput->should_send_api && (int) $formInput->api_send !== 1) {
+                    SyncFormInputApisJob::dispatch($formInput->id);
+                }
 
                 if ($sendToFieldValue) {
                     try {

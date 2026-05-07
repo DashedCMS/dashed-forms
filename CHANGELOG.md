@@ -2,6 +2,16 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.1.2 - 2026-05-07
+
+### Added
+- `Dashed\DashedForms\Jobs\SyncFormInputApisJob` — queueable job die per `FormInput` `sendApis()` aanroept, refreshet en `viewed=1` zet wanneer `api_send=1`. `tries=3`, `timeout=120`, idempotent (skipt als `should_send_api` false is of `api_send` al 1).
+- `Form::submit()` (Livewire) en `FormController::submit()` dispatchen `SyncFormInputApisJob` direct na het opslaan van het FormInput (Livewire: na het schrijven van de FormInputFields), wanneer `should_send_api` is geset. Zo wordt de externe API-sync onmiddellijk via de queue gedaan in plaats van te wachten op de cron.
+
+### Changed
+- `dashed:send-apis-for-form-inputs`-command dispatcht nu `SyncFormInputApisJob` per achterblijvend FormInput in plaats van de sync inline te doen. De command is daarmee een fallback/reaper voor inputs die om welke reden dan ook niet via de submit-dispatch verwerkt zijn.
+- Schedule van `dashed:send-apis-for-form-inputs` van `everyMinute()` naar `hourly()`. De directe submit-dispatch is nu de hot path; de hourly run vangt alleen achterblijvers op.
+
 ## v4.1.1 - 2026-05-07
 
 ### Added
