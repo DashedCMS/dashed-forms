@@ -30,6 +30,15 @@ class ValidatesRecaptcha extends LivewireAttribute
      */
     public function call(array $params, Closure $returnEarly): void
     {
+        $provider = \Dashed\DashedCore\Models\Customsetting::get(
+            'captcha_provider',
+            \Dashed\DashedCore\Classes\Sites::getActive(),
+            'google_recaptcha'
+        );
+        if ($provider !== 'google_recaptcha') {
+            return;
+        }
+
         if (! $this->secretKey) {
             return;
         }
