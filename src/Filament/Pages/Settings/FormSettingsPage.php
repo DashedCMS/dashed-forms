@@ -13,6 +13,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -47,6 +48,10 @@ class FormSettingsPage extends Page
             $formData["form_activecampaign_key_{$site['id']}"] = Customsetting::get('form_activecampaign_key', $site['id']);
             $formData["google_recaptcha_site_key_{$site['id']}"] = Customsetting::get('google_recaptcha_site_key', $site['id']);
             $formData["google_recaptcha_secret_key_{$site['id']}"] = Customsetting::get('google_recaptcha_secret_key', $site['id']);
+            $formData["captcha_provider_{$site['id']}"] = Customsetting::get('captcha_provider', $site['id'], 'google_recaptcha');
+            $formData["mcaptcha_instance_url_{$site['id']}"] = Customsetting::get('mcaptcha_instance_url', $site['id']);
+            $formData["mcaptcha_site_key_{$site['id']}"] = Customsetting::get('mcaptcha_site_key', $site['id']);
+            $formData["mcaptcha_secret_{$site['id']}"] = Customsetting::get('mcaptcha_secret', $site['id']);
         }
 
         $this->form->fill($formData);
@@ -69,14 +74,48 @@ class FormSettingsPage extends Page
                     ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
                     ->placeholder('Voer een email in')
                     ->reactive(),
+                Select::make("captcha_provider_{$site['id']}")
+                    ->label('Captcha provider')
+                    ->helperText('Kies welke captcha er voor de formulieren wordt gebruikt.')
+                    ->options([
+                        'none' => 'Geen',
+                        'google_recaptcha' => 'Google reCAPTCHA',
+                        'mcaptcha' => 'mCaptcha (self-hosted)',
+                    ])
+                    ->default('google_recaptcha')
+                    ->reactive()
+                    ->required(),
                 TextInput::make("google_recaptcha_site_key_{$site['id']}")
                     ->label('Google Recaptcha site key')
-                    ->helperText(new HtmlString('Dit moet specifiek ingebouwd worden in de formulieren. Maak een key en secret aan via <a href="https://www.google.com/recaptcha/admin/create" target="_blank" class="underline"><u>Google Recaptcha</u></a>.'))
+                    ->helperText(new HtmlString('Maak een key en secret aan via <a href="https://www.google.com/recaptcha/admin/create" target="_blank" class="underline"><u>Google Recaptcha</u></a>.'))
+                    ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'google_recaptcha')
                     ->reactive()
                     ->maxLength(255),
                 TextInput::make("google_recaptcha_secret_key_{$site['id']}")
                     ->label('Google Recaptcha secret key')
+                    ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'google_recaptcha')
                     ->required(fn (Get $get) => $get("google_recaptcha_site_key_{$site['id']}"))
+                    ->maxLength(255),
+                TextInput::make("mcaptcha_instance_url_{$site['id']}")
+                    ->label('mCaptcha instance URL')
+                    ->helperText('De basis URL van de zelf-gehoste mCaptcha, bv. https://captcha.example.com')
+                    ->placeholder('https://captcha.example.com')
+                    ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
+                    ->required(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
+                    ->url()
+                    ->maxLength(255),
+                TextInput::make("mcaptcha_site_key_{$site['id']}")
+                    ->label('mCaptcha sitekey')
+                    ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
+                    ->required(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
+                    ->maxLength(255),
+                TextInput::make("mcaptcha_secret_{$site['id']}")
+                    ->label('mCaptcha secret')
+                    ->helperText('Wordt alleen server-side gebruikt en niet in de HTML geladen.')
+                    ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
+                    ->required(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
+                    ->password()
+                    ->revealable()
                     ->maxLength(255),
                 TextInput::make("form_activecampaign_url_{$site['id']}")
                     ->label('ActiveCampaign API url')
@@ -123,8 +162,12 @@ class FormSettingsPage extends Page
             Customsetting::set('notification_form_inputs_emails', $emails, $site['id']);
             $formState["notification_form_inputs_emails_{$site['id']}"] = $emails;
 
+            Customsetting::set('captcha_provider', $this->form->getState()["captcha_provider_{$site['id']}"], $site['id']);
             Customsetting::set('google_recaptcha_site_key', $this->form->getState()["google_recaptcha_site_key_{$site['id']}"], $site['id']);
             Customsetting::set('google_recaptcha_secret_key', $this->form->getState()["google_recaptcha_secret_key_{$site['id']}"], $site['id']);
+            Customsetting::set('mcaptcha_instance_url', $this->form->getState()["mcaptcha_instance_url_{$site['id']}"], $site['id']);
+            Customsetting::set('mcaptcha_site_key', $this->form->getState()["mcaptcha_site_key_{$site['id']}"], $site['id']);
+            Customsetting::set('mcaptcha_secret', $this->form->getState()["mcaptcha_secret_{$site['id']}"], $site['id']);
             Customsetting::set('form_activecampaign_url', $this->form->getState()["form_activecampaign_url_{$site['id']}"], $site['id']);
             Customsetting::set('form_activecampaign_key', $this->form->getState()["form_activecampaign_key_{$site['id']}"], $site['id']);
             Customsetting::set('form_redirect_server_side', $this->form->getState()["form_redirect_server_side"], $site['id']);
