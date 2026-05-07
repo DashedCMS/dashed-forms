@@ -2,6 +2,15 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.1.1 - 2026-05-07
+
+### Added
+- mCaptcha (https://mcaptcha.org/) als alternatieve captcha-provider naast Google reCAPTCHA. Per site instelbaar via `FormSettingsPage` (`captcha_provider` setting met opties `none` / `google_recaptcha` / `mcaptcha`). Vraagt drie nieuwe Customsetting-velden voor mCaptcha: `mcaptcha_instance_url`, `mcaptcha_site_key`, `mcaptcha_secret`. Server-side validatie via `Dashed\DashedForms\Validations\ValidatesMcaptcha` LivewireAttribute (graceful fallback bij non-2xx of connection exception, met `Log::warning` voor operationele zichtbaarheid). Client-side widget via mCaptcha vanilla-glue script (CDN).
+- `<x-dashed-forms::captcha />`, `<x-dashed-forms::captcha-errors />` en `@captchaFormAttributes` Blade directive — gedeelde bouwstenen die in form-templates de juiste captcha-markup renderen op basis van de actieve provider. Consumer-projecten kunnen ze direct gebruiken; nieuwe providers later toevoegen vergt geen aanpassingen in de project-templates.
+
+### Changed
+- `Dashed\DashedForms\Validations\ValidatesRecaptcha` bailt nu vroeg als `captcha_provider !== 'google_recaptcha'`. Default voor sites zonder expliciete setting blijft `google_recaptcha` zodat bestaand gedrag onveranderd is.
+
 ## v4.1.0 - 2026-05-07
 
 ### Added
