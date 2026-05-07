@@ -6,8 +6,10 @@ use Attribute;
 use Closure;
 use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedTranslations\Models\Translation;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
 use function Livewire\trigger;
@@ -46,11 +48,22 @@ class ValidatesMcaptcha extends LivewireAttribute
                 ]);
         } catch (ConnectionException $e) {
             // mCaptcha-server unreachable: graceful degradation, let the form through.
+            Log::warning('mCaptcha verify unreachable, letting form through', [
+                'verify_url' => $verifyUrl,
+                'message' => $e->getMessage(),
+            ]);
+
             return;
         }
 
         if (! $response->successful()) {
-            // Non-200 from mCaptcha: graceful degradation, let the form through.
+            // Non-2xx from mCaptcha: graceful degradation, let the form through.
+            Log::warning('mCaptcha verify returned non-2xx, letting form through', [
+                'verify_url' => $verifyUrl,
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
             return;
         }
 
@@ -66,7 +79,7 @@ class ValidatesMcaptcha extends LivewireAttribute
 
         $returnEarly(
             trigger('exception', $this->component, ValidationException::withMessages([
-                'mcaptchaToken' => 'De captcha-validatie is mislukt, probeer het opnieuw.',
+                'mcaptchaToken' => Translation::get('mcaptcha-invalid', 'forms', 'De captcha-validatie is mislukt, probeer het opnieuw.'),
             ]), fn () => true)
         );
     }
