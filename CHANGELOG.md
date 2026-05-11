@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.2.0 - 2026-05-11
+
+### Added
+- **Form-submit voedt globale e-mail-captura.** `Livewire\Form::submit()` roept `Dashed\DashedCore\Classes\EmailCapture::capture()` aan voor elk veld met `type='email'` zodra het ingevulde adres opgeslagen is, met `source='form:{form name}'`. Hierdoor is het adres cross-page bereikbaar via `$capturedEmail` / `capturedEmail()` (vereist dashed-core ≥ v4.7.0).
+
 ## v4.1.2 - 2026-05-07
 
 ### Added

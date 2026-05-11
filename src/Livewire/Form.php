@@ -170,6 +170,13 @@ class Form extends Component
                     $sendToFieldValue = $value;
                 }
 
+                // Elke email-type-veldwaarde meteen in de globale captura
+                // stoppen — dit dekt alle losse formulieren (contact,
+                // nieuwsbrief, custom) zonder per form expliciete hooks.
+                if (($field->type ?? null) === 'email' && is_string($value)) {
+                    \Dashed\DashedCore\Classes\EmailCapture::capture($value, 'form:'.($formInput->form->name ?? 'unknown'));
+                }
+
                 $formValues[$field->name] = $field->type == 'file'
                     ? Storage::disk('dashed')->url($value)
                     : $value;
