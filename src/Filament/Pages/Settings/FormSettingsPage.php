@@ -150,27 +150,30 @@ class FormSettingsPage extends Page
     public function submit()
     {
         $sites = Sites::getSites();
-        $formState = $this->form->getState();
+        $state = $this->form->getState();
+        $formState = $state;
 
         foreach ($sites as $site) {
-            $emails = $this->form->getState()["notification_form_inputs_emails_{$site['id']}"];
+            $sid = $site['id'];
+
+            $emails = (array) ($state["notification_form_inputs_emails_{$sid}"] ?? []);
             foreach ($emails as $key => $email) {
                 if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     unset($emails[$key]);
                 }
             }
-            Customsetting::set('notification_form_inputs_emails', $emails, $site['id']);
-            $formState["notification_form_inputs_emails_{$site['id']}"] = $emails;
+            Customsetting::set('notification_form_inputs_emails', $emails, $sid);
+            $formState["notification_form_inputs_emails_{$sid}"] = $emails;
 
-            Customsetting::set('captcha_provider', $this->form->getState()["captcha_provider_{$site['id']}"], $site['id']);
-            Customsetting::set('google_recaptcha_site_key', $this->form->getState()["google_recaptcha_site_key_{$site['id']}"], $site['id']);
-            Customsetting::set('google_recaptcha_secret_key', $this->form->getState()["google_recaptcha_secret_key_{$site['id']}"], $site['id']);
-            Customsetting::set('mcaptcha_instance_url', $this->form->getState()["mcaptcha_instance_url_{$site['id']}"], $site['id']);
-            Customsetting::set('mcaptcha_site_key', $this->form->getState()["mcaptcha_site_key_{$site['id']}"], $site['id']);
-            Customsetting::set('mcaptcha_secret', $this->form->getState()["mcaptcha_secret_{$site['id']}"], $site['id']);
-            Customsetting::set('form_activecampaign_url', $this->form->getState()["form_activecampaign_url_{$site['id']}"], $site['id']);
-            Customsetting::set('form_activecampaign_key', $this->form->getState()["form_activecampaign_key_{$site['id']}"], $site['id']);
-            Customsetting::set('form_redirect_server_side', $this->form->getState()["form_redirect_server_side"], $site['id']);
+            Customsetting::set('captcha_provider', $state["captcha_provider_{$sid}"] ?? 'google_recaptcha', $sid);
+            Customsetting::set('google_recaptcha_site_key', $state["google_recaptcha_site_key_{$sid}"] ?? null, $sid);
+            Customsetting::set('google_recaptcha_secret_key', $state["google_recaptcha_secret_key_{$sid}"] ?? null, $sid);
+            Customsetting::set('mcaptcha_instance_url', $state["mcaptcha_instance_url_{$sid}"] ?? null, $sid);
+            Customsetting::set('mcaptcha_site_key', $state["mcaptcha_site_key_{$sid}"] ?? null, $sid);
+            Customsetting::set('mcaptcha_secret', $state["mcaptcha_secret_{$sid}"] ?? null, $sid);
+            Customsetting::set('form_activecampaign_url', $state["form_activecampaign_url_{$sid}"] ?? null, $sid);
+            Customsetting::set('form_activecampaign_key', $state["form_activecampaign_key_{$sid}"] ?? null, $sid);
+            Customsetting::set('form_redirect_server_side', $state['form_redirect_server_side'] ?? true, $sid);
         }
 
         $this->form->fill($formState);

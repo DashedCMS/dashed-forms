@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.2.2 - 2026-05-11
+
+### Fixed
+- **`FormSettingsPage::submit()` crashte met `Undefined array key "google_recaptcha_site_key_{site}"` zodra `captcha_provider` op iets anders dan `google_recaptcha` stond.** Filament v4 omit `visible()`-guarded fields uit `getState()`, waardoor de directe array-indexering een notice/error gooide. Alle `getState()`-accesses gebruiken nu `?? null` (resp. `?? []` voor emails en `?? true` voor de redirect-toggle) en de state wordt één keer opgehaald i.p.v. per setting.
+
 ## v4.2.1 - 2026-05-11
 
 ### Fixed
