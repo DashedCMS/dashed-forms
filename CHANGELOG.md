@@ -2,6 +2,12 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.2.1 - 2026-05-11
+
+### Fixed
+- **`EmailCapture` werd niet aangeroepen voor e-mail-velden in contact-/nieuwsbrief-formulieren.** In v4.2.0 controleerde de Livewire `Form::submit()` op `$field->type === 'email'`, maar `dashed-forms` gebruikt `type='input'` met `input_type='email'`. Conditie aangepast naar `type='input' && input_type='email'` óf een waarde die `FILTER_VALIDATE_EMAIL` passeert (vangt ook generieke text-velden met geldige adressen).
+- **`FormController::store()` (HTTP / non-Livewire) voedde de captura niet.** Dezelfde captura-loop toegevoegd zodat config-builder-formulieren ook werken.
+
 ## v4.2.0 - 2026-05-11
 
 ### Added

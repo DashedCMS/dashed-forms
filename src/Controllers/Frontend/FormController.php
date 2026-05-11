@@ -69,6 +69,16 @@ class FormController extends Controller
                 $formInput->locale = App::getLocale();
                 $formInput->save();
 
+                // Globale e-mail-captura — werkt zowel als het form
+                // een email-veld heeft als wanneer een willekeurig veld
+                // toevallig een geldig adres bevat.
+                foreach ($correctContent as $value) {
+                    if (is_string($value) && filter_var(trim($value), FILTER_VALIDATE_EMAIL)) {
+                        \Dashed\DashedCore\Classes\EmailCapture::capture($value, 'form:'.$formName);
+                        break;
+                    }
+                }
+
                 if ($formInput->should_send_api && (int) $formInput->api_send !== 1) {
                     SyncFormInputApisJob::dispatch($formInput->id);
                 }

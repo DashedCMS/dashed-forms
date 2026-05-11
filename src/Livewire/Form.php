@@ -170,10 +170,17 @@ class Form extends Component
                     $sendToFieldValue = $value;
                 }
 
-                // Elke email-type-veldwaarde meteen in de globale captura
+                // Elke email-veldwaarde meteen in de globale captura
                 // stoppen — dit dekt alle losse formulieren (contact,
                 // nieuwsbrief, custom) zonder per form expliciete hooks.
-                if (($field->type ?? null) === 'email' && is_string($value)) {
+                // dashed-forms gebruikt `type=input` met `input_type=email`
+                // voor e-mail-velden; daarnaast valideren we de waarde zelf
+                // zodat ook generieke text-velden met geldige adressen
+                // worden meegepakt.
+                if (is_string($value) && (
+                    (($field->type ?? null) === 'input' && ($field->input_type ?? null) === 'email')
+                    || filter_var(trim($value), FILTER_VALIDATE_EMAIL)
+                )) {
                     \Dashed\DashedCore\Classes\EmailCapture::capture($value, 'form:'.($formInput->form->name ?? 'unknown'));
                 }
 
