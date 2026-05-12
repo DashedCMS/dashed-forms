@@ -190,6 +190,17 @@ class Form extends Component
             }
         }
 
+        // FormSubmitted event lets downstream marketing listeners (newsletter
+        // enrolment, lead-flow signup, etc.) react without coupling form-input
+        // persistence to specific consumers.
+        event(new \Dashed\DashedForms\Events\FormSubmitted(
+            form_id: (int) $formInput->form_id,
+            form_input_id: (int) $formInput->id,
+            email: $sendToFieldValue ?? null,
+            locale: $formInput->locale ?: app()->getLocale(),
+            site_id: $formInput->site_id,
+        ));
+
         if ($formInput->should_send_api && (int) $formInput->api_send !== 1) {
             SyncFormInputApisJob::dispatch($formInput->id);
         }
