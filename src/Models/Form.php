@@ -20,6 +20,20 @@ class Form extends Model
 
     protected $table = 'dashed__forms';
 
+    /**
+     * Minimal fillable: only the columns that Filament-driven admin code
+     * needs to mass-assign. Existing call-sites that use `forceFill()` or
+     * explicit property assignment keep working unchanged.
+     */
+    protected $fillable = [
+        'enrollment_flow_id',
+    ];
+
+    public function enrollmentFlow(): BelongsTo
+    {
+        return $this->belongsTo(\Dashed\DashedPopups\Models\PopupFollowUpFlow::class, 'enrollment_flow_id');
+    }
+
     protected static function booted()
     {
         static::deleting(function ($form) {

@@ -79,6 +79,16 @@ class FormResource extends Resource
             Select::make('email_confirmation_form_field_id')
                 ->label('Email bevestiging veld voor de klant')
                 ->options(fn ($record) => $record ? $record->fields()->where('type', 'input')->where('input_type', 'email')->pluck('name', 'id') : []),
+            Select::make('enrollment_flow_id')
+                ->label('Marketing-flow voor inschrijving na inzending')
+                ->helperText('Stuur een inzender automatisch door naar deze opvolg-flow nadat ze het formulier hebben verzonden.')
+                ->options(fn () => class_exists(\Dashed\DashedPopups\Models\PopupFollowUpFlow::class)
+                    ? \Dashed\DashedPopups\Models\PopupFollowUpFlow::query()->orderBy('name')->pluck('name', 'id')->toArray()
+                    : [])
+                ->placeholder('Geen flow')
+                ->searchable()
+                ->preload()
+                ->nullable(),
             TagsInput::make("notification_form_inputs_emails")
                 ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
                 ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
