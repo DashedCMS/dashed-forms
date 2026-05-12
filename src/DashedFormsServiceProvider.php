@@ -23,6 +23,16 @@ class DashedFormsServiceProvider extends PackageServiceProvider
     {
         cms()->registerNavigationGroup('Formulieren', 50);
 
+        // Forms owns the canonical recaptcha key; core also registers it for
+        // back-compat but forms registers later in the boot order so it wins.
+        cms()->registerSetting(
+            key: 'google_recaptcha_site_key',
+            type: 'string',
+            default: null,
+            package: 'dashed-forms',
+            label: 'Google reCAPTCHA site key',
+        );
+
         cms()
             ->registerMailable(\Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail::class)
             ->registerMailable(\Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail::class)
