@@ -2,19 +2,20 @@
 
 namespace Dashed\DashedForms\Models;
 
-use Spatie\Activitylog\LogOptions;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
+use Dashed\DashedPopups\Models\PopupFollowUpFlow;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Translatable\HasTranslations;
 
 class Form extends Model
 {
-    use LogsActivity;
-    use HasTranslations;
     use HasCustomBlocks;
+    use HasTranslations;
+    use LogsActivity;
 
     protected static $logFillable = true;
 
@@ -31,7 +32,7 @@ class Form extends Model
 
     public function enrollmentFlow(): BelongsTo
     {
-        return $this->belongsTo(\Dashed\DashedPopups\Models\PopupFollowUpFlow::class, 'enrollment_flow_id');
+        return $this->belongsTo(PopupFollowUpFlow::class, 'enrollment_flow_id');
     }
 
     protected static function booted()
@@ -80,7 +81,7 @@ class Form extends Model
         if (request()->get('search') ?: $search) {
             $search = strtolower(request()->get('search') ?: $search);
 
-            return $query->where('name', 'LIKE', '%' . $search . '%');
+            return $query->where('name', 'LIKE', '%'.$search.'%');
         }
     }
 }

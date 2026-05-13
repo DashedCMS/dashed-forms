@@ -2,17 +2,17 @@
 
 namespace Dashed\DashedForms\Mail;
 
-use Illuminate\Support\Str;
+use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
+use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
+use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedTranslations\Models\Translation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Dashed\DashedForms\Models\FormInput;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedTranslations\Models\Translation;
-use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
-use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
-use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
-use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
+use Illuminate\Support\Str;
 
 class AdminCustomFormSubmitConfirmationMail extends Mailable implements RegistersEmailTemplate, SendsToTelegram
 {
@@ -85,7 +85,7 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
             'siteName' => Customsetting::get('site_name'),
         ];
 
-        $fallbackSubject = Translation::get('admin-form-confirmation-' . Str::slug($this->formInput->form->name) . '-email-subject', 'forms', 'Het formulier :name: is ingevuld!', 'text', [
+        $fallbackSubject = Translation::get('admin-form-confirmation-'.Str::slug($this->formInput->form->name).'-email-subject', 'forms', 'Het formulier :name: is ingevuld!', 'text', [
             'name' => $this->formInput->form->name,
         ]);
 
@@ -97,7 +97,7 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
                 ->from($fromEmail, $fromName)
                 ->subject($this->templateSubject($fallbackSubject, $context));
         } else {
-            $mail = $this->view(config('dashed-core.site_theme', 'dashed') . '.emails.admin-custom-confirm-form-submit')
+            $mail = $this->view(config('dashed-core.site_theme', 'dashed').'.emails.admin-custom-confirm-form-submit')
                 ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))
                 ->subject($fallbackSubject)
                 ->with(['formInput' => $this->formInput]);

@@ -2,38 +2,48 @@
 
 namespace Dashed\DashedForms\Livewire;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\App;
+use Dashed\DashedCore\Classes\EmailCapture;
 use Dashed\DashedCore\Classes\Sites;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedCore\Notifications\AdminNotifier;
+use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedForms\Events\FormSubmitted;
+use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
+use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
+use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Dashed\DashedForms\Models\FormField;
 use Dashed\DashedForms\Models\FormInput;
-use Filament\Notifications\Notification;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedForms\Enums\MailingProviders;
-use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
-use Dashed\DashedTranslations\Models\Translation;
-use Dashed\DashedCore\Notifications\AdminNotifier;
 use Dashed\DashedForms\Validations\ValidatesMcaptcha;
 use Dashed\DashedForms\Validations\ValidatesRecaptcha;
-use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
-use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
+use Dashed\DashedTranslations\Models\Translation;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 
 class Form extends Component
 {
     use WithFileUploads;
 
     public \Dashed\DashedForms\Models\Form $form;
+
     public array $values = [];
+
     public array $blockData = [];
+
     public array $inputData = [];
+
     public bool $formSent = false;
+
     public bool $singleColumn = false;
+
     public ?string $buttonTitle = '';
 
     public string $gRecaptchaResponse = ''; // wordt door de package gebruikt
+
     public string $mcaptchaToken = ''; // gevuld door mCaptcha vanilla-glue script
 
     protected $listeners = [
@@ -77,8 +87,8 @@ class Form extends Component
                 'radio' => $field->required ? $this->values[$field->fieldName] = ($field->options[0]['name'] ?? []) : [],
                 'select' => $this->values[$field->fieldName] = ($field->options[0]['name'] ?? null),
                 'select-image' => $this->values[$field->fieldName] = ($field->options[0]['image'] ?? null),
-                'input' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[(string)str($field->name)->slug()] ?? ''),
-                'textarea' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[(string)str($field->name)->slug()] ?? ''),
+                'input' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[(string) str($field->name)->slug()] ?? ''),
+                'textarea' => $this->values[$field->fieldName] = request()->get(str($field->name)->slug(), $this->inputData[(string) str($field->name)->slug()] ?? ''),
                 'file' => $this->values[$field->fieldName] = '',
                 default => null,
             };
@@ -100,7 +110,7 @@ class Form extends Component
             $rules[] = 'string';
 
             if ($field->regex) {
-                $rules[] = 'regex:' . $field->regex;
+                $rules[] = 'regex:'.$field->regex;
             }
         }
 
@@ -115,14 +125,14 @@ class Form extends Component
     protected function validationAttributes()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => strtolower($field->name)])
+            ->flatMap(fn (FormField $field) => ['values.'.$field->fieldName => strtolower($field->name)])
             ->toArray();
     }
 
     public function rules()
     {
         return collect($this->formFields)
-            ->flatMap(fn (FormField $field) => ['values.' . $field->fieldName => $this->mapRules($field)])
+            ->flatMap(fn (FormField $field) => ['values.'.$field->fieldName => $this->mapRules($field)])
             ->toArray();
     }
 
@@ -140,7 +150,7 @@ class Form extends Component
         // 2. Rest van je oorspronkelijke flow
         $formValues = [];
 
-        $formInput = new FormInput();
+        $formInput = new FormInput;
         $formInput->form_id = $this->form->id;
         $formInput->ip = request()->ip();
         $formInput->user_agent = request()->userAgent();
@@ -181,7 +191,7 @@ class Form extends Component
                     (($field->type ?? null) === 'input' && ($field->input_type ?? null) === 'email')
                     || filter_var(trim($value), FILTER_VALIDATE_EMAIL)
                 )) {
-                    \Dashed\DashedCore\Classes\EmailCapture::capture($value, 'form:'.($formInput->form->name ?? 'unknown'));
+                    EmailCapture::capture($value, 'form:'.($formInput->form->name ?? 'unknown'));
                 }
 
                 $formValues[$field->name] = $field->type == 'file'
@@ -193,7 +203,7 @@ class Form extends Component
         // FormSubmitted event lets downstream marketing listeners (newsletter
         // enrolment, lead-flow signup, etc.) react without coupling form-input
         // persistence to specific consumers.
-        event(new \Dashed\DashedForms\Events\FormSubmitted(
+        event(new FormSubmitted(
             form_id: (int) $formInput->form_id,
             form_input_id: (int) $formInput->id,
             email: $sendToFieldValue ?? null,
@@ -234,7 +244,7 @@ class Form extends Component
 
         Notification::make()
             ->success()
-            ->body(Translation::get('your-form-' . str($this->form->name)->slug() . '-has-been-sent', 'form', 'Je bericht is verzonden!'))
+            ->body(Translation::get('your-form-'.str($this->form->name)->slug().'-has-been-sent', 'form', 'Je bericht is verzonden!'))
             ->send();
 
         $redirectUrl = $this->form->redirect_after_form ? linkHelper()->getUrl($this->form->redirect_after_form) : '';
@@ -253,10 +263,10 @@ class Form extends Component
 
     public function updated($name, $value)
     {
-        if ($value instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+        if ($value instanceof TemporaryUploadedFile) {
             $path = $value->storeAs(
                 'dashed',
-                "forms/form-{$this->form->name}-" . time() . '.' . $value->getClientOriginalExtension(),
+                "forms/form-{$this->form->name}-".time().'.'.$value->getClientOriginalExtension(),
                 'dashed'
             );
 
@@ -271,10 +281,10 @@ class Form extends Component
 
     public function render()
     {
-        if (view()->exists('dashed.forms.' . str($this->form->name)->slug() . '-form')) {
-            return view(config('dashed-core.site_theme', 'dashed') . '.forms.' . str($this->form->name)->slug() . '-form');
+        if (view()->exists('dashed.forms.'.str($this->form->name)->slug().'-form')) {
+            return view(config('dashed-core.site_theme', 'dashed').'.forms.'.str($this->form->name)->slug().'-form');
         }
 
-        return view(config('dashed-core.site_theme', 'dashed') . '.forms.form');
+        return view(config('dashed-core.site_theme', 'dashed').'.forms.form');
     }
 }

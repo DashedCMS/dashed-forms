@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedForms\Commands;
 
-use Illuminate\Console\Command;
 use Dashed\DashedForms\Models\FormInput;
+use Illuminate\Console\Command;
 
 class SendWebhooksForFormInputs extends Command
 {

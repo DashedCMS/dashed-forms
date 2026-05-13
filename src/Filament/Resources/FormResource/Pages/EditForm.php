@@ -2,21 +2,22 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
+use Dashed\DashedCore\Classes\Locales;
+use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Models\FormField;
+use Dashed\DashedTranslations\Classes\AutomatedTranslation;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
-use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedForms\Models\FormField;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Dashed\DashedForms\Filament\Resources\FormResource;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
-use Dashed\DashedTranslations\Classes\AutomatedTranslation;
 use LaraZeus\SpatieTranslatable\Resources\Pages\EditRecord\Concerns\Translatable;
 
 class EditForm extends EditRecord
 {
     use Translatable;
+
     protected static string $resource = FormResource::class;
 
     protected function getActions(): array
@@ -79,8 +80,8 @@ class EditForm extends EditRecord
         foreach ($data as $key => $value) {
             if (str($key)->contains('redirect_after_form')) {
                 $key = str($key)->replace('redirect_after_form_', '');
-                $data['redirect_after_form']['url_' . $key] = $data['redirect_after_form_' . $key] ?? '';
-                unset($data['redirect_after_form_' . $key]);
+                $data['redirect_after_form']['url_'.$key] = $data['redirect_after_form_'.$key] ?? '';
+                unset($data['redirect_after_form_'.$key]);
             }
         }
 
@@ -94,7 +95,7 @@ class EditForm extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         foreach ($data['redirect_after_form'] ?? [] as $key => $value) {
-            $data['redirect_after_form_' . str($key)->replace('url_', '')] = $value;
+            $data['redirect_after_form_'.str($key)->replace('url_', '')] = $value;
         }
 
         unset($data['redirect_after_form']);

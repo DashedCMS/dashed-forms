@@ -2,21 +2,21 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Illuminate\Support\Str;
-use Filament\Actions\Action;
-use Filament\Schemas\Schema;
-use Filament\Resources\Pages\Page;
-use Dashed\DashedCore\Classes\Sites;
-use Filament\Schemas\Components\Flex;
 use Dashed\DashedCore\Classes\Locales;
-use Illuminate\Support\Facades\Storage;
-use Dashed\DashedForms\Models\FormInput;
-use Filament\Schemas\Components\Section;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Contracts\HasInfolists;
+use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Models\FormInput;
+use Filament\Actions\Action;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Resources\Pages\Page;
+use Filament\Schemas\Components\Flex;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ViewFormInput extends Page implements HasInfolists
 {
@@ -95,7 +95,7 @@ class ViewFormInput extends Page implements HasInfolists
         if ($this->record->content) {
             foreach ($this->record->content as $key => $value) {
                 $label = Str::of($key)->replace('_', ' ')->title();
-                $name = 'content_' . Str::slug((string)$key, '_');
+                $name = 'content_'.Str::slug((string) $key, '_');
 
                 $inputFields[] = TextEntry::make($name)
                     ->label($label)
@@ -103,8 +103,8 @@ class ViewFormInput extends Page implements HasInfolists
             }
         } else {
             foreach ($this->record->formFields as $field) {
-                $id = (string)($field->formField->id ?? Str::random(8));
-                $name = 'field_' . $id;
+                $id = (string) ($field->formField->id ?? Str::random(8));
+                $name = 'field_'.$id;
 
                 if ($field->isImage()) {
                     if ($field->formField->type === 'select-image') {
@@ -121,7 +121,7 @@ class ViewFormInput extends Page implements HasInfolists
                                 ->helperText('Klik de afbeelding om te openen')
                                 ->state($field->value);
                         } else {
-                            $inputFields[] = TextEntry::make($name . '_download')
+                            $inputFields[] = TextEntry::make($name.'_download')
                                 ->state($field->formField->name)
                                 ->label('Download bestand')
                                 ->url(Storage::disk('dashed')->url($field->value))

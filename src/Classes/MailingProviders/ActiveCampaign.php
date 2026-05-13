@@ -2,18 +2,20 @@
 
 namespace Dashed\DashedForms\Classes\MailingProviders;
 
-use Exception;
-use Illuminate\Support\Facades\Http;
-use Filament\Forms\Components\Select;
-use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Models\FormInput;
+use Exception;
+use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Http;
 
 class ActiveCampaign
 {
     public $name = 'ActiveCampaign';
+
     public $slug = 'active_campaign';
 
     private string $url = '';
+
     private string $key = '';
 
     public bool $connected = false;
@@ -32,11 +34,11 @@ class ActiveCampaign
     {
         try {
             return Http::withHeaders([
-                    'Api-Token' => $this->key,
-                    'accept' => 'application/json',
-                ])
-                    ->get("$this->url/api/3/accounts")
-                    ->status() === 200;
+                'Api-Token' => $this->key,
+                'accept' => 'application/json',
+            ])
+                ->get("$this->url/api/3/accounts")
+                ->status() === 200;
         } catch (Exception $exception) {
             return false;
         }
@@ -45,10 +47,10 @@ class ActiveCampaign
     public function getFormSchema(): array
     {
         return [
-//            Select::make("external_options.{$this->slug}_list_id")
-//                ->label('Kies een lijst')
-//                ->options(collect($this->getLists())->pluck('name', 'stringid'))
-//                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
+            //            Select::make("external_options.{$this->slug}_list_id")
+            //                ->label('Kies een lijst')
+            //                ->options(collect($this->getLists())->pluck('name', 'stringid'))
+            //                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
             Select::make("external_options.{$this->slug}_tags")
                 ->label('Kies tags om toe te voegen aan het contact')
                 ->options(collect($this->getTags())->pluck('tag', 'id'))

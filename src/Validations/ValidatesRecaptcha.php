@@ -2,15 +2,17 @@
 
 namespace Dashed\DashedForms\Validations;
 
-use Closure;
 use Attribute;
-
-use function Livewire\wrap;
-use function Livewire\trigger;
-
+use Closure;
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedCore\Models\Customsetting;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\ValidationException;
 use Livewire\Features\SupportAttributes\Attribute as LivewireAttribute;
+
+use function Livewire\trigger;
+use function Livewire\wrap;
 
 #[Attribute]
 class ValidatesRecaptcha extends LivewireAttribute
@@ -24,15 +26,16 @@ class ValidatesRecaptcha extends LivewireAttribute
     }
 
     /**
-     * @param array<mixed> $params
-     * @param \Closure(?\Closure $closure): void $returnEarly
-     * @throws \Illuminate\Http\Client\ConnectionException
+     * @param  array<mixed>  $params
+     * @param  Closure(?Closure $closure): void  $returnEarly
+     *
+     * @throws ConnectionException
      */
     public function call(array $params, Closure $returnEarly): void
     {
-        $provider = \Dashed\DashedCore\Models\Customsetting::get(
+        $provider = Customsetting::get(
             'captcha_provider',
-            \Dashed\DashedCore\Classes\Sites::getActive(),
+            Sites::getActive(),
             'google_recaptcha'
         );
         if ($provider !== 'google_recaptcha') {

@@ -2,16 +2,16 @@
 
 namespace Dashed\DashedForms\Mail;
 
+use Dashed\DashedCore\Classes\Sites;
+use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
+use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
+use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
+use Dashed\DashedTranslations\Models\Translation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
-use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Queue\SerializesModels;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedTranslations\Models\Translation;
-use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
-use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
-use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
-use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
 
 class FormInputsExportMail extends Mailable implements RegistersEmailTemplate, SendsToTelegram
 {
@@ -67,8 +67,8 @@ class FormInputsExportMail extends Mailable implements RegistersEmailTemplate, S
             [$fromEmail, $fromName] = $this->templateFrom(Customsetting::get('site_from_email'), Customsetting::get('site_name'));
             $mail = $this->html($templateHtml)->from($fromEmail, $fromName)->subject($subject);
         } else {
-            $view = view()->exists(config('dashed-core.site_theme', 'dashed') . '.emails.exported-form-inputs')
-                ? config('dashed-core.site_theme', 'dashed') . '.emails.exported-form-inputs'
+            $view = view()->exists(config('dashed-core.site_theme', 'dashed').'.emails.exported-form-inputs')
+                ? config('dashed-core.site_theme', 'dashed').'.emails.exported-form-inputs'
                 : 'dashed-forms::emails.exported-form-inputs';
 
             $mail = $this->view($view)
@@ -79,7 +79,7 @@ class FormInputsExportMail extends Mailable implements RegistersEmailTemplate, S
                 ]);
         }
 
-        $mail->attachFromStorageDisk('public', 'dashed/tmp-exports/' . $this->hash . '/forms/form-data.xlsx', Customsetting::get('site_name') . ' - geëxporteerde formulier invoer.xlsx');
+        $mail->attachFromStorageDisk('public', 'dashed/tmp-exports/'.$this->hash.'/forms/form-data.xlsx', Customsetting::get('site_name').' - geëxporteerde formulier invoer.xlsx');
 
         return $mail;
     }

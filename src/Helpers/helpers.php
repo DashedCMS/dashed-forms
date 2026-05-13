@@ -1,6 +1,5 @@
 <?php
 
-
 use Dashed\DashedForms\FormManager;
 
 if (! function_exists('forms')) {

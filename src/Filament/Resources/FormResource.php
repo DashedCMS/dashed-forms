@@ -2,50 +2,57 @@
 
 namespace Dashed\DashedForms\Filament\Resources;
 
-use Closure;
-use UnitEnum;
 use BackedEnum;
-use Filament\Tables\Table;
-use Filament\Actions\Action;
-use Filament\Schemas\Schema;
-use Filament\Actions\EditAction;
-use Filament\Resources\Resource;
-use Dashed\DashedCore\Models\User;
-use Filament\Actions\DeleteAction;
-use Dashed\DashedForms\Classes\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Repeater;
-use Filament\Tables\Columns\TextColumn;
-use Dashed\DashedForms\Models\FormInput;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\FileUpload;
-use Dashed\DashedForms\Enums\MailingProviders;
-use Filament\Schemas\Components\Utilities\Get;
+use Closure;
+use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
 use Dashed\DashedCore\Classes\QueryHelpers\SearchQuery;
 use Dashed\DashedCore\Filament\Concerns\HasCustomBlocksTab;
-use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
-use Dashed\DashedCore\Classes\Actions\ActionGroups\ToolbarActions;
+use Dashed\DashedCore\Models\User;
+use Dashed\DashedForms\Classes\Forms;
+use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\EditForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ListForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewForm;
-use Dashed\DashedForms\Filament\Resources\FormResource\Pages\CreateForm;
 use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
+use Dashed\DashedForms\Models\Form;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedPopups\Models\PopupFollowUpFlow;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
+use UnitEnum;
 
 class FormResource extends Resource
 {
-    use Translatable;
     use HasCustomBlocksTab;
+    use Translatable;
 
-    protected static ?string $model = \Dashed\DashedForms\Models\Form::class;
+    protected static ?string $model = Form::class;
+
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-archive-box';
-    protected static string | UnitEnum | null $navigationGroup = 'Formulieren';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-archive-box';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Formulieren';
+
     protected static ?string $label = 'Formulier';
+
     protected static ?string $pluralLabel = 'Formulieren';
+
     protected static bool $isGloballySearchable = false;
 
     protected static ?int $navigationSort = 5;
@@ -82,14 +89,14 @@ class FormResource extends Resource
             Select::make('enrollment_flow_id')
                 ->label('Marketing-flow voor inschrijving na inzending')
                 ->helperText('Stuur een inzender automatisch door naar deze opvolg-flow nadat ze het formulier hebben verzonden.')
-                ->options(fn () => class_exists(\Dashed\DashedPopups\Models\PopupFollowUpFlow::class)
-                    ? \Dashed\DashedPopups\Models\PopupFollowUpFlow::query()->orderBy('name')->pluck('name', 'id')->toArray()
+                ->options(fn () => class_exists(PopupFollowUpFlow::class)
+                    ? PopupFollowUpFlow::query()->orderBy('name')->pluck('name', 'id')->toArray()
                     : [])
                 ->placeholder('Geen flow')
                 ->searchable()
                 ->preload()
                 ->nullable(),
-            TagsInput::make("notification_form_inputs_emails")
+            TagsInput::make('notification_form_inputs_emails')
                 ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
                 ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
                 ->helperText('Vul hier de emails in waar de bevestigingsmail naartoe gestuurd moet worden, indien je dit leeg laat worden de standaard emails gebruikt')
@@ -141,7 +148,7 @@ class FormResource extends Resource
             $provider = $provider->getClass();
             if ($provider->connected) {
                 $schema[] = Toggle::make("external_options.send_to_$provider->slug")
-                    ->label('Verstuur naar ' . $provider->name)
+                    ->label('Verstuur naar '.$provider->name)
                     ->reactive();
                 $schema = array_merge($schema, $provider->getFormSchema());
             }
@@ -175,7 +182,7 @@ class FormResource extends Resource
             TextInput::make('regex')
                 ->label('Regex validatie')
                 ->hintActions([
-                    \Filament\Actions\Action::make('testRegex')
+                    Action::make('testRegex')
                         ->label('Test regex')
                         ->url('https://regex101.com')
                         ->openUrlInNewTab(),

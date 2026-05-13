@@ -2,14 +2,14 @@
 
 namespace Dashed\DashedForms\Exports;
 
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromArray;
 
 class ExportFormData implements FromArray
 {
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
-
     protected $records;
 
     public function __construct($records)

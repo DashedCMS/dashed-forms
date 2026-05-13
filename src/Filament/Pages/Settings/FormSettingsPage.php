@@ -2,38 +2,43 @@
 
 namespace Dashed\DashedForms\Filament\Pages\Settings;
 
-use UnitEnum;
 use BackedEnum;
-use Filament\Pages\Page;
-use Filament\Schemas\Schema;
-use Dashed\DashedCore\Models\User;
-use Illuminate\Support\HtmlString;
 use Dashed\DashedCore\Classes\Sites;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Tabs;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs\Tab;
 use Dashed\DashedCore\Models\Customsetting;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Utilities\Get;
+use Dashed\DashedCore\Models\User;
 use Dashed\DashedCore\Traits\HasSettingsPermission;
 use Dashed\DashedForms\Classes\MailingProviders\ActiveCampaign;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
+use UnitEnum;
 
 class FormSettingsPage extends Page
 {
     use HasSettingsPermission;
 
-    protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-bell';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-bell';
+
     protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationLabel = 'Formulier instellingen';
-    protected static string | UnitEnum | null $navigationGroup = 'Overige';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Overige';
+
     protected static ?string $title = 'Formulier instellingen';
 
     protected string $view = 'dashed-core::settings.pages.default-settings';
+
     public array $data = [];
 
     public function mount(): void
@@ -43,7 +48,7 @@ class FormSettingsPage extends Page
         $sites = Sites::getSites();
         foreach ($sites as $site) {
             $formData["notification_form_inputs_emails_{$site['id']}"] = Customsetting::get('notification_form_inputs_emails', $site['id'], []);
-            $formData["form_redirect_server_side"] = Customsetting::get('form_redirect_server_side', null, true);
+            $formData['form_redirect_server_side'] = Customsetting::get('form_redirect_server_side', null, true);
             $formData["form_activecampaign_url_{$site['id']}"] = Customsetting::get('form_activecampaign_url', $site['id']);
             $formData["form_activecampaign_key_{$site['id']}"] = Customsetting::get('form_activecampaign_key', $site['id']);
             $formData["google_recaptcha_site_key_{$site['id']}"] = Customsetting::get('google_recaptcha_site_key', $site['id']);
@@ -119,7 +124,7 @@ class FormSettingsPage extends Page
                     ->maxLength(255),
                 TextInput::make("form_activecampaign_url_{$site['id']}")
                     ->label('ActiveCampaign API url')
-                    ->helperText('ActiveCampaign actief: ' . ($activeCampaign->connected ? 'Ja' : 'Nee'))
+                    ->helperText('ActiveCampaign actief: '.($activeCampaign->connected ? 'Ja' : 'Nee'))
                     ->reactive(),
                 TextInput::make("form_activecampaign_key_{$site['id']}")
                     ->label('ActiveCampaign API key')
@@ -140,7 +145,7 @@ class FormSettingsPage extends Page
         return $schema->schema(array_merge($tabGroups, [
             Section::make('Algemene formulier instellingen')->columnSpanFull()
                 ->schema([
-                    Toggle::make("form_redirect_server_side")
+                    Toggle::make('form_redirect_server_side')
                         ->label('Doe de redirects server side'),
                 ]),
         ]))

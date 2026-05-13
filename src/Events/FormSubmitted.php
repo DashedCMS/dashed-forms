@@ -22,6 +22,5 @@ class FormSubmitted
         public ?string $email,
         public string $locale,
         public ?int $site_id = null,
-    ) {
-    }
+    ) {}
 }

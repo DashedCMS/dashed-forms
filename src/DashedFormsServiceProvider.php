@@ -2,18 +2,25 @@
 
 namespace Dashed\DashedForms;
 
-use Livewire\Livewire;
 use Dashed\DashedCore\Classes\Sites;
-use Illuminate\Support\Facades\Gate;
-use Dashed\DashedForms\Livewire\Form;
-use Illuminate\Support\Facades\Blade;
-use Spatie\LaravelPackageTools\Package;
 use Dashed\DashedCore\Models\Customsetting;
-use Illuminate\Console\Scheduling\Schedule;
 use Dashed\DashedForms\Commands\SendApisForFormInputs;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Dashed\DashedForms\Commands\SendWebhooksForFormInputs;
 use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
+use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Livewire\Form;
+use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
+use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
+use Dashed\DashedForms\Mail\EmailBlocks\FormSubmissionBlock;
+use Dashed\DashedForms\Mail\FormInputsExportMail;
+use Dashed\DashedForms\Policies\FormPolicy;
+use Dashed\DashedForms\Services\Summary\FormSummaryContributor;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
+use Livewire\Livewire;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class DashedFormsServiceProvider extends PackageServiceProvider
 {
@@ -34,10 +41,10 @@ class DashedFormsServiceProvider extends PackageServiceProvider
         );
 
         cms()
-            ->registerMailable(\Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail::class)
-            ->registerMailable(\Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail::class)
-            ->registerMailable(\Dashed\DashedForms\Mail\FormInputsExportMail::class)
-            ->emailBlock(\Dashed\DashedForms\Mail\EmailBlocks\FormSubmissionBlock::key(), \Dashed\DashedForms\Mail\EmailBlocks\FormSubmissionBlock::class);
+            ->registerMailable(CustomFormSubmitConfirmationMail::class)
+            ->registerMailable(AdminCustomFormSubmitConfirmationMail::class)
+            ->registerMailable(FormInputsExportMail::class)
+            ->emailBlock(FormSubmissionBlock::key(), FormSubmissionBlock::class);
 
         Livewire::component('dashed-forms.form', Form::class);
 
@@ -53,7 +60,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
         config(['services.mcaptcha.site_key' => Customsetting::get('mcaptcha_site_key', Sites::getActive(), '')]);
         config(['services.mcaptcha.secret' => Customsetting::get('mcaptcha_secret', Sites::getActive(), '')]);
 
-        Blade::anonymousComponentPath(__DIR__ . '/../resources/views/components', 'dashed-forms');
+        Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'dashed-forms');
 
         Blade::directive('captchaFormAttributes', function () {
             return "<?php
@@ -68,7 +75,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             ?>";
         });
 
-        Gate::policy(\Dashed\DashedForms\Models\Form::class, \Dashed\DashedForms\Policies\FormPolicy::class);
+        Gate::policy(Models\Form::class, FormPolicy::class);
 
         cms()->registerRolePermissions('Formulieren', [
             'view_form' => 'Formulieren bekijken',
@@ -78,17 +85,17 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
         cms()->builder('summaryContributors', array_merge(
             cms()->builder('summaryContributors') ?? [],
-            [\Dashed\DashedForms\Services\Summary\FormSummaryContributor::class],
+            [FormSummaryContributor::class],
         ));
 
         cms()->registerResourceDocs(
-            resource: \Dashed\DashedForms\Filament\Resources\FormResource::class,
+            resource: FormResource::class,
             title: 'Formulieren',
             intro: 'Met de formulier builder maak je zelf formulieren voor op de website, bijvoorbeeld een contactformulier, een offerteaanvraag of een inschrijving. Je bepaalt welke velden erin komen en wat er met de inzendingen gebeurt.',
             sections: [
                 [
                     'heading' => 'Wat kun je hier doen?',
-                    'body' => <<<MARKDOWN
+                    'body' => <<<'MARKDOWN'
 - Nieuwe formulieren opbouwen met flexibele velden.
 - Bestaande formulieren aanpassen of tijdelijk offline zetten.
 - De inzendingen per formulier bekijken via de knop "Bekijk aanvragen".
@@ -97,7 +104,7 @@ MARKDOWN,
                 ],
                 [
                     'heading' => 'Velden toevoegen',
-                    'body' => <<<MARKDOWN
+                    'body' => <<<'MARKDOWN'
 Een formulier bouw je op uit losse velden die je onder elkaar plaatst. Beschikbare types zijn onder andere:
 
 - **Tekst** voor korte antwoorden zoals een naam of onderwerp.
@@ -121,7 +128,7 @@ MARKDOWN,
         );
 
         cms()->registerSettingsDocs(
-            page: \Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage::class,
+            page: FormSettingsPage::class,
             title: 'Formulieren instellingen',
             intro: 'Hier regel je alles rond formulier inzendingen: naar welke e-mailadressen meldingen gaan, welke captcha (Google reCAPTCHA of zelf-gehoste mCaptcha) er gebruikt wordt tegen spam, en of inzendingen automatisch in ActiveCampaign komen. De meeste velden zijn per site.',
             sections: [
@@ -135,7 +142,7 @@ MARKDOWN,
                 ],
                 [
                     'heading' => 'Hoe koppel je Google reCAPTCHA?',
-                    'body' => <<<MARKDOWN
+                    'body' => <<<'MARKDOWN'
 1. Ga naar [google.com/recaptcha/admin](https://www.google.com/recaptcha/admin) en log in met je Google account.
 2. Klik op **Een site toevoegen** en geef je website een herkenbare naam.
 3. Kies het type reCAPTCHA dat je wil gebruiken en voeg je domeinnaam toe.
@@ -146,7 +153,7 @@ MARKDOWN,
                 ],
                 [
                     'heading' => 'Hoe koppel je mCaptcha?',
-                    'body' => <<<MARKDOWN
+                    'body' => <<<'MARKDOWN'
 1. Zorg dat er een mCaptcha-instance draait (zie [mcaptcha.org](https://mcaptcha.org)).
 2. Maak in mCaptcha een sitekey aan voor het domein van deze website.
 3. Kopieer de **instance URL** (bijv. `https://captcha.example.com`), de **sitekey** en de **secret**.
@@ -156,7 +163,7 @@ MARKDOWN,
                 ],
                 [
                     'heading' => 'Hoe koppel je ActiveCampaign?',
-                    'body' => <<<MARKDOWN
+                    'body' => <<<'MARKDOWN'
 1. Log in op je ActiveCampaign account.
 2. Ga naar **Settings > Developer**.
 3. Kopieer de **API URL** en de **API Key** die je daar ziet staan.
@@ -187,11 +194,11 @@ MARKDOWN,
 
     public function configurePackage(Package $package): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $this->publishes([
-            __DIR__ . '/../resources/templates' => resource_path('views/' . config('dashed-core.site_theme', 'dashed')),
-            __DIR__ . '/../resources/component-templates' => resource_path('views/components'),
+            __DIR__.'/../resources/templates' => resource_path('views/'.config('dashed-core.site_theme', 'dashed')),
+            __DIR__.'/../resources/component-templates' => resource_path('views/components'),
         ], 'dashed-templates');
 
         cms()->registerSettingsPage(FormSettingsPage::class, 'Formulier instellingen', 'bell', 'Beheer instellingen voor de formulieren');
@@ -208,7 +215,7 @@ MARKDOWN,
             ->hasViews();
 
         cms()->builder('plugins', [
-            new DashedFormsPlugin(),
+            new DashedFormsPlugin,
         ]);
     }
 }

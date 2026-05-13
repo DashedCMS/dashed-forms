@@ -2,16 +2,16 @@
 
 namespace Dashed\DashedForms\Mail;
 
-use Illuminate\Support\Str;
-use Illuminate\Bus\Queueable;
-use Illuminate\Mail\Mailable;
-use Dashed\DashedForms\Models\Form;
-use Illuminate\Queue\SerializesModels;
-use Dashed\DashedForms\Models\FormInput;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedTranslations\Models\Translation;
 use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
 use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Models\Form;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedTranslations\Models\Translation;
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
 
 class FormSubmitConfirmationMail extends Mailable implements RegistersEmailTemplate
 {
@@ -91,7 +91,7 @@ class FormSubmitConfirmationMail extends Mailable implements RegistersEmailTempl
             'siteName' => Customsetting::get('site_name'),
         ];
 
-        $fallbackSubject = Translation::get('form-confirmation-' . Str::slug($this->form->name) . '-email-subject', 'forms', 'We hebben je aanvraag voor formulier :name: ontvangen!', 'text', [
+        $fallbackSubject = Translation::get('form-confirmation-'.Str::slug($this->form->name).'-email-subject', 'forms', 'We hebben je aanvraag voor formulier :name: ontvangen!', 'text', [
             'name' => $this->form->name,
         ]);
 
@@ -105,7 +105,7 @@ class FormSubmitConfirmationMail extends Mailable implements RegistersEmailTempl
                 ->subject($this->templateSubject($fallbackSubject, $context));
         }
 
-        return $this->view(config('dashed-core.site_theme', 'dashed') . '.emails.confirm-form-submit')
+        return $this->view(config('dashed-core.site_theme', 'dashed').'.emails.confirm-form-submit')
             ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))
             ->subject($fallbackSubject)
             ->with([

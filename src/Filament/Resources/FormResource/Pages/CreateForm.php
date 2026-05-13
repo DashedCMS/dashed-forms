@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Filament\Resources\Pages\CreateRecord;
 use Dashed\DashedForms\Filament\Resources\FormResource;
+use Filament\Resources\Pages\CreateRecord;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable;
 
@@ -26,8 +26,8 @@ class CreateForm extends CreateRecord
         foreach ($data as $key => $value) {
             if (str($key)->contains('redirect_after_form')) {
                 $key = str($key)->replace('redirect_after_form_', '');
-                $data['redirect_after_form']['url_' . $key] = $data['redirect_after_form_' . $key] ?? '';
-                unset($data['redirect_after_form_' . $key]);
+                $data['redirect_after_form']['url_'.$key] = $data['redirect_after_form_'.$key] ?? '';
+                unset($data['redirect_after_form_'.$key]);
             }
         }
 

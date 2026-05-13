@@ -2,17 +2,17 @@
 
 namespace Dashed\DashedForms\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Translatable\HasTranslations;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Translatable\HasTranslations;
 
 class FormField extends Model
 {
+    use HasCustomBlocks;
     use HasFactory;
     use HasTranslations;
-    use HasCustomBlocks;
 
     protected $table = 'dashed__form_fields';
 
@@ -42,21 +42,21 @@ class FormField extends Model
 
     public function getFieldNameAttribute(): string
     {
-        return str($this->name)->slug() . '-' . $this->id;
+        return str($this->name)->slug().'-'.$this->id;
     }
 
     public function getLabelNameAttribute(): string
     {
-        return $this->name . ($this->required ? '*' : '');
+        return $this->name.($this->required ? '*' : '');
     }
 
     public function getPlaceholderNameAttribute(): string
     {
-        return $this->placeholder ? $this->placeholder . ($this->required ? '*' : '') : '';
+        return $this->placeholder ? $this->placeholder.($this->required ? '*' : '') : '';
     }
 
     public function isImage(): bool
     {
-        return ($this->type == 'select-image' || $this->type == 'file' || ($this->type == 'input' && $this->input_type == 'file'));
+        return $this->type == 'select-image' || $this->type == 'file' || ($this->type == 'input' && $this->input_type == 'file');
     }
 }
