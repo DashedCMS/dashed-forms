@@ -2,22 +2,22 @@
 
 namespace Dashed\DashedForms\Controllers\Frontend;
 
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Dashed\DashedForms\Models\Form;
+use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
-use Dashed\DashedCore\Classes\EmailCapture;
 use Dashed\DashedCore\Classes\Sites;
+use Illuminate\Support\Facades\Mail;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedCore\Classes\EmailCapture;
 use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedCore\Notifications\AdminNotifier;
 use Dashed\DashedForms\Events\FormSubmitted;
 use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
-use Dashed\DashedForms\Mail\AdminFormSubmitConfirmationMail;
-use Dashed\DashedForms\Mail\FormSubmitConfirmationMail;
-use Dashed\DashedForms\Models\Form;
-use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedTranslations\Models\Translation;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
+use Dashed\DashedCore\Notifications\AdminNotifier;
+use Dashed\DashedForms\Mail\FormSubmitConfirmationMail;
+use Dashed\DashedForms\Mail\AdminFormSubmitConfirmationMail;
 
 class FormController extends Controller
 {
@@ -46,7 +46,7 @@ class FormController extends Controller
 
                 $form = Form::where('name', $formName)->first();
                 if (! $form) {
-                    $form = new Form;
+                    $form = new Form();
                     $form->name = $formName;
                     $form->save();
                 }
@@ -59,7 +59,7 @@ class FormController extends Controller
                     }
                 }
 
-                $formInput = new FormInput;
+                $formInput = new FormInput();
                 $formInput->form_id = $form->id;
                 $formInput->ip = $request->ip();
                 $formInput->user_agent = $request->userAgent();
@@ -75,6 +75,7 @@ class FormController extends Controller
                 foreach ($correctContent as $value) {
                     if (is_string($value) && filter_var(trim($value), FILTER_VALIDATE_EMAIL)) {
                         EmailCapture::capture($value, 'form:'.$formName);
+
                         break;
                     }
                 }

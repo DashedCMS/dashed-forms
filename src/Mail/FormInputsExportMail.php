@@ -2,16 +2,16 @@
 
 namespace Dashed\DashedForms\Mail;
 
-use Dashed\DashedCore\Classes\Sites;
-use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
-use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
-use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
-use Dashed\DashedTranslations\Models\Translation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Queue\SerializesModels;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedTranslations\Models\Translation;
+use Dashed\DashedCore\Mail\Concerns\HasEmailTemplate;
+use Dashed\DashedCore\Notifications\DTOs\TelegramSummary;
+use Dashed\DashedCore\Mail\Contracts\RegistersEmailTemplate;
+use Dashed\DashedCore\Notifications\Contracts\SendsToTelegram;
 
 class FormInputsExportMail extends Mailable implements RegistersEmailTemplate, SendsToTelegram
 {

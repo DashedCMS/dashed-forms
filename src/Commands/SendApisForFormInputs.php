@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedForms\Commands;
 
-use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
-use Dashed\DashedForms\Models\FormInput;
 use Illuminate\Console\Command;
+use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
 
 class SendApisForFormInputs extends Command
 {

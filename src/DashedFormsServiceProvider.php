@@ -2,25 +2,25 @@
 
 namespace Dashed\DashedForms;
 
-use Dashed\DashedCore\Classes\Sites;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedForms\Commands\SendApisForFormInputs;
-use Dashed\DashedForms\Commands\SendWebhooksForFormInputs;
-use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
-use Dashed\DashedForms\Filament\Resources\FormResource;
-use Dashed\DashedForms\Livewire\Form;
-use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
-use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
-use Dashed\DashedForms\Mail\EmailBlocks\FormSubmissionBlock;
-use Dashed\DashedForms\Mail\FormInputsExportMail;
-use Dashed\DashedForms\Policies\FormPolicy;
-use Dashed\DashedForms\Services\Summary\FormSummaryContributor;
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
+use Dashed\DashedCore\Classes\Sites;
+use Illuminate\Support\Facades\Gate;
+use Dashed\DashedForms\Livewire\Form;
+use Illuminate\Support\Facades\Blade;
 use Spatie\LaravelPackageTools\Package;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Policies\FormPolicy;
+use Illuminate\Console\Scheduling\Schedule;
+use Dashed\DashedForms\Mail\FormInputsExportMail;
+use Dashed\DashedForms\Commands\SendApisForFormInputs;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Commands\SendWebhooksForFormInputs;
+use Dashed\DashedForms\Mail\EmailBlocks\FormSubmissionBlock;
+use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
+use Dashed\DashedForms\Services\Summary\FormSummaryContributor;
+use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
+use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
 
 class DashedFormsServiceProvider extends PackageServiceProvider
 {
@@ -215,7 +215,7 @@ MARKDOWN,
             ->hasViews();
 
         cms()->builder('plugins', [
-            new DashedFormsPlugin,
+            new DashedFormsPlugin(),
         ]);
     }
 }

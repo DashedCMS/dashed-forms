@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedForms\Events;
 
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Foundation\Events\Dispatchable;
 
 /**
  * Fired right after a form input row is persisted in either submit path
@@ -22,5 +22,6 @@ class FormSubmitted
         public ?string $email,
         public string $locale,
         public ?int $site_id = null,
-    ) {}
+    ) {
+    }
 }

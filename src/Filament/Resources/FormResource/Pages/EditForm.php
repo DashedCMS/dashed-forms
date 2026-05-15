@@ -2,16 +2,16 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Dashed\DashedCore\Classes\Locales;
-use Dashed\DashedForms\Filament\Resources\FormResource;
-use Dashed\DashedForms\Models\FormField;
-use Dashed\DashedTranslations\Classes\AutomatedTranslation;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
+use Dashed\DashedCore\Classes\Locales;
+use Dashed\DashedForms\Models\FormField;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Dashed\DashedForms\Filament\Resources\FormResource;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
+use Dashed\DashedTranslations\Classes\AutomatedTranslation;
 use LaraZeus\SpatieTranslatable\Resources\Pages\EditRecord\Concerns\Translatable;
 
 class EditForm extends EditRecord

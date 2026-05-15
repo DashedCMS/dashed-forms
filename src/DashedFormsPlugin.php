@@ -2,10 +2,10 @@
 
 namespace Dashed\DashedForms;
 
-use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
-use Dashed\DashedForms\Filament\Resources\FormResource;
-use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Filament\Contracts\Plugin;
+use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
 
 class DashedFormsPlugin implements Plugin
 {
@@ -25,5 +25,7 @@ class DashedFormsPlugin implements Plugin
             ]);
     }
 
-    public function boot(Panel $panel): void {}
+    public function boot(Panel $panel): void
+    {
+    }
 }

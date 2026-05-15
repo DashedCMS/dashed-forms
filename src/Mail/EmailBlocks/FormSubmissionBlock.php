@@ -2,9 +2,9 @@
 
 namespace Dashed\DashedForms\Mail\EmailBlocks;
 
-use Dashed\DashedCore\Mail\EmailBlocks\EmailBlock;
-use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Builder\Block;
+use Dashed\DashedCore\Mail\EmailBlocks\EmailBlock;
 
 class FormSubmissionBlock extends EmailBlock
 {

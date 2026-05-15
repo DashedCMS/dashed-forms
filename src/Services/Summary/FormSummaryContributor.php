@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Dashed\DashedForms\Services\Summary;
 
-use Dashed\DashedCore\Services\Summary\Contracts\SummaryContributorInterface;
-use Dashed\DashedCore\Services\Summary\DTOs\SummaryPeriod;
-use Dashed\DashedCore\Services\Summary\DTOs\SummarySection;
 use Dashed\DashedForms\Models\Form;
 use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedCore\Services\Summary\DTOs\SummaryPeriod;
+use Dashed\DashedCore\Services\Summary\DTOs\SummarySection;
+use Dashed\DashedCore\Services\Summary\Contracts\SummaryContributorInterface;
 
 /**
  * Samenvatting-bijdrage voor formulier-inzendingen. Toont het totaal

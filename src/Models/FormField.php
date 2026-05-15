@@ -2,11 +2,11 @@
 
 namespace Dashed\DashedForms\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Dashed\DashedCore\Models\Concerns\HasCustomBlocks;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Spatie\Translatable\HasTranslations;
 
 class FormField extends Model
 {

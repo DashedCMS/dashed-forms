@@ -2,12 +2,12 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Dashed\DashedForms\Classes\Forms;
-use Dashed\DashedForms\Filament\Resources\FormResource;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
+use Dashed\DashedForms\Classes\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
+use Dashed\DashedForms\Filament\Resources\FormResource;
 
 class ListForm extends ListRecords
 {

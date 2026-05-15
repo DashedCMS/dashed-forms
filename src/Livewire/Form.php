@@ -2,27 +2,27 @@
 
 namespace Dashed\DashedForms\Livewire;
 
-use Dashed\DashedCore\Classes\EmailCapture;
-use Dashed\DashedCore\Classes\Sites;
-use Dashed\DashedCore\Models\Customsetting;
-use Dashed\DashedCore\Notifications\AdminNotifier;
-use Dashed\DashedForms\Enums\MailingProviders;
-use Dashed\DashedForms\Events\FormSubmitted;
-use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
-use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
-use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
-use Dashed\DashedForms\Models\FormField;
-use Dashed\DashedForms\Models\FormInput;
-use Dashed\DashedForms\Validations\ValidatesMcaptcha;
-use Dashed\DashedForms\Validations\ValidatesRecaptcha;
-use Dashed\DashedTranslations\Models\Translation;
-use Filament\Notifications\Notification;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\App;
+use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Component;
+use Dashed\DashedForms\Models\FormField;
+use Dashed\DashedForms\Models\FormInput;
+use Filament\Notifications\Notification;
+use Dashed\DashedCore\Classes\EmailCapture;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Events\FormSubmitted;
+use Dashed\DashedForms\Enums\MailingProviders;
+use Dashed\DashedForms\Jobs\SyncFormInputApisJob;
+use Dashed\DashedTranslations\Models\Translation;
+use Dashed\DashedCore\Notifications\AdminNotifier;
+use Dashed\DashedForms\Validations\ValidatesMcaptcha;
+use Dashed\DashedForms\Validations\ValidatesRecaptcha;
+use Dashed\DashedForms\Mail\CustomFormSubmitConfirmationMail;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Livewire\WithFileUploads;
+use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
 
 class Form extends Component
 {
@@ -150,7 +150,7 @@ class Form extends Component
         // 2. Rest van je oorspronkelijke flow
         $formValues = [];
 
-        $formInput = new FormInput;
+        $formInput = new FormInput();
         $formInput->form_id = $this->form->id;
         $formInput->ip = request()->ip();
         $formInput->user_agent = request()->userAgent();

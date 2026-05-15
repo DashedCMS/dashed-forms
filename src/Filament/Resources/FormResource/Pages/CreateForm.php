@@ -2,8 +2,8 @@
 
 namespace Dashed\DashedForms\Filament\Resources\FormResource\Pages;
 
-use Dashed\DashedForms\Filament\Resources\FormResource;
 use Filament\Resources\Pages\CreateRecord;
+use Dashed\DashedForms\Filament\Resources\FormResource;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable;
 
