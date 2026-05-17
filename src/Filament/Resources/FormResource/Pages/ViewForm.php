@@ -29,11 +29,6 @@ class ViewForm extends Page implements HasTable
 
     protected string $view = 'dashed-forms::forms.pages.view-form';
 
-    public function getTableSortColumn(): ?string
-    {
-        return 'viewed';
-    }
-
     public function mount($record): void
     {
         $this->record = $this->resolveRecord($record);
