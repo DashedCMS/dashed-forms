@@ -223,10 +223,17 @@ class Form extends Component
         }
 
         try {
+            $adminMailable = new AdminCustomFormSubmitConfirmationMail($formInput, $sendToFieldValue ?? null);
+
+            // Telegram één keer versturen, los van het aantal email-recipients,
+            // zodat het channel werkt zelfs als notification_form_inputs_emails
+            // leeg is, en niet N keer afgaat bij meerdere mail-recipients.
+            AdminNotifier::send($adminMailable, null, ['telegram']);
+
             $notificationFormInputsEmails = $this->form->notification_form_inputs_emails ?: Customsetting::get('notification_form_inputs_emails', Sites::getActive(), []);
             if (count($notificationFormInputsEmails)) {
                 foreach ($notificationFormInputsEmails as $notificationFormInputsEmail) {
-                    AdminNotifier::send(new AdminCustomFormSubmitConfirmationMail($formInput, $sendToFieldValue ?? null), $notificationFormInputsEmail);
+                    AdminNotifier::send($adminMailable, $notificationFormInputsEmail, ['mail']);
                 }
             }
         } catch (\Exception $e) {
