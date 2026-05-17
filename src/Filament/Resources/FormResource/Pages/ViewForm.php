@@ -107,6 +107,11 @@ class ViewForm extends Page implements HasTable
             }
         }
 
+        $tableColumns[] = TextColumn::make('created_at')
+            ->label('Ingevoerd op')
+            ->dateTime('d-m-Y H:i')
+            ->sortable();
+
         $tableColumns[] =
             IconColumn::make('viewed')
                 ->falseIcon('heroicon-o-eye-slash')

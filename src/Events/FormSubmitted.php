@@ -16,12 +16,19 @@ class FormSubmitted
     use Dispatchable;
     use SerializesModels;
 
+    public ?int $site_id;
+
     public function __construct(
         public int $form_id,
         public int $form_input_id,
         public ?string $email,
         public string $locale,
-        public ?int $site_id = null,
+        int|string|null $site_id = null,
     ) {
+        // Defensive coercion: site_id may arrive as a string from Eloquent
+        // attributes that have no cast, from request payloads, or from
+        // multi-site config helpers. Normalise to int|null so listeners can
+        // rely on the typed property.
+        $this->site_id = ($site_id === null || $site_id === '') ? null : (int) $site_id;
     }
 }
