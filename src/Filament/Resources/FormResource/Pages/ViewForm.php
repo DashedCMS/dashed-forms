@@ -6,8 +6,8 @@ use Illuminate\Support\Str;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Resources\Pages\Page;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Contracts\HasTable;
 use Dashed\DashedForms\Models\FormInput;
 use Filament\Notifications\Notification;
@@ -71,7 +71,15 @@ class ViewForm extends Page implements HasTable
         $tableColumns = [
             TextColumn::make('id')
                 ->label('ID')
-                ->sortable(),
+                ->sortable()
+                ->searchable([
+                    'ip',
+                    'user_agent',
+                    'content',
+                    'from_url',
+                    'site_id',
+                    'locale',
+                ]),
         ];
 
         $formInput = $this->record->inputs()->first();
@@ -108,18 +116,10 @@ class ViewForm extends Page implements HasTable
             ->sortable();
 
         $tableColumns[] =
-            IconColumn::make('viewed')
-                ->falseIcon('heroicon-o-eye-slash')
-                ->trueIcon('heroicon-o-eye')
+            ToggleColumn::make('viewed')
                 ->label('Bekeken')
-                ->searchable([
-                    'ip',
-                    'user_agent',
-                    'content',
-                    'from_url',
-                    'site_id',
-                    'locale',
-                ])
+                ->onIcon('heroicon-o-eye')
+                ->offIcon('heroicon-o-eye-slash')
                 ->sortable();
 
         return $tableColumns;
