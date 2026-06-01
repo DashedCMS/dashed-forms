@@ -83,10 +83,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             'delete_form' => 'Formulieren verwijderen',
         ]);
 
-        cms()->builder('summaryContributors', array_merge(
-            cms()->builder('summaryContributors') ?? [],
-            [FormSummaryContributor::class],
-        ));
+        cms()->builder('summaryContributors', [FormSummaryContributor::class]);
 
         cms()->registerResourceDocs(
             resource: FormResource::class,
