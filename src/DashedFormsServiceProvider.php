@@ -77,6 +77,51 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
         Gate::policy(Models\Form::class, FormPolicy::class);
 
+        // Mobiele app: formulier-aanvragen tonen + notificatie bij nieuwe inzending.
+        if (class_exists(\Dashed\DashedMobileApi\MobileApiRegistry::class)) {
+            /** @var \Dashed\DashedMobileApi\MobileApiRegistry $mobileApi */
+            $mobileApi = $this->app->make(\Dashed\DashedMobileApi\MobileApiRegistry::class);
+
+            $version = \Composer\InstalledVersions::isInstalled('dashed/dashed-forms')
+                ? \Composer\InstalledVersions::getPrettyVersion('dashed/dashed-forms')
+                : null;
+            $mobileApi->registerCapability('forms', ['version' => $version]);
+
+            $mobileApi->registerAbilities(['forms.read']);
+            $mobileApi->registerRoleAbilities([
+                'eigenaar' => ['forms.read'],
+                'admin' => ['forms.read'],
+                'shopbeheerder' => ['forms.read'],
+                'support-agent' => ['forms.read'],
+                'read-only' => ['forms.read'],
+            ]);
+
+            if (method_exists($mobileApi, 'registerNotificationTypes')) {
+                $mobileApi->registerNotificationTypes([
+                    ['key' => 'form.submitted', 'label' => 'Nieuwe aanvraag', 'description' => 'Een nieuw formulier is ingevuld.', 'group' => 'Formulieren', 'sound' => 'default', 'ability' => 'forms.read', 'default' => true],
+                ]);
+            }
+
+            $this->loadRoutesFrom(__DIR__ . '/../routes/mobile-api.php');
+
+            // Push-notificatie bij een nieuwe aanvraag.
+            \Illuminate\Support\Facades\Event::listen(\Dashed\DashedForms\Events\FormSubmitted::class, function (\Dashed\DashedForms\Events\FormSubmitted $event): void {
+                $formInput = Models\FormInput::with('form')->find($event->form_input_id);
+                if (! $formInput) {
+                    return;
+                }
+                $formName = $formInput->form?->name ?: 'Formulier';
+
+                app(\Dashed\DashedMobileApi\Support\NotificationCenter::class)->push()
+                    ->type('form.submitted')
+                    ->title('Nieuwe aanvraag')
+                    ->body($event->email ? "{$formName} — {$event->email}" : $formName)
+                    ->route("/form-input/{$formInput->id}")
+                    ->data(['type' => 'form', 'id' => $formInput->id])
+                    ->send();
+            });
+        }
+
         cms()->registerRolePermissions('Formulieren', [
             'view_form' => 'Formulieren bekijken',
             'edit_form' => 'Formulieren bewerken',
