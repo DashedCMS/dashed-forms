@@ -53,15 +53,16 @@ class FormInputController extends Controller
         return response()->json(['data' => $this->detail($fi)]);
     }
 
-    /** Markeer een aanvraag als gezien. */
-    public function markViewed(int $formInput): JsonResponse
+    /** Markeer een aanvraag als gezien of (weer) als niet-gezien. */
+    public function markViewed(Request $request, int $formInput): JsonResponse
     {
         $site = (string) Sites::getActive();
         $fi = FormInput::where('site_id', $site)->findOrFail($formInput);
-        $fi->viewed = 1;
+        // Default true zodat oudere app-versies (die geen body sturen) blijven werken.
+        $fi->viewed = $request->boolean('viewed', true) ? 1 : 0;
         $fi->save();
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'viewed' => (bool) $fi->viewed]);
     }
 
     /** Beschikbare formulieren (om op te filteren) — alleen die inzendingen hebben. */
