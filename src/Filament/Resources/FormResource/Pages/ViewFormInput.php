@@ -9,12 +9,16 @@ use Filament\Resources\Pages\Page;
 use Dashed\DashedCore\Classes\Sites;
 use Filament\Schemas\Components\Flex;
 use Dashed\DashedCore\Classes\Locales;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Storage;
+use Filament\Notifications\Notification;
 use Dashed\DashedForms\Models\FormInput;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Contracts\HasInfolists;
+use Dashed\DashedForms\Services\FormReplyService;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 
@@ -28,9 +32,16 @@ class ViewFormInput extends Page implements HasInfolists
 
     public $record;
 
+    public ?string $draft = null;
+
     public function mount($record, FormInput $formInput): void
     {
         $this->record = $formInput;
+    }
+
+    private function replyService(): FormReplyService
+    {
+        return app(FormReplyService::class);
     }
 
     public function getBreadcrumbs(): array
@@ -57,6 +68,58 @@ class ViewFormInput extends Page implements HasInfolists
                     } else {
                         $this->markAsViewed();
                     }
+
+                    return redirect()->route('filament.dashed.resources.forms.viewInput', [$this->record->form->id, $this->record->id]);
+                }),
+            Action::make('aiDraft')
+                ->button()
+                ->color('primary')
+                ->icon('heroicon-o-sparkles')
+                ->label('AI-concept opstellen')
+                ->visible(fn (): bool => $this->replyService()->aiAvailable() && $this->replyService()->recipientEmail($this->record) !== null)
+                ->modalSubmitActionLabel('Genereer')
+                ->form([
+                    Textarea::make('instructions')
+                        ->label('Eigen input voor de AI (optioneel)')
+                        ->placeholder('Bijv. "bied excuses aan en zeg dat we morgen leveren" of laat leeg voor een standaard antwoord.')
+                        ->rows(3),
+                ])
+                ->action(function (array $data): void {
+                    try {
+                        $this->draft = $this->replyService()->generateDraft($this->record, $data['instructions'] ?? null);
+                    } catch (\Throwable $e) {
+                        Notification::make()->title('Kon geen concept maken')->body($e->getMessage())->danger()->send();
+
+                        return;
+                    }
+                    Notification::make()->title('Concept klaar — open "Antwoord versturen" om te controleren en te verzenden.')->success()->send();
+                }),
+            Action::make('sendReply')
+                ->button()
+                ->color('success')
+                ->icon('heroicon-o-paper-airplane')
+                ->label('Antwoord versturen')
+                ->visible(fn (): bool => $this->replyService()->recipientEmail($this->record) !== null)
+                ->modalSubmitActionLabel('Versturen')
+                ->form([
+                    Textarea::make('message')
+                        ->label('Antwoord')
+                        ->helperText(fn (): string => 'Wordt per e-mail verstuurd naar ' . ($this->replyService()->recipientEmail($this->record) ?? '—'))
+                        ->required()
+                        ->rows(12)
+                        ->default(fn (): ?string => $this->draft),
+                    TextInput::make('subject')
+                        ->label('Onderwerp (optioneel)'),
+                ])
+                ->action(function (array $data) {
+                    try {
+                        $email = $this->replyService()->send($this->record, $data['message'], $data['subject'] ?? null);
+                    } catch (\Throwable $e) {
+                        Notification::make()->title('Versturen mislukt')->body($e->getMessage())->danger()->send();
+
+                        return;
+                    }
+                    Notification::make()->title('Antwoord verstuurd naar ' . $email)->success()->send();
 
                     return redirect()->route('filament.dashed.resources.forms.viewInput', [$this->record->form->id, $this->record->id]);
                 }),

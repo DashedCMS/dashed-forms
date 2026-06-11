@@ -14,4 +14,6 @@ Route::prefix('api/v1')
         Route::get('form-inputs', [FormInputController::class, 'index'])->middleware('ability:forms.read');
         Route::get('form-inputs/{formInput}', [FormInputController::class, 'show'])->middleware('ability:forms.read');
         Route::post('form-inputs/{formInput}/viewed', [FormInputController::class, 'markViewed'])->middleware('ability:forms.read');
+        Route::post('form-inputs/{formInput}/draft-reply', [FormInputController::class, 'draftReply'])->middleware('ability:forms.read');
+        Route::post('form-inputs/{formInput}/reply', [FormInputController::class, 'sendReply'])->middleware('ability:forms.read');
     });

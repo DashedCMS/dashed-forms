@@ -65,6 +65,52 @@ class FormInputController extends Controller
         return response()->json(['success' => true, 'viewed' => (bool) $fi->viewed]);
     }
 
+    /** Stel met AI een concept-antwoord op (optioneel met eigen instructies). */
+    public function draftReply(Request $request, int $formInput): JsonResponse
+    {
+        $site = (string) Sites::getActive();
+        $fi = FormInput::where('site_id', $site)->with(['form', 'formFields.formField'])->findOrFail($formInput);
+
+        $data = $request->validate([
+            'instructions' => ['sometimes', 'nullable', 'string', 'max:2000'],
+        ]);
+
+        $service = app(\Dashed\DashedForms\Services\FormReplyService::class);
+
+        try {
+            $draft = $service->generateDraft($fi, $data['instructions'] ?? null);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        return response()->json([
+            'draft' => $draft,
+            'email' => $service->recipientEmail($fi),
+        ]);
+    }
+
+    /** Verstuur het antwoord per e-mail naar de inzender. */
+    public function sendReply(Request $request, int $formInput): JsonResponse
+    {
+        $site = (string) Sites::getActive();
+        $fi = FormInput::where('site_id', $site)->with(['form', 'formFields.formField'])->findOrFail($formInput);
+
+        $data = $request->validate([
+            'message' => ['required', 'string'],
+            'subject' => ['sometimes', 'nullable', 'string', 'max:255'],
+        ]);
+
+        $service = app(\Dashed\DashedForms\Services\FormReplyService::class);
+
+        try {
+            $email = $service->send($fi, $data['message'], $data['subject'] ?? null);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        return response()->json(['success' => true, 'email' => $email]);
+    }
+
     /** Beschikbare formulieren (om op te filteren) — alleen die inzendingen hebben. */
     public function forms(): JsonResponse
     {
