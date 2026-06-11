@@ -224,7 +224,7 @@ class ViewFormInput extends Page implements HasInfolists
                                 ->default('Onbekend'),
                             TextEntry::make('from_url')
                                 ->label('Ingevoerd vanaf')
-                                ->url(fn () => $this->record->from_url)
+                                ->url(fn () => (is_string($this->record->from_url) && (str_starts_with($this->record->from_url, 'http://') || str_starts_with($this->record->from_url, 'https://'))) ? $this->record->from_url : null)
                                 ->openUrlInNewTab()
                                 ->default('Onbekend'),
                             TextEntry::make('created_at')

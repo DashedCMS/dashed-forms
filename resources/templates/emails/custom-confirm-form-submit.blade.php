@@ -361,7 +361,7 @@
                                                                             @endif
                                                                         @else
                                                                             <div
-                                                                                style="margin-top: -20px;">{!! nl2br($field->value) !!}</div>
+                                                                                style="margin-top: -20px;">{!! nl2br(e($field->value)) !!}</div>
                                                                         @endif
                                                                     @endforeach
                                                                 </div>

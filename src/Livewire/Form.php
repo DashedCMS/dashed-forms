@@ -119,6 +119,12 @@ class Form extends Component
             $rules[] = 'string';
         }
 
+        if ($field->type === 'file') {
+            $rules[] = 'file';
+            $rules[] = 'max:10240';
+            $rules[] = 'mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx';
+        }
+
         return $rules;
     }
 
@@ -271,9 +277,32 @@ class Form extends Component
     public function updated($name, $value)
     {
         if ($value instanceof TemporaryUploadedFile) {
+            // Rate limiting tegen ongeauthenticeerde upload-/opslag-misbruik (DoS).
+            $uploadKey = 'form-upload:' . request()->ip();
+            if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($uploadKey, 20)) {
+                $this->values[str($name)->explode('.')->last()] = null;
+                $this->addError($name, 'Te veel uploads, probeer het later opnieuw.');
+
+                return;
+            }
+            \Illuminate\Support\Facades\RateLimiter::hit($uploadKey, 60);
+
+            $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx'];
+            // Leid de extensie af van de inhoud (guessExtension), niet van de client-naam.
+            $extension = strtolower((string) ($value->guessExtension() ?: $value->getClientOriginalExtension()));
+
+            // Het bestand wordt hier al permanent opgeslagen (vóór submit-validatie), dus
+            // controleer extensie en grootte meteen en weiger ongeldige uploads.
+            if (! in_array($extension, $allowedExtensions, true) || $value->getSize() > 10 * 1024 * 1024) {
+                $this->values[str($name)->explode('.')->last()] = null;
+                $this->addError($name, 'Ongeldig of te groot bestand.');
+
+                return;
+            }
+
             $path = $value->storeAs(
                 'dashed',
-                "forms/form-{$this->form->name}-".time().'.'.$value->getClientOriginalExtension(),
+                'forms/form-'.\Illuminate\Support\Str::slug($this->form->name).'-'.\Illuminate\Support\Str::random(40).'.'.$extension,
                 'dashed'
             );
 
