@@ -2,7 +2,7 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
-## v4.2.17 - 2026-06-11
+## v4.2.18 - 2026-06-11
 
 ### Fixed
 - **mCaptcha-widget werd nooit gerenderd in de Dashed Livewire-form (lege container).** De widget werd gemount via een plain inline `<script>` binnen de Livewire-component; Livewire v3 voert die niet betrouwbaar uit, en `@script` keyt op `$this` — binnen de anonieme `<x-dashed-forms::captcha />`-component is dat niet de Livewire-component, dus dat zou ook nooit draaien. De mount gebeurt nu via **Alpine `x-init`** (wordt altijd verwerkt, ongeacht hoe het element in de DOM komt) met config via `data-*`-attributen.
