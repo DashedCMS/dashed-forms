@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.2.14 - 2026-06-11
+
+### Fixed
+- **mCaptcha-widget flikkerde en verdween zodra de gebruiker begon te typen.** De `@mcaptcha/vanilla-glue` library injecteert een iframe in `#mcaptcha__widget-container`, maar Livewire's morph (door `wire:model.live`-velden) herstructureerde die container bij elke toetsaanslag, waardoor het iframe verloren ging en de widget zich steeds opnieuw probeerde te initialiseren. De container heeft nu `wire:ignore` zodat Livewire dit element met rust laat. Het verborgen token-veld (`#mcaptcha__token`) blijft via `wire:model` werken.
+
 ## v4.2.2 - 2026-05-11
 
 ### Fixed
