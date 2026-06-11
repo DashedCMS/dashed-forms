@@ -30,46 +30,53 @@
     @endphp
     <input type="text" id="{{ $mcaptchaUid }}__token" name="mcaptcha__token"
            wire:model="mcaptchaToken" hidden />
-    <div id="{{ $mcaptchaUid }}__widget" wire:ignore></div>
-    <script>
-        (function () {
-            var container = document.getElementById(@js($mcaptchaUid . '__widget'));
-            var input = document.getElementById(@js($mcaptchaUid . '__token'));
+    {{-- Mounted via Alpine x-init: a plain <script> inside a Livewire v3
+         component is not executed reliably, and @script keys on $this which is
+         the anonymous Blade component here (not the Livewire component), so it
+         would never run. Alpine processes the element regardless. Config is
+         passed through data-* attributes to avoid quote conflicts in x-init. --}}
+    <div
+        id="{{ $mcaptchaUid }}__widget"
+        wire:ignore
+        x-data
+        data-mcaptcha-url="{{ $mcaptchaInstanceUrl }}/widget/?sitekey={{ $mcaptchaSiteKey }}"
+        data-mcaptcha-token-id="{{ $mcaptchaUid }}__token"
+        x-init="
+            (() => {
+                if ($el.dataset.mcaptchaMounted) return;
+                // Defer to an existing external mCaptcha widget (e.g. an embedded
+                // Ternair form, which renders via @mcaptcha/vanilla-glue and always
+                // gives its iframe the id 'mcaptcha-widget__iframe'). Keeps a single
+                // visible widget on such pages WITHOUT suppressing other Dashed
+                // forms, whose widgets carry their own unique iframe IDs.
+                if (document.getElementById('mcaptcha-widget__iframe')) return;
+                $el.dataset.mcaptchaMounted = '1';
 
-            if (!container || !input || container.dataset.mcaptchaMounted) {
-                return;
-            }
-            container.dataset.mcaptchaMounted = '1';
+                const widgetUrl = $el.dataset.mcaptchaUrl;
+                const widgetHost = new URL(widgetUrl).host;
+                const input = document.getElementById($el.dataset.mcaptchaTokenId);
 
-            var widgetUrl = @js($mcaptchaInstanceUrl . '/widget/?sitekey=' . $mcaptchaSiteKey);
-            var widgetHost = new URL(widgetUrl).host;
+                const iframe = document.createElement('iframe');
+                iframe.title = 'mCaptcha';
+                iframe.src = widgetUrl;
+                iframe.scrolling = 'no';
+                iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups');
+                iframe.style.width = '100%';
+                iframe.style.height = '80px';
+                iframe.style.border = '0';
+                $el.appendChild(iframe);
 
-            var iframe = document.createElement('iframe');
-            iframe.title = 'mCaptcha';
-            iframe.src = widgetUrl;
-            iframe.id = @js($mcaptchaUid . '__iframe');
-            iframe.name = @js($mcaptchaUid . '__iframe');
-            iframe.scrolling = 'no';
-            iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups');
-            iframe.style.width = '100%';
-            iframe.style.height = '80px';
-            iframe.style.border = '0';
-            container.appendChild(iframe);
-
-            window.addEventListener('message', function (event) {
-                // Only accept the token from THIS widget's iframe, even when
-                // several widgets share the same mCaptcha instance/origin.
-                if (event.source !== iframe.contentWindow) {
-                    return;
-                }
-                if (new URL(event.origin).host !== widgetHost) {
-                    return;
-                }
-                if (event.data && typeof event.data.token !== 'undefined') {
-                    input.value = event.data.token;
-                    input.dispatchEvent(new Event('input', { bubbles: true }));
-                }
-            });
-        })();
-    </script>
+                window.addEventListener('message', (event) => {
+                    // Only accept the token from THIS widget's iframe, even when
+                    // several widgets share the same mCaptcha instance/origin.
+                    if (event.source !== iframe.contentWindow) return;
+                    if (new URL(event.origin).host !== widgetHost) return;
+                    if (event.data && typeof event.data.token !== 'undefined') {
+                        input.value = event.data.token;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                });
+            })()
+        "
+    ></div>
 @endif
