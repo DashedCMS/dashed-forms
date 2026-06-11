@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.2.15 - 2026-06-11
+
+### Fixed
+- **mCaptcha rendrde dubbel / in het verkeerde formulier wanneer er meerdere mCaptcha-formulieren op één pagina stonden.** De `@mcaptcha/vanilla-glue` library is hardcoded op één set element-IDs (`#mcaptcha__widget-container` / `#mcaptcha__token-label` / `#mcaptcha__token`) en resolvet die met `getElementById`, waardoor elke initialisatie (een tweede Dashed-form, of een embedded Ternair-form dat z'n eigen glue meelevert) z'n iframe in dezelfde eerste container dumpte. De widget wordt nu zelf gemount met **unieke IDs per form-instance** en de postMessage-token wordt gescoped op het eigen iframe (`event.source === iframe.contentWindow`), zodat een willekeurig aantal widgets naast elkaar kan bestaan. De externe `vanilla-glue`-dependency (unpkg) is hiermee vervallen. Het verborgen tokenveld behoudt `name="mcaptcha__token"` + `wire:model="mcaptchaToken"`, dus server-side `ValidatesMcaptcha` blijft ongewijzigd werken.
+
 ## v4.2.14 - 2026-06-11
 
 ### Fixed
