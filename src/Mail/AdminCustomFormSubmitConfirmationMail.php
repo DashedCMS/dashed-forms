@@ -42,7 +42,7 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
 
     public static function availableVariables(): array
     {
-        return ['formName', 'siteName', 'primaryColor'];
+        return ['formName', 'siteName', 'primaryColor', 'cmsUrl'];
     }
 
     public static function defaultSubject(): string
@@ -56,7 +56,27 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
             ['type' => 'heading', 'data' => ['text' => 'Nieuw formulier ingediend', 'level' => 'h1']],
             ['type' => 'text', 'data' => ['body' => '<p>Het formulier <strong>:formName:</strong> is ingevuld. Hieronder de ingevoerde gegevens:</p>']],
             ['type' => 'form-submission', 'data' => ['title' => 'Ingevoerde gegevens']],
+            ['type' => 'button', 'data' => ['label' => 'Bekijk in CMS', 'url' => ':cmsUrl:', 'background' => ':primaryColor:', 'color' => '#ffffff']],
         ];
+    }
+
+    /**
+     * Diepe link naar de inzending in het CMS, zodat een beheerder die direct
+     * kan openen vanuit de bevestigingsmail. Valt terug op de app-URL als de
+     * Filament-route (nog) niet beschikbaar is, zodat de mail nooit faalt.
+     */
+    public static function cmsUrlFor(FormInput $formInput): string
+    {
+        $form = $formInput->form;
+        if (! $form) {
+            return (string) config('app.url');
+        }
+
+        try {
+            return route('filament.dashed.resources.forms.viewInput', [$form->id, $formInput->id]);
+        } catch (\Throwable) {
+            return (string) config('app.url');
+        }
     }
 
     public static function sampleData(): array
@@ -67,6 +87,7 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
             'formInput' => $formInput,
             'formName' => $formInput?->form?->name ?? 'Contactformulier',
             'siteName' => Customsetting::get('site_name'),
+            'cmsUrl' => $formInput ? self::cmsUrlFor($formInput) : (string) config('app.url'),
         ];
     }
 
@@ -83,6 +104,7 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
             'formInput' => $this->formInput,
             'formName' => $this->formInput->form?->name ?? '',
             'siteName' => Customsetting::get('site_name'),
+            'cmsUrl' => self::cmsUrlFor($this->formInput),
         ];
 
         $fallbackSubject = Translation::get('admin-form-confirmation-'.Str::slug($this->formInput->form->name).'-email-subject', 'forms', 'Het formulier :name: is ingevuld!', 'text', [
