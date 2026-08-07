@@ -15,7 +15,7 @@ class FormSubmissionBlock extends EmailBlock
 
     public static function label(): string
     {
-        return 'Formulier gegevens';
+        return __('Formulier gegevens');
     }
 
     public static function filamentBlock(): Block
