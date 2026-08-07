@@ -60,7 +60,7 @@ class ViewFormInput extends Page implements HasInfolists
         return [
             Action::make('toggleViewed')
                 ->button()
-                ->label($this->record->viewed ? 'Markeer als niet bekeken' : 'Markeer als bekeken')
+                ->label($this->record->viewed ? __('Markeer als niet bekeken') : __('Markeer als bekeken'))
                 ->color($this->record->viewed ? 'warning' : 'success')
                 ->action(function () {
                     if ($this->record->viewed) {
