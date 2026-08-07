@@ -114,7 +114,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
                 app(\Dashed\DashedMobileApi\Support\NotificationCenter::class)->push()
                     ->type('form.submitted')
-                    ->title('Nieuwe aanvraag')
+                    ->title(__('Nieuwe aanvraag'))
                     ->body($event->email ? "{$formName} — {$event->email}" : $formName)
                     ->route("/form-input/{$formInput->id}")
                     ->data(['type' => 'form', 'id' => $formInput->id])

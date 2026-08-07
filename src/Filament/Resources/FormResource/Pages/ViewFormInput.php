@@ -75,51 +75,51 @@ class ViewFormInput extends Page implements HasInfolists
                 ->button()
                 ->color('primary')
                 ->icon('heroicon-o-sparkles')
-                ->label('AI-concept opstellen')
+                ->label(__('AI-concept opstellen'))
                 ->visible(fn (): bool => $this->replyService()->aiAvailable() && $this->replyService()->recipientEmail($this->record) !== null)
-                ->modalSubmitActionLabel('Genereer')
+                ->modalSubmitActionLabel(__('Genereer'))
                 ->form([
                     Textarea::make('instructions')
-                        ->label('Eigen input voor de AI (optioneel)')
-                        ->placeholder('Bijv. "bied excuses aan en zeg dat we morgen leveren" of laat leeg voor een standaard antwoord.')
+                        ->label(__('Eigen input voor de AI (optioneel)'))
+                        ->placeholder(__('Bijv. "bied excuses aan en zeg dat we morgen leveren" of laat leeg voor een standaard antwoord.'))
                         ->rows(3),
                 ])
                 ->action(function (array $data): void {
                     try {
                         $this->draft = $this->replyService()->generateDraft($this->record, $data['instructions'] ?? null);
                     } catch (\Throwable $e) {
-                        Notification::make()->title('Kon geen concept maken')->body($e->getMessage())->danger()->send();
+                        Notification::make()->title(__('Kon geen concept maken'))->body($e->getMessage())->danger()->send();
 
                         return;
                     }
-                    Notification::make()->title('Concept klaar — open "Antwoord versturen" om te controleren en te verzenden.')->success()->send();
+                    Notification::make()->title(__('Concept klaar — open "Antwoord versturen" om te controleren en te verzenden.'))->success()->send();
                 }),
             Action::make('sendReply')
                 ->button()
                 ->color('success')
                 ->icon('heroicon-o-paper-airplane')
-                ->label('Antwoord versturen')
+                ->label(__('Antwoord versturen'))
                 ->visible(fn (): bool => $this->replyService()->recipientEmail($this->record) !== null)
-                ->modalSubmitActionLabel('Versturen')
+                ->modalSubmitActionLabel(__('Versturen'))
                 ->form([
                     Textarea::make('message')
-                        ->label('Antwoord')
-                        ->helperText(fn (): string => 'Wordt per e-mail verstuurd naar ' . ($this->replyService()->recipientEmail($this->record) ?? '—'))
+                        ->label(__('Antwoord'))
+                        ->helperText(fn (): string => __('Wordt per e-mail verstuurd naar :email', ['email' => $this->replyService()->recipientEmail($this->record) ?? '—']))
                         ->required()
                         ->rows(12)
                         ->default(fn (): ?string => $this->draft),
                     TextInput::make('subject')
-                        ->label('Onderwerp (optioneel)'),
+                        ->label(__('Onderwerp (optioneel)')),
                 ])
                 ->action(function (array $data) {
                     try {
                         $email = $this->replyService()->send($this->record, $data['message'], $data['subject'] ?? null);
                     } catch (\Throwable $e) {
-                        Notification::make()->title('Versturen mislukt')->body($e->getMessage())->danger()->send();
+                        Notification::make()->title(__('Versturen mislukt'))->body($e->getMessage())->danger()->send();
 
                         return;
                     }
-                    Notification::make()->title('Antwoord verstuurd naar ' . $email)->success()->send();
+                    Notification::make()->title(__('Antwoord verstuurd naar :email', ['email' => $email]))->success()->send();
 
                     return redirect()->route('filament.dashed.resources.forms.viewInput', [$this->record->form->id, $this->record->id]);
                 }),
@@ -127,7 +127,7 @@ class ViewFormInput extends Page implements HasInfolists
                 ->button()
                 ->requiresConfirmation()
                 ->color('danger')
-                ->label('Verwijderen')
+                ->label(__('Verwijderen'))
                 ->action('delete'),
         ];
     }
@@ -181,12 +181,12 @@ class ViewFormInput extends Page implements HasInfolists
                                 ->label($field->formField->name)
                                 ->url(Storage::disk('dashed')->url($field->value))
                                 ->openUrlInNewTab()
-                                ->helperText('Klik de afbeelding om te openen')
+                                ->helperText(__('Klik de afbeelding om te openen'))
                                 ->state($field->value);
                         } else {
                             $inputFields[] = TextEntry::make($name.'_download')
                                 ->state($field->formField->name)
-                                ->label('Download bestand')
+                                ->label(__('Download bestand'))
                                 ->url(Storage::disk('dashed')->url($field->value))
                                 ->openUrlInNewTab();
                         }
@@ -201,7 +201,7 @@ class ViewFormInput extends Page implements HasInfolists
         }
 
         $inputFields[] = TextEntry::make('viewed_status_badge')
-            ->label('Bekeken')
+            ->label(__('Bekeken'))
             ->badge()
             ->formatStateUsing(fn (): string => $this->record->viewed ? 'Ja' : 'Nee')
             ->color(fn (): string => $this->record->viewed ? 'success' : 'danger');
@@ -210,32 +210,32 @@ class ViewFormInput extends Page implements HasInfolists
             ->record($this->record)
             ->schema([
                 Flex::make([
-                    Section::make('Ingevoerde informatie')
+                    Section::make(__('Ingevoerde informatie'))
                         ->schema($inputFields)
                         ->columnSpanFull()
                         ->grow(),
-                    Section::make('Overige informatie')
+                    Section::make(__('Overige informatie'))
                         ->schema([
                             TextEntry::make('ip')
-                                ->label('IP')
+                                ->label(__('IP'))
                                 ->default('Onbekend'),
                             TextEntry::make('user_agent')
-                                ->label('User agent')
+                                ->label(__('User agent'))
                                 ->default('Onbekend'),
                             TextEntry::make('from_url')
-                                ->label('Ingevoerd vanaf')
+                                ->label(__('Ingevoerd vanaf'))
                                 ->url(fn () => (is_string($this->record->from_url) && (str_starts_with($this->record->from_url, 'http://') || str_starts_with($this->record->from_url, 'https://'))) ? $this->record->from_url : null)
                                 ->openUrlInNewTab()
                                 ->default('Onbekend'),
                             TextEntry::make('created_at')
-                                ->label('Ingevoerd op')
+                                ->label(__('Ingevoerd op'))
                                 ->default('Onbekend'),
                             TextEntry::make('site_id')
-                                ->label('Site ID')
+                                ->label(__('Site ID'))
                                 ->visible(count(Sites::getSites()) > 1)
                                 ->default('Onbekend'),
                             TextEntry::make('locale')
-                                ->label('Taal')
+                                ->label(__('Taal'))
                                 ->visible(count(Locales::getLocales()) > 1)
                                 ->default('Onbekend'),
                         ])

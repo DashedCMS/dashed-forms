@@ -76,58 +76,58 @@ class FormSettingsPage extends Page
                     ->state('Stel extra opties in voor de formulieren.'),
                 TagsInput::make("notification_form_inputs_emails_{$site['id']}")
                     ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
-                    ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
-                    ->placeholder('Voer een email in')
+                    ->label(__('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen'))
+                    ->placeholder(__('Voer een email in'))
                     ->reactive(),
                 Select::make("captcha_provider_{$site['id']}")
-                    ->label('Captcha provider')
-                    ->helperText('Kies welke captcha er voor de formulieren wordt gebruikt.')
+                    ->label(__('Captcha provider'))
+                    ->helperText(__('Kies welke captcha er voor de formulieren wordt gebruikt.'))
                     ->options([
-                        'none' => 'Geen',
-                        'google_recaptcha' => 'Google reCAPTCHA',
-                        'mcaptcha' => 'mCaptcha (self-hosted)',
+                        'none' => __('Geen'),
+                        'google_recaptcha' => __('Google reCAPTCHA'),
+                        'mcaptcha' => __('mCaptcha (self-hosted)'),
                     ])
                     ->default('google_recaptcha')
                     ->reactive()
                     ->required(),
                 TextInput::make("google_recaptcha_site_key_{$site['id']}")
-                    ->label('Google Recaptcha site key')
+                    ->label(__('Google Recaptcha site key'))
                     ->helperText(new HtmlString('Maak een key en secret aan via <a href="https://www.google.com/recaptcha/admin/create" target="_blank" class="underline"><u>Google Recaptcha</u></a>.'))
                     ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'google_recaptcha')
                     ->reactive()
                     ->maxLength(255),
                 TextInput::make("google_recaptcha_secret_key_{$site['id']}")
-                    ->label('Google Recaptcha secret key')
+                    ->label(__('Google Recaptcha secret key'))
                     ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'google_recaptcha')
                     ->required(fn (Get $get) => $get("google_recaptcha_site_key_{$site['id']}"))
                     ->maxLength(255),
                 TextInput::make("mcaptcha_instance_url_{$site['id']}")
-                    ->label('mCaptcha instance URL')
-                    ->helperText('De basis URL van de zelf-gehoste mCaptcha, bv. https://captcha.example.com')
-                    ->placeholder('https://captcha.example.com')
+                    ->label(__('mCaptcha instance URL'))
+                    ->helperText(__('De basis URL van de zelf-gehoste mCaptcha, bv. https://captcha.example.com'))
+                    ->placeholder(__('https://captcha.example.com'))
                     ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
                     ->required(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
                     ->url()
                     ->maxLength(255),
                 TextInput::make("mcaptcha_site_key_{$site['id']}")
-                    ->label('mCaptcha sitekey')
+                    ->label(__('mCaptcha sitekey'))
                     ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
                     ->required(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
                     ->maxLength(255),
                 TextInput::make("mcaptcha_secret_{$site['id']}")
-                    ->label('mCaptcha secret')
-                    ->helperText('Wordt alleen server-side gebruikt en niet in de HTML geladen.')
+                    ->label(__('mCaptcha secret'))
+                    ->helperText(__('Wordt alleen server-side gebruikt en niet in de HTML geladen.'))
                     ->visible(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
                     ->required(fn (Get $get) => $get("captcha_provider_{$site['id']}") === 'mcaptcha')
                     ->password()
                     ->revealable()
                     ->maxLength(255),
                 TextInput::make("form_activecampaign_url_{$site['id']}")
-                    ->label('ActiveCampaign API url')
-                    ->helperText('ActiveCampaign actief: '.($activeCampaign->connected ? 'Ja' : 'Nee'))
+                    ->label(__('ActiveCampaign API url'))
+                    ->helperText(__('ActiveCampaign actief: :status', ['status' => $activeCampaign->connected ? __('Ja') : __('Nee')]))
                     ->reactive(),
                 TextInput::make("form_activecampaign_key_{$site['id']}")
-                    ->label('ActiveCampaign API key')
+                    ->label(__('ActiveCampaign API key'))
                     ->reactive(),
             ];
 
@@ -143,10 +143,10 @@ class FormSettingsPage extends Page
             ->tabs($tabs);
 
         return $schema->schema(array_merge($tabGroups, [
-            Section::make('Algemene formulier instellingen')->columnSpanFull()
+            Section::make(__('Algemene formulier instellingen'))->columnSpanFull()
                 ->schema([
                     Toggle::make('form_redirect_server_side')
-                        ->label('Doe de redirects server side'),
+                        ->label(__('Doe de redirects server side')),
                 ]),
         ]))
             ->statePath('data');
@@ -184,7 +184,7 @@ class FormSettingsPage extends Page
         $this->form->fill($formState);
 
         Notification::make()
-            ->title('De formulier instellingen zijn opgeslagen')
+            ->title(__('De formulier instellingen zijn opgeslagen'))
             ->success()
             ->send();
     }

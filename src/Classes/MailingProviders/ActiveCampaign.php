@@ -52,7 +52,7 @@ class ActiveCampaign
             //                ->options(collect($this->getLists())->pluck('name', 'stringid'))
             //                ->visible(fn ($get) => $get("external_options.send_to_$this->slug")),
             Select::make("external_options.{$this->slug}_tags")
-                ->label('Kies tags om toe te voegen aan het contact')
+                ->label(__('Kies tags om toe te voegen aan het contact'))
                 ->options(collect($this->getTags())->pluck('tag', 'id'))
                 ->multiple()
                 ->preload()
@@ -64,7 +64,7 @@ class ActiveCampaign
     {
         return [
             Select::make("external_options.{$this->slug}_contact_field")
-                ->label('Kies een contact veld')
+                ->label(__('Kies een contact veld'))
                 ->options(collect($this->getContactFields())->pluck('title', 'id'))
                 ->preload()
                 ->visible(fn ($get) => $get("../../external_options.send_to_$this->slug")),

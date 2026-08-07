@@ -18,11 +18,11 @@ class ListForm extends ListRecords
         return [
             CreateAction::make(),
             Action::make('createContactForm')
-                ->label('Contact formulier aanmaken')
+                ->label(__('Contact formulier aanmaken'))
                 ->action(function () {
                     Forms::createPresetForms('contact');
                     Notification::make()
-                        ->title('Contact formulier aangemaakt')
+                        ->title(__('Contact formulier aangemaakt'))
                         ->success()
                         ->send();
                 }),

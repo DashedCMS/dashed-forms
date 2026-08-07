@@ -48,10 +48,10 @@ class ViewForm extends Page implements HasTable
     {
         return [
             SelectFilter::make('viewed')
-                ->label('Bekeken')
+                ->label(__('Bekeken'))
                 ->options([
-                    '0' => 'Niet bekeken',
-                    '1' => 'Bekeken',
+                    '0' => __('Niet bekeken'),
+                    '1' => __('Bekeken'),
                 ]),
         ];
     }
@@ -70,7 +70,7 @@ class ViewForm extends Page implements HasTable
     {
         $tableColumns = [
             TextColumn::make('id')
-                ->label('ID')
+                ->label(__('ID'))
                 ->sortable()
                 ->searchable([
                     'ip',
@@ -111,13 +111,13 @@ class ViewForm extends Page implements HasTable
         }
 
         $tableColumns[] = TextColumn::make('created_at')
-            ->label('Ingevoerd op')
+            ->label(__('Ingevoerd op'))
             ->dateTime('d-m-Y H:i')
             ->sortable();
 
         $tableColumns[] =
             ToggleColumn::make('viewed')
-                ->label('Bekeken')
+                ->label(__('Bekeken'))
                 ->onIcon('heroicon-o-eye')
                 ->offIcon('heroicon-o-eye-slash')
                 ->sortable();
@@ -138,7 +138,7 @@ class ViewForm extends Page implements HasTable
     {
         return [
             BulkAction::make('delete')
-                ->label('Verwijderen')
+                ->label(__('Verwijderen'))
                 ->action(function (Collection $records) {
                     foreach ($records as $record) {
                         $record->delete();
@@ -146,12 +146,12 @@ class ViewForm extends Page implements HasTable
 
                     Notification::make()
                         ->success()
-                        ->body('Resultaten verwijderd')
+                        ->body(__('Resultaten verwijderd'))
                         ->send();
                 })
                 ->deselectRecordsAfterCompletion(),
             BulkAction::make('export')
-                ->label('Exporteer')
+                ->label(__('Exporteer'))
                 ->action(function (Collection $records) {
                     $records->chunk(5000)->each(function ($chunk) {
                         ExportFormInputs::dispatch($chunk->pluck('id'), auth()->user()->email);
@@ -159,7 +159,7 @@ class ViewForm extends Page implements HasTable
 
                     Notification::make()
                         ->success()
-                        ->body('Resultaten worden gemaild')
+                        ->body(__('Resultaten worden gemaild'))
                         ->send();
                 })
                 ->deselectRecordsAfterCompletion(),

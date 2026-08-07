@@ -51,7 +51,7 @@ class Forms
     {
         return
             Select::make($name)
-                ->label('Formulier')
+                ->label(__('Formulier'))
                 ->options(function () {
                     $options = [];
                     foreach (Form::all() as $form) {

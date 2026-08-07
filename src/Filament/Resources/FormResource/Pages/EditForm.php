@@ -30,7 +30,7 @@ class EditForm extends EditRecord
             LocaleSwitcher::make(),
             Action::make('translate')
                 ->icon('heroicon-m-language')
-                ->label('Vertaal')
+                ->label(__('Vertaal'))
                 ->visible(AutomatedTranslation::automatedTranslationsEnabled())
                 ->schema([
                     Select::make('to_locales')
@@ -39,7 +39,7 @@ class EditForm extends EditRecord
                         ->searchable()
                         ->default(fn ($livewire) => collect(Locales::getLocalesArrayWithoutCurrent($livewire->activeLocale))->keys()->toArray())
                         ->required()
-                        ->label('Naar talen')
+                        ->label(__('Naar talen'))
                         ->multiple(),
                 ])
                 ->action(function (array $data) {
@@ -48,7 +48,7 @@ class EditForm extends EditRecord
                     }
 
                     Notification::make()
-                        ->title('Item wordt vertaald, dit kan even duren. Sla de pagina niet op tot de vertalingen klaar zijn.')
+                        ->title(__('Item wordt vertaald, dit kan even duren. Sla de pagina niet op tot de vertalingen klaar zijn.'))
                         ->warning()
                         ->send();
 
@@ -58,7 +58,7 @@ class EditForm extends EditRecord
                 ->action('duplicate')
                 ->icon('heroicon-m-document-duplicate')
                 ->button()
-                ->label('Dupliceer'),
+                ->label(__('Dupliceer')),
             DeleteAction::make()
                 ->icon('heroicon-m-trash'),
         ];
@@ -151,7 +151,7 @@ class EditForm extends EditRecord
             // oorzaak hoeft niet eens een lege vertaling te zijn.
             Notification::make()
                 ->warning()
-                ->title('Wijzigingen niet opgeslagen')
+                ->title(__('Wijzigingen niet opgeslagen'))
                 ->body($this->validationFailureSummary($exception))
                 ->persistent()
                 ->send();

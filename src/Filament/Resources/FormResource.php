@@ -80,39 +80,39 @@ class FormResource extends Resource
 
         $newSchema = [
             TextInput::make('name')
-                ->label('Naam')
+                ->label(__('Naam'))
                 ->maxLength(255)
                 ->required(),
             Select::make('email_confirmation_form_field_id')
-                ->label('Email bevestiging veld voor de klant')
+                ->label(__('Email bevestiging veld voor de klant'))
                 ->options(fn ($record) => $record ? $record->fields()->where('type', 'input')->where('input_type', 'email')->pluck('name', 'id') : []),
             Select::make('enrollment_flow_id')
-                ->label('Marketing-flow voor inschrijving na inzending')
-                ->helperText('Stuur een inzender automatisch door naar deze opvolg-flow nadat ze het formulier hebben verzonden.')
+                ->label(__('Marketing-flow voor inschrijving na inzending'))
+                ->helperText(__('Stuur een inzender automatisch door naar deze opvolg-flow nadat ze het formulier hebben verzonden.'))
                 ->options(fn () => class_exists(PopupFollowUpFlow::class)
                     ? PopupFollowUpFlow::query()->orderBy('name')->pluck('name', 'id')->toArray()
                     : [])
-                ->placeholder('Geen flow')
+                ->placeholder(__('Geen flow'))
                 ->searchable()
                 ->preload()
                 ->nullable(),
             TagsInput::make('notification_form_inputs_emails')
                 ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
-                ->label('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen')
-                ->helperText('Vul hier de emails in waar de bevestigingsmail naartoe gestuurd moet worden, indien je dit leeg laat worden de standaard emails gebruikt')
-                ->placeholder('Voer een email in')
+                ->label(__('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen'))
+                ->helperText(__('Vul hier de emails in waar de bevestigingsmail naartoe gestuurd moet worden, indien je dit leeg laat worden de standaard emails gebruikt'))
+                ->placeholder(__('Voer een email in'))
                 ->reactive(),
             Repeater::make('webhooks')
-                ->label('Webhooks')
+                ->label(__('Webhooks'))
                 ->visible(count(forms()->builder('webhookClasses')))
                 ->schema([
                     TextInput::make('url')
-                        ->label('Webhook URL')
-                        ->helperText('Vul hier de URL in waar de webhook naartoe gestuurd moet worden')
+                        ->label(__('Webhook URL'))
+                        ->helperText(__('Vul hier de URL in waar de webhook naartoe gestuurd moet worden'))
                         ->reactive()
                         ->required(),
                     Select::make('class')
-                        ->label('Webhook class')
+                        ->label(__('Webhook class'))
                         ->options(collect(forms()->builder('webhookClasses'))->pluck('name', 'class')->toArray())
                         ->searchable()
                         ->preload()
@@ -124,19 +124,19 @@ class FormResource extends Resource
                     'lg' => 2,
                 ]),
             Repeater::make('apis')
-                ->label('APIs')
+                ->label(__('APIs'))
                 ->visible(count(forms()->builder('apiClasses')))
                 ->reactive()
                 ->schema(fn (Get $get) => array_merge([
                     Select::make('class')
-                        ->label('API class')
+                        ->label(__('API class'))
                         ->options(collect(forms()->builder('apiClasses'))->pluck('name', 'class')->toArray())
                         ->searchable()
                         ->preload()
                         ->required()
                         ->reactive(),
                 ], $apiFields))
-                ->addActionLabel('API toevoegen')
+                ->addActionLabel(__('API toevoegen'))
                 ->columns([
                     'default' => 1,
                     'lg' => 2,
@@ -148,7 +148,7 @@ class FormResource extends Resource
             $provider = $provider->getClass();
             if ($provider->connected) {
                 $schema[] = Toggle::make("external_options.send_to_$provider->slug")
-                    ->label('Verstuur naar '.$provider->name)
+                    ->label(__('Verstuur naar :naam', ['naam' => $provider->name]))
                     ->reactive();
                 $schema = array_merge($schema, $provider->getFormSchema());
             }
@@ -161,29 +161,29 @@ class FormResource extends Resource
 
         $repeaterSchema = [
             TextInput::make('name')
-                ->label('Naam')
+                ->label(__('Naam'))
                 ->maxLength(255)
                 ->required(),
             Select::make('type')
-                ->label('Type veld')
+                ->label(__('Type veld'))
                 ->options(Forms::availableInputTypes())
                 ->required()
                 ->reactive(),
             Select::make('input_type')
-                ->label('Input type veld')
+                ->label(__('Input type veld'))
                 ->options(Forms::availableInputTypesForInput())
                 ->required(fn ($get) => in_array($get('type'), ['input']))
                 ->reactive()
                 ->visible(fn ($get) => in_array($get('type'), ['input'])),
             TextInput::make('placeholder')
-                ->label('Placeholder')
+                ->label(__('Placeholder'))
                 ->maxLength(255)
                 ->visible(fn ($get) => in_array($get('type'), ['input', 'textarea'])),
             TextInput::make('regex')
-                ->label('Regex validatie')
+                ->label(__('Regex validatie'))
                 ->hintActions([
                     Action::make('testRegex')
-                        ->label('Test regex')
+                        ->label(__('Test regex'))
                         ->url('https://regex101.com')
                         ->openUrlInNewTab(),
                 ])
@@ -197,51 +197,51 @@ class FormResource extends Resource
                         }
                     },
                 ])
-                ->helperText('Bij foutieve regex geeft het formulier een foutmelding bij versturen en wordt de invoer niet opgeslagen')
+                ->helperText(__('Bij foutieve regex geeft het formulier een foutmelding bij versturen en wordt de invoer niet opgeslagen'))
                 ->maxLength(255)
                 ->visible(fn ($get) => in_array($get('type'), ['input'])),
             TextInput::make('helper_text')
-                ->label('Helper tekst')
-                ->helperText('Zet hier eventueel uitleg neer over dit veld')
+                ->label(__('Helper tekst'))
+                ->helperText(__('Zet hier eventueel uitleg neer over dit veld'))
                 ->maxLength(255),
             Toggle::make('required')
-                ->label('Verplicht in te vullen')
+                ->label(__('Verplicht in te vullen'))
                 ->visible(fn ($get) => ! in_array($get('type'), ['info', 'image'])),
             Toggle::make('stack_start')
-                ->label('Start van de stack'),
+                ->label(__('Start van de stack')),
             Toggle::make('stack_end')
-                ->label('Einde van de stack'),
+                ->label(__('Einde van de stack')),
             cms()->editorField('description', 'Descriptie')
                 ->required(fn ($get) => in_array($get('type'), ['info']))
                 ->visible(fn ($get) => in_array($get('type'), ['info', 'select-image'])),
             Repeater::make('options')
-                ->label('Opties')
+                ->label(__('Opties'))
                 ->required(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
                 ->visible(fn ($get) => in_array($get('type'), ['checkbox', 'radio', 'select']))
                 ->reorderable()
                 ->schema([
                     TextInput::make('name')
-                        ->label('Naam')
+                        ->label(__('Naam'))
                         ->maxLength(255)
                         ->required(),
                 ]),
             Repeater::make('images')
-                ->label('Afbeeldingen')
+                ->label(__('Afbeeldingen'))
                 ->required(fn ($get) => in_array($get('type'), ['select-image']))
                 ->visible(fn ($get) => in_array($get('type'), ['select-image']))
                 ->reorderable()
                 ->schema([
                     TextInput::make('name')
-                        ->label('Naam')
+                        ->label(__('Naam'))
                         ->maxLength(255),
                     FileUpload::make('image')
-                        ->label('Afbeelding')
+                        ->label(__('Afbeelding'))
                         ->required()
                         ->image()
                         ->directory('dashed/images'),
                 ]),
             FileUpload::make('image')
-                ->label('Afbeelding')
+                ->label(__('Afbeelding'))
                 ->required(fn ($get) => in_array($get('type'), ['image']))
                 ->visible(fn ($get) => in_array($get('type'), ['image']))
                 ->image()
@@ -257,7 +257,7 @@ class FormResource extends Resource
 
         $newSchema[] = Repeater::make('fields')
             ->relationship('fields')
-            ->label('Velden')
+            ->label(__('Velden'))
             ->reorderable()
             ->orderColumn()
             ->reorderableWithButtons()
@@ -280,22 +280,22 @@ class FormResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Naam')
+                    ->label(__('Naam'))
                     ->formatStateUsing(fn ($state) => ucfirst($state))
                     ->sortable()
                     ->searchable(query: SearchQuery::make()),
                 TextColumn::make('amount_of_requests')
-                    ->label('Aantal aanvragen')
+                    ->label(__('Aantal aanvragen'))
                     ->getStateUsing(fn ($record) => $record->inputs->count()),
                 TextColumn::make('amount_of_unviewed_requests')
-                    ->label('Aantal openstaande aanvragen')
+                    ->label(__('Aantal openstaande aanvragen'))
                     ->getStateUsing(fn ($record) => $record->inputs()->unviewed()->count()),
             ])
             ->recordActions([
                 EditAction::make()
                     ->button(),
                 Action::make('viewInputs')
-                    ->label('Bekijk aanvragen')
+                    ->label(__('Bekijk aanvragen'))
                     ->icon('heroicon-s-eye')
                     ->button()
                     ->color('primary')

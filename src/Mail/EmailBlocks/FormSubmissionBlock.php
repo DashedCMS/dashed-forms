@@ -25,7 +25,7 @@ class FormSubmissionBlock extends EmailBlock
             ->icon('heroicon-o-clipboard-document-list')
             ->schema([
                 TextInput::make('title')
-                    ->label('Kop boven de gegevens')
+                    ->label(__('Kop boven de gegevens'))
                     ->default('Ingevoerde gegevens'),
             ]);
     }
