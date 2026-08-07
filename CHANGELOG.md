@@ -2,6 +2,13 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.2.21 - 2026-08-07
+
+### Fixed
+- **Taalselector op het formulier-scherm liet de vorige taal overschrijven.** De velden staan in een repeater met relatie, die de locale-switcher niet meenam. De state werd daarom met de hand in `$this->data` gezet, waarna de onderliggende repeater-velden hun oude keys hielden, de validatie op 'verplicht' omviel en de switcher `activeLocale` terugzette op de vorige taal — terwijl het scherm de nieuwe toonde. Opslaan overschreef vervolgens de vorige taal met de inhoud van de nieuwe. De state wordt nu opnieuw ingeladen via `loadStateFromRelationships()`, zodat Filament zelf de uuid-keys van de repeater-items opbouwt.
+- **Melding bij een taalwissel noemde niet welke velden ontbraken.** De `ValidationException` werd ongebonden gevangen, waardoor de veldnamen die de validator meelevert werden weggegooid ten gunste van een vaste tekst. De melding somt nu per veld op wat er misging, met de naam van het formulierveld erbij (opgehaald uit een taal die hem wél heeft, want juist in de taal waar het misgaat is die leeg). Bij meer dan zes meldingen wordt de lijst afgekapt.
+- **Gedupliceerde formulieren blokkeerden elke opslag.** `duplicate()` nam `email_confirmation_form_field_id` letterlijk over, terwijl de gekopieerde velden nieuwe id's kregen. Die pointer wees dus naar een veld van het bronformulier, stond niet in de optielijst van de select en liet de validatie bij élke opslag omvallen — en omdat de taalselector opslaat voordat hij wisselt, kreeg je die melding bij iedere taalwissel, ook in talen waarin niets ontbrak. De pointer verhuist nu mee naar de kopie; een pointer naar een veld van een ander formulier vervalt bij het inladen, en de controle vóór opslaan kijkt niet langer alleen of het veld bestáát maar ook of het bij dit formulier hoort.
+
 ## v4.2.18 - 2026-06-11
 
 ### Fixed
