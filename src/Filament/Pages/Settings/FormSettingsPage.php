@@ -33,7 +33,7 @@ class FormSettingsPage extends Page
 
     protected static ?string $navigationLabel = 'Formulier instellingen';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Overige';
+    protected static string|UnitEnum|null $navigationGroup = 'Systeem';
 
     protected static ?string $title = 'Formulier instellingen';
 
