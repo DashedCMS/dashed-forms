@@ -4,6 +4,7 @@ namespace Dashed\DashedForms\Mail\EmailBlocks;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Builder\Block;
+use Illuminate\Support\Facades\Storage;
 use Dashed\DashedCore\Mail\EmailBlocks\EmailBlock;
 
 class FormSubmissionBlock extends EmailBlock
@@ -30,6 +31,25 @@ class FormSubmissionBlock extends EmailBlock
             ]);
     }
 
+    /**
+     * Een bestandsveld bewaart alleen het pad op de schijf. Onbewerkt in een
+     * mail zetten levert een regel op als "dashed/forms/form-aml-form-xyz.jpg":
+     * geen link, en de ontvanger kan er niets mee. Hier maken we er de
+     * volledige URL van.
+     */
+    protected static function publicUrl(string $value): ?string
+    {
+        if ($value === '' || str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value ?: null;
+        }
+
+        try {
+            return Storage::disk('dashed')->url($value);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
     public static function render(array $blockData, array $context): string
     {
         $formInput = $context['formInput'] ?? null;
@@ -48,6 +68,7 @@ class FormSubmissionBlock extends EmailBlock
                 $rows[] = [
                     'label' => (string) ($label ?: '-'),
                     'value' => (string) $value,
+                    'url' => $field->formField?->isImage() ? self::publicUrl((string) $value) : null,
                 ];
             }
         }

@@ -14,7 +14,11 @@
                         {{ $row['label'] }}
                     </td>
                     <td style="padding: 8px 0; vertical-align: top; font-size: 13px; color: #111827; border-top: 1px solid #e5e7eb;">
-                        {!! nl2br(e($row['value'])) !!}
+                        @if (! empty($row['url']))
+                            <a href="{{ $row['url'] }}" style="color:#2563eb; text-decoration: underline; word-break: break-all;">{{ basename($row['value']) }}</a>
+                        @else
+                            {!! nl2br(e($row['value'])) !!}
+                        @endif
                     </td>
                 </tr>
             @endforeach
