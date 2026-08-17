@@ -39,22 +39,6 @@ class ViewForm extends Page implements HasTable
         return $this->record->inputs()->getQuery();
     }
 
-    /**
-     * Nieuwste inzending bovenaan. Zonder deze standaard kwam de lijst in
-     * invoegvolgorde terug, dus moest je naar de laatste pagina om te zien wat
-     * er net was binnengekomen -- precies andersom als je die aanvragen
-     * afhandelt.
-     */
-    protected function getDefaultTableSortColumn(): ?string
-    {
-        return 'created_at';
-    }
-
-    protected function getDefaultTableSortDirection(): ?string
-    {
-        return 'desc';
-    }
-
     public function getTitle(): string
     {
         return "Aanvragen voor {$this->record->name}";
@@ -72,14 +56,21 @@ class ViewForm extends Page implements HasTable
         ];
     }
 
+    /**
+     * Nieuwste aanvraag bovenaan. Stond op 'viewed' (onbekeken eerst), maar
+     * binnen die groep kwam de lijst in invoegvolgorde terug: de oudste
+     * onbekeken aanvraag bovenaan, terwijl je juist wilt zien wat er net is
+     * binnengekomen. Onbekeken blijft vindbaar via het filter en de kolom is
+     * sorteerbaar.
+     */
     protected function getDefaultTableSortColumn(): ?string
     {
-        return 'viewed';
+        return 'created_at';
     }
 
     protected function getDefaultTableSortDirection(): ?string
     {
-        return 'ASC';
+        return 'desc';
     }
 
     protected function getTableColumns(): array
