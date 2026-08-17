@@ -10,10 +10,10 @@ use Dashed\DashedCore\Classes\Sites;
 use Filament\Schemas\Components\Flex;
 use Dashed\DashedCore\Classes\Locales;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Storage;
-use Filament\Notifications\Notification;
 use Dashed\DashedForms\Models\FormInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
@@ -55,9 +55,115 @@ class ViewFormInput extends Page implements HasInfolists
         return $breadcrumbs;
     }
 
+    /**
+     * Alle bestandsvelden van deze inzending, als [bestandsnaam => pad].
+     * Dubbele bestandsnamen krijgen een volgnummer, anders overschrijft het
+     * ene bestand het andere in de zip.
+     */
+    protected function attachmentPaths(): array
+    {
+        $paths = [];
+        $seen = [];
+
+        foreach ($this->record->formFields as $field) {
+            if (! $field->formField?->isImage() || blank($field->value)) {
+                continue;
+            }
+
+            $name = basename((string) $field->value);
+            $seen[$name] = ($seen[$name] ?? 0) + 1;
+
+            if ($seen[$name] > 1) {
+                $extension = pathinfo($name, PATHINFO_EXTENSION);
+                $base = pathinfo($name, PATHINFO_FILENAME);
+                $name = $base . '-' . $seen[$name] . ($extension ? '.' . $extension : '');
+            }
+
+            $paths[$name] = (string) $field->value;
+        }
+
+        return $paths;
+    }
+
     protected function getActions(): array
     {
         return [
+            Action::make('downloadAttachments')
+                ->button()
+                ->color('gray')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->label(fn (): string => __('Bijlagen downloaden') . ' (' . count($this->attachmentPaths()) . ')')
+                ->visible(fn (): bool => count($this->attachmentPaths()) > 0)
+                ->action(function () {
+                    $paths = $this->attachmentPaths();
+
+                    // Een enkel bestand hoeft niet ingepakt: dan is een zip
+                    // alleen maar een extra handeling voor de ontvanger.
+                    if (count($paths) === 1) {
+                        $path = reset($paths);
+
+                        return response()->streamDownload(
+                            fn () => print (Storage::disk('dashed')->get($path)),
+                            basename($path)
+                        );
+                    }
+
+                    $zipPath = tempnam(sys_get_temp_dir(), 'form-attachments-') . '.zip';
+                    $zip = new \ZipArchive();
+
+                    if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+                        Notification::make()
+                            ->title(__('Downloaden mislukt'))
+                            ->body(__('Kon geen zip-bestand aanmaken.'))
+                            ->danger()
+                            ->send();
+
+                        return null;
+                    }
+
+                    $added = 0;
+
+                    foreach ($paths as $name => $path) {
+                        // Een ontbrekend bestand mag de hele download niet
+                        // blokkeren; de rest is nog steeds bruikbaar.
+                        if (! Storage::disk('dashed')->exists($path)) {
+                            continue;
+                        }
+
+                        $zip->addFromString($name, Storage::disk('dashed')->get($path));
+                        $added++;
+                    }
+
+                    $zip->close();
+
+                    if ($added === 0) {
+                        @unlink($zipPath);
+
+                        Notification::make()
+                            ->title(__('Geen bijlagen gevonden'))
+                            ->body(__('De bestanden staan niet meer op de opslag.'))
+                            ->warning()
+                            ->send();
+
+                        return null;
+                    }
+
+                    if ($added < count($paths)) {
+                        Notification::make()
+                            ->title(__('Niet alle bijlagen gevonden'))
+                            ->body(__(':added van :total bestanden zijn ingepakt.', [
+                                'added' => $added,
+                                'total' => count($paths),
+                            ]))
+                            ->warning()
+                            ->send();
+                    }
+
+                    return response()->download(
+                        $zipPath,
+                        'inzending-' . $this->record->id . '-bijlagen.zip'
+                    )->deleteFileAfterSend();
+                }),
             Action::make('toggleViewed')
                 ->button()
                 ->label($this->record->viewed ? __('Markeer als niet bekeken') : __('Markeer als bekeken'))
