@@ -39,6 +39,22 @@ class ViewForm extends Page implements HasTable
         return $this->record->inputs()->getQuery();
     }
 
+    /**
+     * Nieuwste inzending bovenaan. Zonder deze standaard kwam de lijst in
+     * invoegvolgorde terug, dus moest je naar de laatste pagina om te zien wat
+     * er net was binnengekomen -- precies andersom als je die aanvragen
+     * afhandelt.
+     */
+    protected function getDefaultTableSortColumn(): ?string
+    {
+        return 'created_at';
+    }
+
+    protected function getDefaultTableSortDirection(): ?string
+    {
+        return 'desc';
+    }
+
     public function getTitle(): string
     {
         return "Aanvragen voor {$this->record->name}";
