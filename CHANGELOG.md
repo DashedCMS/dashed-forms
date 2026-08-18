@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.6.2 - 2026-08-18
+
+### Fixed
+- **De opties van radio-, checkbox- en select-velden werden nooit automatisch vertaald.** Ze staan in een repeater onder de sleutel `name`, en die sleutel staat in vrijwel elk project op `ignorableKeysForTranslations` om de structuur van builder-blokken te beschermen. De extractie sloeg daardoor elke optie over: de Vertaal-knop vulde `name`, `placeholder` en `helper_text` in alle talen, terwijl `options` leeg bleef en op het scherm terugviel op de brontaal. Hetzelfde gold voor de namen bij een select-image-veld. Beide kolommen worden nu aangemeld als gewone inhoud via `cms()->builder('plainContentColumnsForTranslations', ...)`, waarvoor `dashed-translations` v4.5.0 of hoger nodig is; op een oudere versie is de registratie een no-op. Bestaande formulieren moeten één keer opnieuw door de Vertaal-knop om de ontbrekende talen te vullen.
+
 ## v4.2.21 - 2026-08-07
 
 ### Fixed

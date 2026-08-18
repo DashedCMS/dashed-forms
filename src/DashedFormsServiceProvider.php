@@ -30,6 +30,16 @@ class DashedFormsServiceProvider extends PackageServiceProvider
     {
         cms()->registerNavigationGroup('Formulieren', 50);
 
+        // De opties van een keuzeveld en de namen bij een select-image staan in
+        // een repeater onder de sleutel 'name'. Die sleutel staat in vrijwel
+        // elk project op ignorableKeysForTranslations om de structuur van
+        // builder-blokken te beschermen, waardoor de automatische vertaling
+        // hier nooit iets te pakken kreeg. Deze kolommen bevatten gewone
+        // inhoud, dus die lijst hoort er niet op te gelden.
+        cms()->builder('plainContentColumnsForTranslations', [
+            Models\FormField::class => ['options', 'images'],
+        ]);
+
         // Forms owns the canonical recaptcha key; core also registers it for
         // back-compat but forms registers later in the boot order so it wins.
         cms()->registerSetting(
