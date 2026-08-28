@@ -7,8 +7,8 @@ namespace Dashed\DashedForms\Http\Controllers\Api\V1;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedForms\Models\Form;
+use Dashed\DashedCore\Classes\Sites;
 use Dashed\DashedForms\Models\FormInput;
 
 class FormInputController extends Controller

@@ -40,6 +40,19 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             Models\FormField::class => ['options', 'images'],
         ]);
 
+        // De kop van een formulierveld staat in de kolom 'name', en die naam
+        // staat in vrijwel elk project op ignorableColumnsForTranslations om
+        // een merknaam als 'Amazon' onvertaald te houden. Die lijst kent
+        // alleen kolomnamen, geen modellen, dus werd ook de kop letterlijk
+        // uit de brontaal naar elke taal gekopieerd: placeholder, helper_text
+        // en de opties kwamen wel vertaald terug, de kop nooit. Hier is 'name'
+        // gewoon zichtbare tekst, dus melden we hem uitdrukkelijk aan als
+        // vertaalbaar. Vereist de dashed-core release met
+        // alwaysTranslateColumns(); op een oudere versie is dit een no-op.
+        cms()->builder('translatableColumnsForTranslationsPerModel', [
+            Models\FormField::class => ['name'],
+        ]);
+
         // Forms owns the canonical recaptcha key; core also registers it for
         // back-compat but forms registers later in the boot order so it wins.
         cms()->registerSetting(
