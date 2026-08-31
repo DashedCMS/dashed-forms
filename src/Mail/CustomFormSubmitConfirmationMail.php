@@ -88,6 +88,10 @@ class CustomFormSubmitConfirmationMail extends Mailable implements RegistersEmai
             'name' => $this->formInput->form->name,
         ]);
 
+        // Een per-formulier ingesteld onderwerp wint van de e-mailtemplate
+        // en van de fallback-tekst.
+        $formSubject = $this->formInput->form?->resolveMailSubject('customer', $this->formInput);
+
         $templateHtml = $this->renderFromTemplate($context);
 
         if ($templateHtml !== null) {
@@ -95,12 +99,12 @@ class CustomFormSubmitConfirmationMail extends Mailable implements RegistersEmai
 
             return $this->html($templateHtml)
                 ->from($fromEmail, $fromName)
-                ->subject($this->templateSubject($fallbackSubject, $context));
+                ->subject($formSubject ?? $this->templateSubject($fallbackSubject, $context));
         }
 
         return $this->view(config('dashed-core.site_theme', 'dashed').'.emails.custom-confirm-form-submit')
             ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))
-            ->subject($fallbackSubject)
+            ->subject($formSubject ?? $fallbackSubject)
             ->with(['formInput' => $this->formInput]);
     }
 }

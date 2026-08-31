@@ -111,17 +111,21 @@ class AdminCustomFormSubmitConfirmationMail extends Mailable implements Register
             'name' => $this->formInput->form->name,
         ]);
 
+        // Een per-formulier ingesteld onderwerp wint van de e-mailtemplate
+        // en van de fallback-tekst.
+        $formSubject = $this->formInput->form?->resolveMailSubject('admin', $this->formInput);
+
         $templateHtml = $this->renderFromTemplate($context);
 
         if ($templateHtml !== null) {
             [$fromEmail, $fromName] = $this->templateFrom(Customsetting::get('site_from_email'), Customsetting::get('site_name'));
             $mail = $this->html($templateHtml)
                 ->from($fromEmail, $fromName)
-                ->subject($this->templateSubject($fallbackSubject, $context));
+                ->subject($formSubject ?? $this->templateSubject($fallbackSubject, $context));
         } else {
             $mail = $this->view(config('dashed-core.site_theme', 'dashed').'.emails.admin-custom-confirm-form-submit')
                 ->from(Customsetting::get('site_from_email'), Customsetting::get('site_name'))
-                ->subject($fallbackSubject)
+                ->subject($formSubject ?? $fallbackSubject)
                 ->with(['formInput' => $this->formInput]);
         }
 

@@ -67,6 +67,28 @@ class FormResource extends Resource
         return FormInput::unviewed()->count();
     }
 
+    /**
+     * Uitleg onder de onderwerp-velden, met de variabelen die op dit moment
+     * echt beschikbaar zijn: de vaste twee plus de geslugde naam van elk
+     * formulierveld. Op een nog niet opgeslagen formulier zijn er nog geen
+     * velden, dan tonen we alleen de vaste variabelen.
+     */
+    public static function mailSubjectHelperText($record): string
+    {
+        $variables = [':formName:', ':siteName:'];
+
+        foreach ($record?->fields ?? [] as $field) {
+            $slug = str((string) $field->name)->slug('_')->toString();
+            if ($slug !== '') {
+                $variables[] = ":{$slug}:";
+            }
+        }
+
+        return __('Laat leeg voor het standaard onderwerp. Beschikbare variabelen: :variabelen', [
+            'variabelen' => implode(', ', array_unique($variables)),
+        ]);
+    }
+
     public static function form(Schema $schema): Schema
     {
         $apiFields = [];
@@ -95,6 +117,16 @@ class FormResource extends Resource
                 ->placeholder(__('Geen flow'))
                 ->searchable()
                 ->preload()
+                ->nullable(),
+            TextInput::make('customer_mail_subject')
+                ->label(__('Onderwerp bevestigingsmail naar de klant'))
+                ->helperText(fn ($record) => static::mailSubjectHelperText($record))
+                ->maxLength(255)
+                ->nullable(),
+            TextInput::make('admin_mail_subject')
+                ->label(__('Onderwerp bevestigingsmail naar de beheerder'))
+                ->helperText(fn ($record) => static::mailSubjectHelperText($record))
+                ->maxLength(255)
                 ->nullable(),
             TagsInput::make('notification_form_inputs_emails')
                 ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
