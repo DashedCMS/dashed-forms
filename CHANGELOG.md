@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.7.2 - 2026-09-16
+
+### Changed
+- `maatwebsite/excel` mag `^3.1 || ^4.0`, voor PHP 8.5. Zie dashed-ecommerce-core v4.127.0.
+
 ## v4.6.2 - 2026-08-18
 
 ### Fixed
