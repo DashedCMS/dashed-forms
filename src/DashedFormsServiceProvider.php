@@ -255,6 +255,31 @@ MARKDOWN,
                 'Bij mCaptcha geldt: als de mCaptcha-server tijdelijk onbereikbaar is, laat het formulier de inzending door. Anders kan niemand het formulier nog gebruiken bij een storing.',
             ],
         );
+
+        self::registreerVertaalbaren();
+    }
+
+    /**
+     * Formulieren aanmelden bij het vertaalstatus-overzicht, met formuliervelden
+     * als kind zodat ze meetellen in de vingerafdruk van het formulier.
+     *
+     * Statisch, naar het voorbeeld van registreerBewaartermijnen() in
+     * dashed-core. Guarded op class_exists: dashed-forms kent
+     * dashed-translations niet als afhankelijkheid.
+     */
+    public static function registreerVertaalbaren(): void
+    {
+        if (! class_exists(\Dashed\DashedTranslations\Classes\Translatables\TranslatableRegistry::class)) {
+            return;
+        }
+
+        \Dashed\DashedTranslations\Classes\Translatables\TranslatableRegistry::register(
+            \Dashed\DashedTranslations\Classes\Translatables\Translatable::make(\Dashed\DashedForms\Models\Form::class)
+                ->label(__('Formulieren'))
+                ->group(__('Inhoud'))
+                ->child('fields', \Dashed\DashedForms\Models\FormField::class, fn (\Dashed\DashedForms\Models\FormField $field) => $field->form)
+                ->urlVia(\Dashed\DashedForms\Filament\Resources\FormResource::class)
+        );
     }
 
     public function configurePackage(Package $package): void
