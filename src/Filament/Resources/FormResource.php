@@ -38,6 +38,7 @@ use Dashed\DashedForms\Filament\Resources\FormResource\Pages\ViewFormInput;
 
 class FormResource extends Resource
 {
+    use \Dashed\DashedCore\Filament\Concerns\TranslatesResourceLabels;
     use HasCustomBlocksTab;
     use Translatable;
 
