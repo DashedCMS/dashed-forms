@@ -295,6 +295,7 @@ MARKDOWN,
 
         $package
             ->name('dashed-forms')
+            ->hasTranslations()
             ->hasRoutes([
                 'frontend',
             ])
