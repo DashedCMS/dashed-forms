@@ -25,6 +25,7 @@ use Dashed\DashedForms\Classes\MailingProviders\ActiveCampaign;
 
 class FormSettingsPage extends Page
 {
+    use \Dashed\DashedCore\Filament\Concerns\TranslatesPageLabels;
     use HasSettingsPermission;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-bell';
@@ -51,6 +52,7 @@ class FormSettingsPage extends Page
             $formData['form_redirect_server_side'] = Customsetting::get('form_redirect_server_side', null, true);
             $formData["form_activecampaign_url_{$site['id']}"] = Customsetting::get('form_activecampaign_url', $site['id']);
             $formData["form_activecampaign_key_{$site['id']}"] = Customsetting::get('form_activecampaign_key', $site['id']);
+            $formData["form_reply_cc_email_{$site['id']}"] = Customsetting::get('form_reply_cc_email', $site['id']);
             $formData["google_recaptcha_site_key_{$site['id']}"] = Customsetting::get('google_recaptcha_site_key', $site['id']);
             $formData["google_recaptcha_secret_key_{$site['id']}"] = Customsetting::get('google_recaptcha_secret_key', $site['id']);
             $formData["captcha_provider_{$site['id']}"] = Customsetting::get('captcha_provider', $site['id'], 'google_recaptcha');
@@ -129,6 +131,11 @@ class FormSettingsPage extends Page
                 TextInput::make("form_activecampaign_key_{$site['id']}")
                     ->label(__('ActiveCampaign API key'))
                     ->reactive(),
+                TextInput::make("form_reply_cc_email_{$site['id']}")
+                    ->label(__('CC-adres voor antwoorden op aanvragen'))
+                    ->helperText(__('Bij het beantwoorden van een aanvraag kan het antwoord met één vinkje in CC naar dit adres, zodat het ook in jullie eigen mailbox staat.'))
+                    ->email()
+                    ->maxLength(255),
             ];
 
             $tabs[] = Tab::make($site['id'])
@@ -178,6 +185,7 @@ class FormSettingsPage extends Page
             Customsetting::set('mcaptcha_secret', $state["mcaptcha_secret_{$sid}"] ?? null, $sid);
             Customsetting::set('form_activecampaign_url', $state["form_activecampaign_url_{$sid}"] ?? null, $sid);
             Customsetting::set('form_activecampaign_key', $state["form_activecampaign_key_{$sid}"] ?? null, $sid);
+            Customsetting::set('form_reply_cc_email', $state["form_reply_cc_email_{$sid}"] ?? null, $sid);
             Customsetting::set('form_redirect_server_side', $state['form_redirect_server_side'] ?? true, $sid);
         }
 

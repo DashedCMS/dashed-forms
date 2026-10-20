@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Blade;
 use Spatie\LaravelPackageTools\Package;
 use Dashed\DashedCore\Models\Customsetting;
 use Dashed\DashedForms\Policies\FormPolicy;
+use Dashed\DashedForms\Policies\FormReplyTemplatePolicy;
 use Illuminate\Console\Scheduling\Schedule;
 use Dashed\DashedForms\Mail\FormInputsExportMail;
 use Dashed\DashedForms\Commands\SendApisForFormInputs;
@@ -67,6 +68,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             ->registerMailable(CustomFormSubmitConfirmationMail::class)
             ->registerMailable(AdminCustomFormSubmitConfirmationMail::class)
             ->registerMailable(FormInputsExportMail::class)
+            ->registerMailable(\Dashed\DashedForms\Mail\FormReplyMail::class)
             ->emailBlock(FormSubmissionBlock::key(), FormSubmissionBlock::class);
 
         Livewire::component('dashed-forms.form', Form::class);
@@ -99,6 +101,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
         });
 
         Gate::policy(Models\Form::class, FormPolicy::class);
+        Gate::policy(Models\FormReplyTemplate::class, FormReplyTemplatePolicy::class);
 
         // Mobiele app: formulier-aanvragen tonen + notificatie bij nieuwe inzending.
         if (class_exists(\Dashed\DashedMobileApi\MobileApiRegistry::class)) {
@@ -149,6 +152,9 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             'view_form' => 'Formulieren bekijken',
             'edit_form' => 'Formulieren bewerken',
             'delete_form' => 'Formulieren verwijderen',
+            'view_form_reply_template' => 'Formulier templates bekijken',
+            'edit_form_reply_template' => 'Formulier templates bewerken',
+            'delete_form_reply_template' => 'Formulier templates verwijderen',
         ]);
 
         cms()->builder('summaryContributors', [FormSummaryContributor::class]);
@@ -295,6 +301,7 @@ MARKDOWN,
 
         $package
             ->name('dashed-forms')
+            ->hasTranslations()
             ->hasRoutes([
                 'frontend',
             ])

@@ -103,12 +103,12 @@ class FormInputController extends Controller
         $service = app(\Dashed\DashedForms\Services\FormReplyService::class);
 
         try {
-            $email = $service->send($fi, $data['message'], $data['subject'] ?? null);
+            $reply = $service->send($fi, $data['message'], $data['subject'] ?? null, userId: $request->user()?->id);
         } catch (\Throwable $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }
 
-        return response()->json(['success' => true, 'email' => $email]);
+        return response()->json(['success' => true, 'email' => $reply->to_email]);
     }
 
     /** Beschikbare formulieren (om op te filteren) — alleen die inzendingen hebben. */

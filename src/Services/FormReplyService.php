@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Dashed\DashedForms\Services;
 
+use Tiptap\Editor;
 use RuntimeException;
 use Illuminate\Support\Facades\Mail;
 use Dashed\DashedForms\Models\FormInput;
+use Dashed\DashedForms\Models\FormReply;
 use Dashed\DashedForms\Mail\FormReplyMail;
+use Dashed\DashedCore\Models\Customsetting;
+use Dashed\DashedForms\Models\FormReplyTemplate;
 
 /**
  * Genereert en verstuurt een (AI-)antwoord op een formulier-aanvraag. Gedeeld
@@ -73,11 +77,26 @@ class FormReplyService
         return trim($draft);
     }
 
-    /** Verstuur het antwoord per e-mail naar de inzender en log dit. */
-    public function send(FormInput $formInput, string $message, ?string $subject = null): string
-    {
-        $message = trim($message);
-        if ($message === '') {
+    /**
+     * Verstuur het antwoord per e-mail naar de inzender, sla het op bij de
+     * inzending en log het. $message mag platte tekst zijn (textarea, AI,
+     * mobiele app) of HTML (rich editor in het CMS); platte tekst wordt in
+     * alinea's gezet. Variabelen worden hier bewust niet meer vervangen: dat
+     * gebeurt bij het kiezen van een template, zodat een tijd als 10:30:00 in
+     * een handgetypt antwoord niet per ongeluk als variabele wordt gezien.
+     *
+     * @param  array<int, string>  $cc
+     */
+    public function send(
+        FormInput $formInput,
+        string $message,
+        ?string $subject = null,
+        array $cc = [],
+        ?FormReplyTemplate $template = null,
+        ?int $userId = null,
+    ): FormReply {
+        $html = $this->toHtml($message);
+        if (trim(strip_tags($html)) === '') {
             throw new RuntimeException('Het antwoord is leeg.');
         }
 
@@ -86,24 +105,92 @@ class FormReplyService
             throw new RuntimeException('Geen e-mailadres gevonden in deze aanvraag.');
         }
 
+        $cc = array_values(array_unique(array_filter(array_map(
+            fn ($address) => trim((string) $address),
+            $cc,
+        ), fn ($address) => $address !== '' && filter_var($address, FILTER_VALIDATE_EMAIL) && strcasecmp($address, $email) !== 0)));
+
         $subject = $subject !== null && trim($subject) !== ''
             ? trim($subject)
             : 'Reactie op je aanvraag — ' . ($formInput->form?->name ?: 'formulier');
 
-        Mail::to($email)->send(new FormReplyMail($formInput, $message, $subject));
+        $mailer = Mail::to($email);
+        if ($cc) {
+            $mailer->cc($cc);
+        }
+        $mailer->send(new FormReplyMail($formInput, $html, $subject));
+
+        $reply = FormReply::create([
+            'form_input_id' => $formInput->id,
+            'form_reply_template_id' => $template?->id,
+            'user_id' => $userId,
+            'to_email' => $email,
+            'cc' => $cc ?: null,
+            'subject' => $subject,
+            'body' => $html,
+        ]);
 
         activity()
             ->performedOn($formInput)
-            ->withProperties(['email' => $email, 'subject' => $subject])
-            ->log('aanvraag beantwoord (e-mail naar ' . $email . ')');
+            ->withProperties(['email' => $email, 'cc' => $cc, 'subject' => $subject, 'form_reply_id' => $reply->id])
+            ->log('aanvraag beantwoord (e-mail naar ' . $email . ($cc ? ', cc ' . implode(', ', $cc) : '') . ')');
 
         // Beantwoorden impliceert gezien.
         $formInput->forceFill(['viewed' => 1])->save();
 
-        return $email;
+        return $reply;
     }
 
-    /** @return array<string, string> label => waarde */
+    /** Het CC-adres voor antwoorden (instelling per site), of null. */
+    public function ccAddress(FormInput $formInput): ?string
+    {
+        $address = trim((string) Customsetting::get('form_reply_cc_email', $formInput->site_id));
+
+        return filter_var($address, FILTER_VALIDATE_EMAIL) ? $address : null;
+    }
+
+    /**
+     * Platte tekst wordt HTML met alinea's; iets dat al HTML is gaat door
+     * zoals het is.
+     */
+    public function toHtml(string $message): string
+    {
+        $message = trim($message);
+        if ($message === '') {
+            return '';
+        }
+
+        if ($message !== strip_tags($message)) {
+            return $message;
+        }
+
+        $paragraphs = preg_split("/\n{2,}/", str_replace("\r\n", "\n", $message)) ?: [];
+
+        return implode('', array_map(
+            fn (string $paragraph) => '<p>' . str_replace("\n", '<br>', e(trim($paragraph))) . '</p>',
+            array_filter($paragraphs, fn (string $paragraph) => trim($paragraph) !== ''),
+        ));
+    }
+
+    /**
+     * HTML als state voor de rich editor van het CMS (Tiptap-document), zodat
+     * een template of AI-concept in het antwoordveld geladen kan worden.
+     */
+    public function toEditorState(string $html): array
+    {
+        $html = $this->toHtml($html);
+        if ($html === '') {
+            return ['type' => 'doc', 'content' => []];
+        }
+
+        $document = (new Editor())->setContent($html)->getDocument();
+
+        return [
+            'type' => 'doc',
+            'content' => cms()->cleanForFilamentRich(cms()->normalizeRichState($document)),
+        ];
+    }
+
     private function fields(FormInput $formInput): array
     {
         $out = [];

@@ -7,8 +7,10 @@ use Filament\Actions\Action;
 use Filament\Schemas\Schema;
 use Filament\Resources\Pages\Page;
 use Dashed\DashedCore\Classes\Sites;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Flex;
 use Dashed\DashedCore\Classes\Locales;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Support\Facades\Storage;
 use Dashed\DashedForms\Models\FormInput;
@@ -18,9 +20,13 @@ use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Schemas\Components\Utilities\Set;
+use Dashed\DashedForms\Models\FormReplyTemplate;
 use Dashed\DashedForms\Services\FormReplyService;
+use Filament\Infolists\Components\RepeatableEntry;
 use Dashed\DashedForms\Filament\Resources\FormResource;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 
 class ViewFormInput extends Page implements HasInfolists
 {
@@ -39,9 +45,29 @@ class ViewFormInput extends Page implements HasInfolists
         $this->record = $formInput;
     }
 
+    /**
+     * Filament herlaadt bij elke Livewire-aanroep $record via het model van de
+     * resource (Form), maar op deze pagina is $record de inzending (FormInput).
+     * Zonder deze override gaf elke knop op de pagina een 404 zodra het id van
+     * de inzending niet toevallig ook een bestaand formulier-id was; Livewire
+     * zelf heeft de inzending dan al opnieuw uit de database geladen.
+     */
+    protected function resolveRecordPropertyFromLivewire(): void
+    {
+    }
+
     private function replyService(): FormReplyService
     {
         return app(FormReplyService::class);
+    }
+
+    /** Templates die voor het formulier van deze inzending gelden, in volgorde. */
+    private function availableTemplates(): \Illuminate\Support\Collection
+    {
+        return FormReplyTemplate::forForm($this->record->form)
+            ->orderBy('order')
+            ->orderBy('name')
+            ->get();
     }
 
     public function getBreadcrumbs(): array
@@ -207,25 +233,87 @@ class ViewFormInput extends Page implements HasInfolists
                 ->label(__('Antwoord versturen'))
                 ->visible(fn (): bool => $this->replyService()->recipientEmail($this->record) !== null)
                 ->modalSubmitActionLabel(__('Versturen'))
+                ->modalWidth('3xl')
+                ->fillForm(fn (): array => [
+                    'message' => $this->draft ? $this->replyService()->toEditorState($this->draft) : null,
+                    'cc_infobox' => $this->replyService()->ccAddress($this->record) !== null,
+                ])
                 ->form([
-                    Textarea::make('message')
-                        ->label(__('Antwoord'))
-                        ->helperText(fn (): string => __('Wordt per e-mail verstuurd naar :email', ['email' => $this->replyService()->recipientEmail($this->record) ?? '—']))
-                        ->required()
-                        ->rows(12)
-                        ->default(fn (): ?string => $this->draft),
+                    Select::make('template_id')
+                        ->label(__('Template'))
+                        ->helperText(__('Vult onderwerp en antwoord in met de gegevens uit deze aanvraag; je kunt daarna nog alles aanpassen.'))
+                        ->options(fn (): array => $this->availableTemplates()->pluck('name', 'id')->toArray())
+                        ->visible(fn (): bool => $this->availableTemplates()->isNotEmpty())
+                        ->searchable()
+                        ->live()
+                        ->afterStateUpdated(function ($state, Set $set): void {
+                            $template = $state ? FormReplyTemplate::find($state) : null;
+                            if (! $template) {
+                                return;
+                            }
+
+                            $rendered = $template->renderFor($this->record);
+                            $set('subject', $rendered['subject']);
+                            $set('message', $this->replyService()->toEditorState($rendered['body']));
+                        }),
                     TextInput::make('subject')
-                        ->label(__('Onderwerp (optioneel)')),
+                        ->label(__('Onderwerp'))
+                        ->helperText(__('Leeg = standaardonderwerp met de naam van het formulier.'))
+                        ->maxLength(200),
+                    cms()->editorField('message', __('Antwoord'))
+                        ->helperText(fn (): string => __('Wordt per e-mail verstuurd naar :email', ['email' => $this->replyService()->recipientEmail($this->record) ?? '—']))
+                        ->required(),
+                    Checkbox::make('cc_infobox')
+                        ->label(fn (): string => __('CC naar :email', ['email' => $this->replyService()->ccAddress($this->record) ?? '']))
+                        ->visible(fn (): bool => $this->replyService()->ccAddress($this->record) !== null),
+                    TextInput::make('cc_extra')
+                        ->label(__('Extra CC-adressen (scheiden met een komma)'))
+                        ->rule(fn () => function (string $attribute, $value, \Closure $fail): void {
+                            foreach (explode(',', (string) $value) as $address) {
+                                $address = trim($address);
+                                if ($address !== '' && ! filter_var($address, FILTER_VALIDATE_EMAIL)) {
+                                    $fail(__('Ongeldig e-mailadres: :email', ['email' => $address]));
+                                }
+                            }
+                        }),
                 ])
                 ->action(function (array $data) {
+                    $message = $data['message'] ?? '';
+                    if (is_array($message)) {
+                        $message = RichContentRenderer::make($message)->toHtml();
+                    }
+
+                    $cc = [];
+                    if (($data['cc_infobox'] ?? false) && ($infobox = $this->replyService()->ccAddress($this->record))) {
+                        $cc[] = $infobox;
+                    }
+                    foreach (explode(',', (string) ($data['cc_extra'] ?? '')) as $address) {
+                        if (trim($address) !== '') {
+                            $cc[] = trim($address);
+                        }
+                    }
+
                     try {
-                        $email = $this->replyService()->send($this->record, $data['message'], $data['subject'] ?? null);
+                        $reply = $this->replyService()->send(
+                            formInput: $this->record,
+                            message: (string) $message,
+                            subject: $data['subject'] ?? null,
+                            cc: $cc,
+                            template: ! empty($data['template_id']) ? FormReplyTemplate::find($data['template_id']) : null,
+                            userId: auth()->id(),
+                        );
                     } catch (\Throwable $e) {
                         Notification::make()->title(__('Versturen mislukt'))->body($e->getMessage())->danger()->send();
 
                         return;
                     }
-                    Notification::make()->title(__('Antwoord verstuurd naar :email', ['email' => $email]))->success()->send();
+
+                    $this->draft = null;
+
+                    Notification::make()
+                        ->title(__('Antwoord verstuurd naar :email', ['email' => $reply->to_email]) . ($reply->cc ? ' (CC: ' . implode(', ', $reply->cc) . ')' : ''))
+                        ->success()
+                        ->send();
 
                     return redirect()->route('filament.dashed.resources.forms.viewInput', [$this->record->form->id, $this->record->id]);
                 }),
@@ -264,7 +352,7 @@ class ViewFormInput extends Page implements HasInfolists
         if ($this->record->content) {
             foreach ($this->record->content as $key => $value) {
                 $label = Str::of($key)->replace('_', ' ')->title();
-                $name = 'content_'.Str::slug((string) $key, '_');
+                $name = 'content_' . Str::slug((string) $key, '_');
 
                 $inputFields[] = TextEntry::make($name)
                     ->label($label)
@@ -273,7 +361,7 @@ class ViewFormInput extends Page implements HasInfolists
         } else {
             foreach ($this->record->formFields as $field) {
                 $id = (string) ($field->formField->id ?? Str::random(8));
-                $name = 'field_'.$id;
+                $name = 'field_' . $id;
 
                 if ($field->isImage()) {
                     if ($field->formField->type === 'select-image') {
@@ -290,7 +378,7 @@ class ViewFormInput extends Page implements HasInfolists
                                 ->helperText(__('Klik de afbeelding om te openen'))
                                 ->state($field->value);
                         } else {
-                            $inputFields[] = TextEntry::make($name.'_download')
+                            $inputFields[] = TextEntry::make($name . '_download')
                                 ->state($field->formField->name)
                                 ->label(__('Download bestand'))
                                 ->url(Storage::disk('dashed')->url($field->value))
@@ -347,6 +435,40 @@ class ViewFormInput extends Page implements HasInfolists
                         ])
                         ->columnSpanFull(),
                 ])->from('md'),
+                Section::make(__('Verstuurde antwoorden'))
+                    ->description(__('Elk antwoord dat vanuit het CMS of de app is verstuurd, met de volledige inhoud.'))
+                    ->visible(fn (): bool => $this->record->replies()->exists())
+                    ->collapsible()
+                    ->schema([
+                        RepeatableEntry::make('replies')
+                            ->hiddenLabel()
+                            ->schema([
+                                TextEntry::make('subject')
+                                    ->label(__('Onderwerp'))
+                                    ->weight('bold')
+                                    ->columnSpanFull(),
+                                TextEntry::make('created_at')
+                                    ->label(__('Verstuurd op'))
+                                    ->dateTime('d-m-Y H:i'),
+                                TextEntry::make('sender_name')
+                                    ->label(__('Door')),
+                                TextEntry::make('to_email')
+                                    ->label(__('Aan')),
+                                TextEntry::make('cc')
+                                    ->label(__('CC'))
+                                    ->formatStateUsing(fn ($state): string => is_array($state) ? implode(', ', $state) : (string) $state)
+                                    ->placeholder('—'),
+                                TextEntry::make('template.name')
+                                    ->label(__('Template'))
+                                    ->placeholder('—'),
+                                TextEntry::make('body')
+                                    ->label(__('Antwoord'))
+                                    ->html()
+                                    ->prose()
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(3),
+                    ]),
             ]);
     }
 
