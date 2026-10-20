@@ -53,6 +53,12 @@ class FormInput extends Model
         return $this->hasMany(FormInputField::class);
     }
 
+    /** Verstuurde antwoorden, nieuwste eerst. */
+    public function replies(): HasMany
+    {
+        return $this->hasMany(FormReply::class)->latest('id');
+    }
+
     public function scopeUnviewed($query)
     {
         $query->where('viewed', 0);

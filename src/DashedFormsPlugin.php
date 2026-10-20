@@ -5,6 +5,7 @@ namespace Dashed\DashedForms;
 use Filament\Panel;
 use Filament\Contracts\Plugin;
 use Dashed\DashedForms\Filament\Resources\FormResource;
+use Dashed\DashedForms\Filament\Resources\FormReplyTemplateResource;
 use Dashed\DashedForms\Filament\Pages\Settings\FormSettingsPage;
 
 class DashedFormsPlugin implements Plugin
@@ -22,6 +23,7 @@ class DashedFormsPlugin implements Plugin
             ])
             ->resources([
                 FormResource::class,
+                FormReplyTemplateResource::class,
             ]);
     }
 

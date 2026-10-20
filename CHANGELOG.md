@@ -2,6 +2,17 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.10.0 - 2026-10-20
+
+### Added
+- **Formulier templates: antwoord-templates voor formulierinzendingen**, als tegenhanger van de bestel-log-templates. Nieuw menu-item *Formulieren > Formulier templates* met naam, onderwerp en rich-text inhoud (vertaalbaar), optioneel beperkt tot bepaalde formulieren, met een lijst van de variabelen die je kunt gebruiken: `:formName:`, `:siteName:`, `:submittedAt:`, `:submissionId:` en per formulierveld `:naam_van_veld:`. Eigen permissies `view/edit/delete_form_reply_template`.
+- **Antwoord versturen vanaf een inzending is uitgebreid.** Je kiest een template (onderwerp en antwoord worden met de gegevens uit de aanvraag ingevuld en zijn daarna nog aan te passen), schrijft in een rich editor in plaats van een kaal tekstvak, en kunt met één vinkje een CC sturen naar het nieuwe CC-adres uit *Formulier instellingen* plus extra CC-adressen. Het AI-concept werkt zoals voorheen en wordt in de editor geladen.
+- **Verstuurde antwoorden worden opgeslagen en getoond.** Nieuwe tabel `dashed__form_replies` met ontvanger, CC, onderwerp, volledige inhoud, gebruikte template en medewerker; de inzendingspagina toont ze in het blok *Verstuurde antwoorden*. Ook antwoorden via de mobiele API worden opgeslagen.
+- **Antwoordmail in huisstijl.** `FormReplyMail` gebruikt nu het e-mailtemplatesysteem (template *Antwoord op formulier aanvraag*, variabele `:replyContent:`), zodat het antwoord in dezelfde lay-out komt als de andere mails. Zonder e-mailtemplate blijft de kale opmaak de fallback.
+
+### Changed
+- `FormReplyService::send()` geeft nu een `FormReply` terug in plaats van het e-mailadres en accepteert `cc`, `template` en `userId`. Variabelen worden alleen nog vervangen bij het kiezen van een template, niet meer bij het versturen, zodat een handgetypte tijd als `10:30:00` niet als variabele wordt gezien.
+
 ## v4.7.2 - 2026-09-16
 
 ### Changed
