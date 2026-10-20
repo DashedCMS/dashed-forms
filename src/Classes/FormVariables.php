@@ -86,7 +86,7 @@ class FormVariables
     {
         return preg_replace_callback(
             '/:(\w+):/',
-            fn($m) => array_key_exists($m[1], $variables) ? (string) $variables[$m[1]] : '',
+            fn ($m) => array_key_exists($m[1], $variables) ? (string) $variables[$m[1]] : '',
             $text
         );
     }
@@ -95,7 +95,7 @@ class FormVariables
     {
         return preg_replace_callback(
             '/:(\w+):/',
-            fn($m) => array_key_exists($m[1], $variables) ? e((string) $variables[$m[1]]) : '',
+            fn ($m) => array_key_exists($m[1], $variables) ? e((string) $variables[$m[1]]) : '',
             $html
         );
     }
