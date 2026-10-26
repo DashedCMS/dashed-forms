@@ -4,10 +4,10 @@ namespace Dashed\DashedForms\Models;
 
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Dashed\DashedForms\Classes\FormVariables;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Dashed\DashedPopups\Models\PopupFollowUpFlow;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
