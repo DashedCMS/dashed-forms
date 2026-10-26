@@ -4,6 +4,7 @@ namespace Dashed\DashedForms\Models;
 
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Dashed\DashedForms\Classes\FormVariables;
@@ -17,6 +18,7 @@ class Form extends Model
     use HasCustomBlocks;
     use HasTranslations;
     use LogsActivity;
+    use SoftDeletes;
 
     protected static $logFillable = true;
 
@@ -40,7 +42,13 @@ class Form extends Model
 
     protected static function booted()
     {
+        // Alleen bij definitief verwijderen: een formulier in de prullenbak
+        // moet met zijn velden en inzendingen terug kunnen.
         static::deleting(function ($form) {
+            if (! $form->isForceDeleting()) {
+                return;
+            }
+
             $form->fields()->delete();
             $form->inputs()->delete();
         });
