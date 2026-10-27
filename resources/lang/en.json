@@ -141,5 +141,7 @@
     "Wijzigingen niet opgeslagen": "Changes not saved",
     "Wordt alleen server-side gebruikt en niet in de HTML geladen.": "Only used server-side and not loaded in the HTML.",
     "Wordt per e-mail verstuurd naar :email": "Sent by email to :email",
-    "Zet hier eventueel uitleg neer over dit veld": "Optionally add an explanation about this field here"
+    "Zet hier eventueel uitleg neer over dit veld": "Optionally add an explanation about this field here",
+    "Formulieren versturen": "Submitting forms",
+    "Inzendingen van een formulier per IP-adres per minuut. Standaard 5.": "Form submissions per IP address per minute. Default 5."
 }

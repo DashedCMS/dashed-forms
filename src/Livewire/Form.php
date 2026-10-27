@@ -4,6 +4,8 @@ namespace Dashed\DashedForms\Livewire;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Dashed\DashedCore\Classes\RateLimits;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\App;
 use Dashed\DashedCore\Classes\Sites;
 use Illuminate\Support\Facades\Mail;
@@ -27,6 +29,19 @@ use Dashed\DashedForms\Mail\AdminCustomFormSubmitConfirmationMail;
 class Form extends Component
 {
     use WithFileUploads;
+
+    /** Naam van de limiter in RateLimits, ingesteld bij Instellingen, Beveiliging. */
+    public const SUBMIT_LIMITER = 'dashed-form-submit';
+
+    /** Standaard inzendingen per IP-adres per minuut, ook de terugval zonder RateLimits. */
+    public const SUBMIT_PER_MINUTE = 5;
+
+    /**
+     * Bevestigingsmails per IP-adres per uur. Vast, los van de instelbare
+     * inzendlimiet: die kan op 0 (uit) staan, en het mailadres komt van de
+     * bezoeker, dus zonder deze grens is het formulier een gratis verzendserver.
+     */
+    public const CONFIRMATION_MAILS_PER_HOUR = 10;
 
     public \Dashed\DashedForms\Models\Form $form;
 
@@ -151,6 +166,17 @@ class Form extends Component
     #[ValidatesMcaptcha]
     public function submit()
     {
+        // Telt ook zonder captcha, en vóór de validatie, zodat ook een reeks
+        // ongeldige pogingen begrensd is.
+        $retryAfter = $this->hitSubmitLimit();
+        if ($retryAfter !== null) {
+            $this->addError('values', Translation::get('form-too-many-submissions', 'form', 'Je hebt dit formulier te vaak verstuurd. Probeer het over :seconds: seconden opnieuw.', 'text', [
+                'seconds' => $retryAfter,
+            ]));
+
+            return;
+        }
+
         $this->validate();
 
         // 2. Rest van je oorspronkelijke flow
@@ -165,8 +191,14 @@ class Form extends Component
         $formInput->locale = App::getLocale();
         $formInput->save();
 
+        // Alleen velden van dit formulier, op de exacte veldnaam: de validatie
+        // hierboven loopt over precies die sleutels. Een andere sleutel (een veld
+        // van een ander formulier, of een eigen naam met hetzelfde id erachter)
+        // zou anders ongevalideerd opgeslagen worden.
+        $fieldsByName = $this->formFields->keyBy(fn (FormField $field) => $field->fieldName);
+
         foreach ($this->values as $fieldName => $value) {
-            $field = FormField::find(str($fieldName)->explode('-')->last());
+            $field = $fieldsByName->get((string) $fieldName);
             if (! $field) {
                 continue;
             }
@@ -221,7 +253,7 @@ class Form extends Component
             SyncFormInputApisJob::dispatch($formInput->id);
         }
 
-        if ($sendToFieldValue ?? false) {
+        if (($sendToFieldValue ?? false) && $this->mayMailConfirmation()) {
             try {
                 Mail::to($sendToFieldValue)->send(new CustomFormSubmitConfirmationMail($formInput));
             } catch (\Exception $e) {
@@ -272,6 +304,41 @@ class Form extends Component
         if ($redirectUrl && Customsetting::get('form_redirect_server_side', null, true)) {
             return redirect($redirectUrl);
         }
+    }
+
+    /**
+     * Geeft het aantal seconden tot de volgende poging, of null als de inzending
+     * door mag (en telt hem dan mee).
+     */
+    protected function hitSubmitLimit(): ?int
+    {
+        $ip = request()->ip() ?: 'unknown';
+
+        if (method_exists(RateLimits::class, 'extend') && array_key_exists(self::SUBMIT_LIMITER, RateLimits::all())) {
+            return RateLimits::hit(self::SUBMIT_LIMITER, $ip);
+        }
+
+        // Oudere dashed-core zonder eigen limiters: vaste grens.
+        $key = self::SUBMIT_LIMITER . '|' . $ip;
+        if (RateLimiter::tooManyAttempts($key, self::SUBMIT_PER_MINUTE)) {
+            return RateLimiter::availableIn($key);
+        }
+        RateLimiter::hit($key, 60);
+
+        return null;
+    }
+
+    protected function mayMailConfirmation(): bool
+    {
+        $key = 'dashed-form-confirmation-mail|' . (request()->ip() ?: 'unknown');
+
+        if (RateLimiter::tooManyAttempts($key, self::CONFIRMATION_MAILS_PER_HOUR)) {
+            return false;
+        }
+
+        RateLimiter::hit($key, 3600);
+
+        return true;
     }
 
     public function updated($name, $value)

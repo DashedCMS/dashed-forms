@@ -141,5 +141,7 @@
     "Wijzigingen niet opgeslagen": "Wijzigingen niet opgeslagen",
     "Wordt alleen server-side gebruikt en niet in de HTML geladen.": "Wordt alleen server-side gebruikt en niet in de HTML geladen.",
     "Wordt per e-mail verstuurd naar :email": "Wordt per e-mail verstuurd naar :email",
-    "Zet hier eventueel uitleg neer over dit veld": "Zet hier eventueel uitleg neer over dit veld"
+    "Zet hier eventueel uitleg neer over dit veld": "Zet hier eventueel uitleg neer over dit veld",
+    "Formulieren versturen": "Formulieren versturen",
+    "Inzendingen van een formulier per IP-adres per minuut. Standaard 5.": "Inzendingen van een formulier per IP-adres per minuut. Standaard 5."
 }

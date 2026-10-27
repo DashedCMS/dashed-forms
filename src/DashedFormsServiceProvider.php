@@ -31,6 +31,19 @@ class DashedFormsServiceProvider extends PackageServiceProvider
     {
         cms()->registerNavigationGroup('Formulieren', 50);
 
+        // Inzendlimiet per IP-adres, instelbaar bij Instellingen, Beveiliging.
+        // method_exists omdat dit pakket tegen een oudere dashed-core kan draaien;
+        // de component valt dan terug op een vaste grens.
+        if (method_exists(\Dashed\DashedCore\Classes\RateLimits::class, 'extend')) {
+            \Dashed\DashedCore\Classes\RateLimits::extend(
+                \Dashed\DashedForms\Livewire\Form::SUBMIT_LIMITER,
+                'rate_limit_form_submit',
+                \Dashed\DashedForms\Livewire\Form::SUBMIT_PER_MINUTE,
+                __('Formulieren versturen'),
+                __('Inzendingen van een formulier per IP-adres per minuut. Standaard 5.'),
+            );
+        }
+
         // De opties van een keuzeveld en de namen bij een select-image staan in
         // een repeater onder de sleutel 'name'. Die sleutel staat in vrijwel
         // elk project op ignorableKeysForTranslations om de structuur van
