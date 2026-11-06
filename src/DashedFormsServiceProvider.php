@@ -92,7 +92,7 @@ class DashedFormsServiceProvider extends PackageServiceProvider
                 ->everyMinute()
                 ->when(fn () => SendWebhooksForFormInputs::hasWork());
             $schedule->command(SendApisForFormInputs::class)
-                ->hourly()
+                ->hourlyAt(class_exists(\Dashed\DashedCore\Classes\ScheduleSpread::class) ? \Dashed\DashedCore\Classes\ScheduleSpread::minute('send-apis-for-form-inputs') : 0)
                 ->when(fn () => SendApisForFormInputs::hasWork());
         });
 
