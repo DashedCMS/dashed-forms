@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.12.2 - 2026-11-06
+
+### Changed
+- `send-apis-for-form-inputs` draait alleen als er inzendingen wachten.
+
 ## v4.12.1 - 2026-11-06
 
 ### Changed

@@ -91,7 +91,9 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             $schedule->command(SendWebhooksForFormInputs::class)
                 ->everyMinute()
                 ->when(fn () => SendWebhooksForFormInputs::hasWork());
-            $schedule->command(SendApisForFormInputs::class)->hourly();
+            $schedule->command(SendApisForFormInputs::class)
+                ->hourly()
+                ->when(fn () => SendApisForFormInputs::hasWork());
         });
 
         config(['services.google.recaptcha.site_key' => Customsetting::get('google_recaptcha_site_key', Sites::getActive(), '')]);
