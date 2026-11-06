@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.12.1 - 2026-11-06
+
+### Changed
+- `dashed:send-webhooks-for-form-inputs` start alleen nog een eigen artisan-proces als er een inzending wacht.
+
 ## v4.10.0 - 2026-10-20
 
 ### Added

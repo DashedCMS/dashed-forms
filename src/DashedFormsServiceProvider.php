@@ -88,7 +88,9 @@ class DashedFormsServiceProvider extends PackageServiceProvider
 
         $this->app->booted(function () {
             $schedule = app(Schedule::class);
-            $schedule->command(SendWebhooksForFormInputs::class)->everyMinute();
+            $schedule->command(SendWebhooksForFormInputs::class)
+                ->everyMinute()
+                ->when(fn () => SendWebhooksForFormInputs::hasWork());
             $schedule->command(SendApisForFormInputs::class)->hourly();
         });
 

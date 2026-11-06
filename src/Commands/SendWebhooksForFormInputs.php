@@ -36,11 +36,23 @@ class SendWebhooksForFormInputs extends Command
      *
      * @return int
      */
+    /**
+     * Snelle controle voor de scheduler: zonder werk start er geen eigen
+     * artisan-proces. Lukt de query niet, dan draait het commando gewoon.
+     */
+    public static function hasWork(): bool
+    {
+        return rescue(fn () => self::pending()->exists(), true, false);
+    }
+
+    private static function pending()
+    {
+        return FormInput::where('should_send_webhook', 1)->where('webhook_send', '!=', 1);
+    }
+
     public function handle()
     {
-        $formInputs = FormInput::where('should_send_webhook', 1)
-            ->where('webhook_send', '!=', 1)
-            ->get();
+        $formInputs = self::pending()->get();
 
         foreach ($formInputs as $formInput) {
             $formInput->sendWebhooks();
