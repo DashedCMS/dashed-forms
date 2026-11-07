@@ -7,6 +7,10 @@ use Illuminate\Database\Migrations\Migration;
 return new class () extends Migration {
     public function up(): void
     {
+        if (Schema::hasTable('dashed__form_replies')) {
+            return;
+        }
+
         Schema::create('dashed__form_replies', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form_input_id')->index();

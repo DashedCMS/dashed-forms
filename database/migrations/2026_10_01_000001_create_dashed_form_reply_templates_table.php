@@ -7,6 +7,10 @@ use Illuminate\Database\Migrations\Migration;
 return new class extends Migration {
     public function up(): void
     {
+        if (Schema::hasTable('dashed__form_reply_templates')) {
+            return;
+        }
+
         Schema::create('dashed__form_reply_templates', function (Blueprint $table) {
             $table->id();
             $table->string('name');
