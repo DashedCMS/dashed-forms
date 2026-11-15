@@ -65,6 +65,25 @@ class Form extends Component
         'setValue',
     ];
 
+
+    /**
+     * Uploadpoort van dashed-core (Security\Uploads\UploadGate): bezoekers
+     * mogen alleen uploaden naar `values.{fieldName}` van een bestandsveld van
+     * dit formulier (type "file", of "input" met input_type "file").
+     */
+    public function acceptsGuestUpload(string $property): bool
+    {
+        if (! str_starts_with($property, 'values.')) {
+            return false;
+        }
+
+        $fieldName = substr($property, strlen('values.'));
+
+        return $this->form->fields->contains(
+            fn ($field) => $field->fieldName === $fieldName
+                && ($field->type === 'file' || ($field->type === 'input' && $field->input_type === 'file'))
+        );
+    }
     public function mount(\Dashed\DashedForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
     {
         if (Customsetting::get('google_recaptcha_site_key')) {

@@ -2,6 +2,10 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.13.0 - 2026-11-15
+
+- `Form::acceptsGuestUpload()`: met de uploadpoort van dashed-core mogen bezoekers alleen uploaden naar een echt bestandsveld van het formulier.
+
 ## v4.12.5 - 2026-11-15
 
 ### Added
