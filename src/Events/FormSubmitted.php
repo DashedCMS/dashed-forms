@@ -18,6 +18,13 @@ class FormSubmitted
 
     public ?int $site_id;
 
+    /**
+     * Gezet door een listener die dit formulier ook via de Conversions API naar
+     * Meta stuurt (dashed-ecommerce-core). De Livewire-payload `formSubmitted`
+     * geeft het mee aan de pixel, zodat Meta browser- en server-event ontdubbelt.
+     */
+    public ?string $meta_event_id = null;
+
     public function __construct(
         public int $form_id,
         public int $form_input_id,

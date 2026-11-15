@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.12.5 - 2026-11-15
+
+### Added
+- `FormSubmitted::$meta_event_id`: een listener (dashed-ecommerce-core) die het formulier als Contact naar de Meta Conversions API stuurt zet hier het event-ID, en de Livewire-payload `formSubmitted` geeft het mee als `metaEventId`.
+
 ## v4.12.3 - 2026-11-06
 
 ### Changed

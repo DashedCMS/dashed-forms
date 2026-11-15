@@ -241,13 +241,14 @@ class Form extends Component
         // FormSubmitted event lets downstream marketing listeners (newsletter
         // enrolment, lead-flow signup, etc.) react without coupling form-input
         // persistence to specific consumers.
-        event(new FormSubmitted(
+        $submitted = new FormSubmitted(
             form_id: (int) $formInput->form_id,
             form_input_id: (int) $formInput->id,
             email: $sendToFieldValue ?? null,
             locale: $formInput->locale ?: app()->getLocale(),
             site_id: $formInput->site_id,
-        ));
+        );
+        event($submitted);
 
         if ($formInput->should_send_api && (int) $formInput->api_send !== 1) {
             SyncFormInputApisJob::dispatch($formInput->id);
@@ -299,6 +300,7 @@ class Form extends Component
             'redirectUrl' => $redirectUrl,
             'data' => $formValues,
             'formName' => $this->form->name,
+            'metaEventId' => $submitted->meta_event_id,
         ]);
 
         if ($redirectUrl && Customsetting::get('form_redirect_server_side', null, true)) {
