@@ -2,7 +2,6 @@
 
 namespace Dashed\DashedForms\Mail\EmailBlocks;
 
-use Illuminate\Support\Facades\Storage;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Builder\Block;
 use Dashed\DashedCore\Mail\EmailBlocks\EmailBlock;
