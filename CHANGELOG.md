@@ -2,6 +2,12 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.16.0 - 2026-11-16
+
+### Changed
+- Het taakcentrum (het tabje Bezig) toont nu een export van formulierinzendingen als één taak over alle porties.
+- De Engelse vertaling van "Volgorde" en "Verstuurd op" is weer gelijk aan die in de andere pakketten ("Sort order", "Sent at").
+
 ## v4.15.0 - 2026-11-16
 
 - Migratie `privatize_form_uploads`: verhuist bij de deploy (queued job `PrivatizeFormUploads`, alleen in productie) alle formulierbestanden die nog publiek in `dashed/forms` staan naar de privé opslag, inclusief losse bestanden zonder inzending. Handmatig: `php artisan dashed-forms:privatize-uploads [--now|--dry-run]`. Vereist dashed-core ^4.110.

@@ -1,4 +1,5 @@
 {
+    ":aantal resultaten gemaild naar :email.": ":aantal resultaten gemaild naar :email.",
     ":added van :total bestanden zijn ingepakt.": ":added van :total bestanden zijn ingepakt.",
     "Aan": "Aan",
     "Aantal aanvragen": "Aantal aanvragen",
@@ -54,6 +55,7 @@
     "Formulier template": "Formulier template",
     "Formulier templates": "Formulier templates",
     "Formulieren": "Formulieren",
+    "Formulierinzendingen exporteren": "Formulierinzendingen exporteren",
     "Geen": "Geen",
     "Geen bijlagen gevonden": "Geen bijlagen gevonden",
     "Geen flow": "Geen flow",
