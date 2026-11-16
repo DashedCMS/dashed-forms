@@ -65,7 +65,6 @@ class Form extends Component
         'setValue',
     ];
 
-
     /**
      * Uploadpoort van dashed-core (Security\Uploads\UploadGate): bezoekers
      * mogen alleen uploaden naar `values.{fieldName}` van een bestandsveld van
@@ -84,6 +83,7 @@ class Form extends Component
                 && ($field->type === 'file' || ($field->type === 'input' && $field->input_type === 'file'))
         );
     }
+
     public function mount(\Dashed\DashedForms\Models\Form $formId, array $blockData = [], array $inputData = [], bool $singleColumn = false, ?string $buttonTitle = '')
     {
         if (Customsetting::get('google_recaptcha_site_key')) {
