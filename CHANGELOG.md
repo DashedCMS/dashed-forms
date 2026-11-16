@@ -2,6 +2,10 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.15.0 - 2026-11-16
+
+- Migratie `privatize_form_uploads`: verhuist bij de deploy (queued job `PrivatizeFormUploads`, alleen in productie) alle formulierbestanden die nog publiek in `dashed/forms` staan naar de privé opslag, inclusief losse bestanden zonder inzending. Handmatig: `php artisan dashed-forms:privatize-uploads [--now|--dry-run]`. Vereist dashed-core ^4.110.
+
 ## v4.14.0 - 2026-11-16
 
 - Bestanden uit formulieren gaan privé via dashed-core `PrivateUploads` (vereist dashed-core ^4.109), niet meer publiek in `dashed/forms`. Beheer, mails en de bijlagen-download linken via de beveiligde route; de klant krijgt in zijn bevestiging geen link meer naar het bestand. Oude bestanden blijven werken.

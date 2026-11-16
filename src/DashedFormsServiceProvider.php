@@ -323,6 +323,7 @@ MARKDOWN,
                 'frontend',
             ])
             ->hasCommands([
+                \Dashed\DashedForms\Commands\PrivatizeFormUploadsCommand::class,
                 SendWebhooksForFormInputs::class,
                 SendApisForFormInputs::class,
             ])
