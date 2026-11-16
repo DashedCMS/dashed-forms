@@ -129,7 +129,7 @@ class ViewFormInput extends Page implements HasInfolists
                         $path = reset($paths);
 
                         return response()->streamDownload(
-                            fn () => print (Storage::disk('dashed')->get($path)),
+                            fn () => print ($this->attachmentDisk($path)->get($path)),
                             basename($path)
                         );
                     }
@@ -152,11 +152,11 @@ class ViewFormInput extends Page implements HasInfolists
                     foreach ($paths as $name => $path) {
                         // Een ontbrekend bestand mag de hele download niet
                         // blokkeren; de rest is nog steeds bruikbaar.
-                        if (! Storage::disk('dashed')->exists($path)) {
+                        if (! $this->attachmentDisk($path)->exists($path)) {
                             continue;
                         }
 
-                        $zip->addFromString($name, Storage::disk('dashed')->get($path));
+                        $zip->addFromString($name, $this->attachmentDisk($path)->get($path));
                         $added++;
                     }
 
@@ -373,15 +373,15 @@ class ViewFormInput extends Page implements HasInfolists
                         if (str($field->value)->contains(['.jpg', '.jpeg', '.png', '.gif', '.svg'])) {
                             $inputFields[] = ImageEntry::make($name)
                                 ->label($field->formField->name)
-                                ->url(Storage::disk('dashed')->url($field->value))
+                                ->url(\Dashed\DashedCore\Security\Uploads\PrivateUploads::urlFor($field->value))
                                 ->openUrlInNewTab()
                                 ->helperText(__('Klik de afbeelding om te openen'))
-                                ->state($field->value);
+                                ->state(\Dashed\DashedCore\Security\Uploads\PrivateUploads::isPrivate($field->value) ? \Dashed\DashedCore\Security\Uploads\PrivateUploads::url($field->value) : $field->value);
                         } else {
                             $inputFields[] = TextEntry::make($name . '_download')
                                 ->state($field->formField->name)
                                 ->label(__('Download bestand'))
-                                ->url(Storage::disk('dashed')->url($field->value))
+                                ->url(\Dashed\DashedCore\Security\Uploads\PrivateUploads::urlFor($field->value))
                                 ->openUrlInNewTab();
                         }
                     }
@@ -475,5 +475,14 @@ class ViewFormInput extends Page implements HasInfolists
     public function getTitle(): string
     {
         return "Aanvraag #{$this->record->id} voor {$this->record->form->name}";
+    }
+
+    /**
+     * Privé uploads (dashed-core PrivateUploads) staan op een andere disk dan
+     * oude bestanden in dashed/forms.
+     */
+    protected function attachmentDisk(string $path): \Illuminate\Contracts\Filesystem\Filesystem
+    {
+        return \Dashed\DashedCore\Security\Uploads\PrivateUploads::isPrivate($path) ? \Dashed\DashedCore\Security\Uploads\PrivateUploads::disk() : Storage::disk('dashed');
     }
 }

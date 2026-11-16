@@ -352,9 +352,17 @@
                                                                         <h4><b>{{$field->formField->name . ':'}}</b></h4>
                                                                         @if($field->isImage())
                                                                             @if(str($field->value)->contains(['.jpg','.jpeg','.png','.gif','.svg', '.JPG','.JPEG','.PNG','.GIF','.SVG']))
+                                                                                @if(\Dashed\DashedCore\Security\Uploads\PrivateUploads::isPrivate($field->value))
+                                                                                <a href="{{ \Dashed\DashedCore\Security\Uploads\PrivateUploads::url($field->value) }}">Bekijk bestand (inloggen in het beheer)</a>
+                                                                                @else
                                                                                 <img style="max-width: 400px;" src="{{ \Illuminate\Support\Facades\Storage::disk('dashed')->url($field->value) }}">
+                                                                                @endif
                                                                             @else
+                                                                                @if(\Dashed\DashedCore\Security\Uploads\PrivateUploads::isPrivate($field->value))
+                                                                                <a href="{{ \Dashed\DashedCore\Security\Uploads\PrivateUploads::url($field->value) }}">Bekijk bestand (inloggen in het beheer)</a>
+                                                                                @else
                                                                                 <a href="{{ \Illuminate\Support\Facades\Storage::disk('dashed')->url($field->value) }}">Bekijk bestand</a>
+                                                                                @endif
                                                                             @endif
                                                                             @if($field->formField->type == 'select-image')
                                                                                 <div>{{ collect($field->formField->images)->where('image', $field->value)->first()['name'] }}</div>

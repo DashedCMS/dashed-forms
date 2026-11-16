@@ -252,7 +252,7 @@ class Form extends Component
                 }
 
                 $formValues[$field->name] = $field->type == 'file'
-                    ? Storage::disk('dashed')->url($value)
+                    ? \Dashed\DashedCore\Security\Uploads\PrivateUploads::urlFor($value)
                     : $value;
             }
         }
@@ -388,11 +388,17 @@ class Form extends Component
                 return;
             }
 
-            $path = $value->storeAs(
-                'dashed',
-                'forms/form-'.\Illuminate\Support\Str::slug($this->form->name).'-'.\Illuminate\Support\Str::random(40).'.'.$extension,
-                'dashed'
-            );
+            // Privé, onder een gegenereerde naam (dashed-core PrivateUploads). Ophalen
+            // alleen via de beveiligde route; nooit meer publiek in dashed/forms.
+            $path = \Dashed\DashedCore\Security\Uploads\PrivateUploads::store($value, 'forms', $allowedExtensions);
+            $value->delete();
+
+            if (! $path) {
+                $this->values[str($name)->explode('.')->last()] = null;
+                $this->addError($name, 'Ongeldig of te groot bestand.');
+
+                return;
+            }
 
             $this->values[str($name)->explode('.')->last()] = $path;
         }

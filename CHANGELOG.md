@@ -2,6 +2,10 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.14.0 - 2026-11-16
+
+- Bestanden uit formulieren gaan privé via dashed-core `PrivateUploads` (vereist dashed-core ^4.109), niet meer publiek in `dashed/forms`. Beheer, mails en de bijlagen-download linken via de beveiligde route; de klant krijgt in zijn bevestiging geen link meer naar het bestand. Oude bestanden blijven werken.
+
 ## v4.13.0 - 2026-11-15
 
 - `Form::acceptsGuestUpload()`: met de uploadpoort van dashed-core mogen bezoekers alleen uploaden naar een echt bestandsveld van het formulier.

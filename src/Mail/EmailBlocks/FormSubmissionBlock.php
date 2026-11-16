@@ -43,11 +43,8 @@ class FormSubmissionBlock extends EmailBlock
             return $value ?: null;
         }
 
-        try {
-            return Storage::disk('dashed')->url($value);
-        } catch (\Throwable $e) {
-            return null;
-        }
+        // Privé uploads: link naar de beveiligde route (alleen voor het beheer).
+        return \Dashed\DashedCore\Security\Uploads\PrivateUploads::urlFor($value) ?: null;
     }
 
     public static function render(array $blockData, array $context): string
