@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.17.0 - 2026-11-19
+
+### Added
+- AVG-provider: formulierinzendingen per e-mailadres exporteren en verwijderen.
+
 ## v4.16.0 - 2026-11-16
 
 ### Changed

@@ -31,6 +31,11 @@ class DashedFormsServiceProvider extends PackageServiceProvider
     {
         cms()->registerNavigationGroup('Formulieren', 50);
 
+        // AVG-verzoeken: inzendingen met dit e-mailadres inzien en verwijderen.
+        if (method_exists(cms(), 'registerPersonalDataProvider')) {
+            cms()->registerPersonalDataProvider(\Dashed\DashedForms\PersonalData\FormsPersonalDataProvider::class);
+        }
+
         // Inzendlimiet per IP-adres, instelbaar bij Instellingen, Beveiliging.
         // method_exists omdat dit pakket tegen een oudere dashed-core kan draaien;
         // de component valt dan terug op een vaste grens.
