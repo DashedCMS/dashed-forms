@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Dashed\DashedForms\Models\FormInput;
 use Dashed\DashedCore\PersonalData\PersonalDataExport;
+use Dashed\DashedCore\Security\Uploads\PrivateUploads;
 use Dashed\DashedCore\PersonalData\PersonalDataFinding;
 use Dashed\DashedCore\PersonalData\PersonalDataSubject;
 use Dashed\DashedCore\PersonalData\PersonalDataProvider;
-use Dashed\DashedCore\Security\Uploads\PrivateUploads;
 
 /**
  * Formulierinzendingen. Een inzending heeft geen e-mailkolom: het adres staat
