@@ -2,10 +2,10 @@
 
 namespace Dashed\DashedForms\Controllers\Frontend;
 
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Storage;
 use Dashed\DashedForms\Models\Form;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Renders the standalone public page of a form (/aanmelden/{slug}).
