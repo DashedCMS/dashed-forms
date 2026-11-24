@@ -20,7 +20,9 @@ use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\TextColumn;
 use Dashed\DashedForms\Models\FormInput;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\FileUpload;
 use Dashed\DashedForms\Enums\MailingProviders;
@@ -190,6 +192,7 @@ class FormResource extends Resource
         $newSchema = array_merge([
             Section::make()->columnSpanFull()
                 ->schema($newSchema),
+            static::publicPageSection(),
         ], static::customBlocksTab('formBlocks'));
 
         $repeaterSchema = [
@@ -308,6 +311,68 @@ class FormResource extends Resource
             ->schema($newSchema);
     }
 
+    /**
+     * Settings for the standalone public page (/aanmelden/{slug}) and for
+     * closing the form after a deadline or a maximum number of submissions.
+     */
+    protected static function publicPageSection(): Section
+    {
+        return Section::make(__('Publieke aanmeldpagina'))
+            ->description(__('Geef dit formulier een eigen URL om te delen, en sluit inschrijvingen automatisch.'))
+            ->columnSpanFull()
+            ->collapsible()
+            ->columns(['default' => 1, 'lg' => 2])
+            ->schema([
+                Toggle::make('is_public')
+                    ->label(__('Eigen publieke pagina'))
+                    ->helperText(fn ($record) => $record?->publicUrl()
+                        ? __('Te delen URL: :url', ['url' => $record->publicUrl()])
+                        : __('Na opslaan is het formulier bereikbaar via een eigen URL.'))
+                    ->live()
+                    ->columnSpanFull(),
+                TextInput::make('slug')
+                    ->label(__('Slug (laatste deel van de URL)'))
+                    ->prefix(fn () => url(trim(config('dashed-forms.public_route_prefix', 'aanmelden'), '/')) . '/')
+                    ->helperText(__('Laat leeg om automatisch uit de naam te maken.'))
+                    ->maxLength(255)
+                    ->alphaDash()
+                    ->unique('dashed__forms', 'slug', ignoreRecord: true)
+                    ->dehydrateStateUsing(fn ($state, Get $get) => filled($state)
+                        ? str($state)->slug()->toString()
+                        : (filled($get('name')) ? str($get('name'))->slug()->toString() : null))
+                    ->visible(fn (Get $get) => (bool) $get('is_public')),
+                TextInput::make('public_title')
+                    ->label(__('Titel op de pagina'))
+                    ->helperText(__('Laat leeg om de naam van het formulier te gebruiken.'))
+                    ->maxLength(255)
+                    ->visible(fn (Get $get) => (bool) $get('is_public')),
+                FileUpload::make('public_image')
+                    ->label(__('Afbeelding bovenaan'))
+                    ->image()
+                    ->directory('dashed/form-pages')
+                    ->visible(fn (Get $get) => (bool) $get('is_public')),
+                cms()->editorField('public_intro', __('Introtekst'))
+                    ->visible(fn (Get $get) => (bool) $get('is_public'))
+                    ->columnSpanFull(),
+                DateTimePicker::make('closes_at')
+                    ->label(__('Inschrijving sluit op'))
+                    ->helperText(__('Na dit moment kan het formulier niet meer ingevuld worden. Leeg = geen sluitdatum.'))
+                    ->seconds(false),
+                TextInput::make('max_submissions')
+                    ->label(__('Maximaal aantal inzendingen'))
+                    ->helperText(fn ($record) => $record
+                        ? __('Leeg = onbeperkt. Nu :count inzending(en).', ['count' => $record->inputs()->count()])
+                        : __('Leeg = onbeperkt.'))
+                    ->numeric()
+                    ->minValue(1),
+                Textarea::make('closed_message')
+                    ->label(__('Melding als het formulier gesloten is'))
+                    ->placeholder(__('De inschrijving voor dit formulier is gesloten.'))
+                    ->rows(3)
+                    ->columnSpanFull(),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -320,6 +385,14 @@ class FormResource extends Resource
                 TextColumn::make('amount_of_requests')
                     ->label(__('Aantal aanvragen'))
                     ->getStateUsing(fn ($record) => $record->inputs->count()),
+                TextColumn::make('public_url')
+                    ->label(__('Publieke URL'))
+                    ->getStateUsing(fn ($record) => $record->publicUrl())
+                    ->placeholder('-')
+                    ->limit(40)
+                    ->copyable()
+                    ->copyMessage(__('URL gekopieerd'))
+                    ->url(fn ($record) => $record->publicUrl(), shouldOpenInNewTab: true),
                 TextColumn::make('amount_of_unviewed_requests')
                     ->label(__('Aantal openstaande aanvragen'))
                     ->getStateUsing(fn ($record) => $record->inputs()->unviewed()->count()),

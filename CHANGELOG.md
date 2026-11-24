@@ -2,6 +2,16 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.18.0 - 2026-11-24
+
+### Added
+- Publieke aanmeldpagina per formulier op `/aanmelden/{slug}` (prefix via `config('dashed-forms.public_route_prefix')`), met eigen titel, introtekst en afbeelding. Thema kan `{theme}/forms/public-page.blade.php` aanbieden, anders een kale fallback.
+- Formulier automatisch sluiten na een sluitdatum (`closes_at`) of een maximum aantal inzendingen (`max_submissions`), met eigen melding (`closed_message`). Geldt overal waar het formulier staat; thema kan `{theme}/forms/form-closed.blade.php` aanbieden.
+- Kolom "Publieke URL" (kopieerbaar) in het formulierenoverzicht.
+
+### Changed
+- Dupliceren van een formulier neemt de slug niet over en zet de publieke pagina uit.
+
 ## v4.17.0 - 2026-11-19
 
 ### Added

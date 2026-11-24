@@ -33,6 +33,14 @@ class Form extends Model
         'enrollment_flow_id',
         'customer_mail_subject',
         'admin_mail_subject',
+        'is_public',
+        'slug',
+        'public_title',
+        'public_intro',
+        'public_image',
+        'closes_at',
+        'max_submissions',
+        'closed_message',
     ];
 
     public function enrollmentFlow(): BelongsTo
@@ -69,6 +77,9 @@ class Form extends Model
         'notification_form_inputs_emails' => 'array',
         'webhooks' => 'array',
         'apis' => 'array',
+        'is_public' => 'boolean',
+        'closes_at' => 'datetime',
+        'max_submissions' => 'integer',
     ];
 
     public function fields(): HasMany
@@ -105,6 +116,45 @@ class Form extends Model
         }
 
         return FormVariables::replaceText($subject, FormVariables::forInput($formInput));
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true)->whereNotNull('slug');
+    }
+
+    /**
+     * URL of the standalone public page, or null when the form has no
+     * public page.
+     */
+    public function publicUrl(): ?string
+    {
+        if (! $this->is_public || blank($this->slug)) {
+            return null;
+        }
+
+        return route('dashed.frontend.forms.public', ['slug' => $this->slug]);
+    }
+
+    public function isPastDeadline(): bool
+    {
+        return $this->closes_at !== null && $this->closes_at->isPast();
+    }
+
+    public function hasReachedMaxSubmissions(): bool
+    {
+        return $this->max_submissions !== null
+            && $this->max_submissions > 0
+            && $this->inputs()->count() >= $this->max_submissions;
+    }
+
+    /**
+     * A closed form no longer accepts submissions, wherever it is shown
+     * (public page or a form block on a regular page).
+     */
+    public function isClosed(): bool
+    {
+        return $this->isPastDeadline() || $this->hasReachedMaxSubmissions();
     }
 
     public function scopeSearch($query, ?string $search = null)

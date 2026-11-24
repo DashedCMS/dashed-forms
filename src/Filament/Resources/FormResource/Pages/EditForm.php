@@ -66,7 +66,10 @@ class EditForm extends EditRecord
 
     public function duplicate()
     {
-        $newRecord = $this->record->replicate();
+        // The slug is unique, so the copy starts without a public page; it
+        // gets its own slug once it is made public again.
+        $newRecord = $this->record->replicate(['slug']);
+        $newRecord->is_public = false;
         $newRecord->save();
 
         $copiedFieldIds = [];

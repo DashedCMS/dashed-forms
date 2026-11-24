@@ -184,6 +184,12 @@ class Form extends Component
     #[ValidatesMcaptcha]
     public function submit()
     {
+        // Server-side guard: a deadline or the maximum can pass while the
+        // visitor has the form open.
+        if ($this->form->isClosed()) {
+            return;
+        }
+
         // Telt ook zonder captcha, en vóór de validatie, zodat ook een reeks
         // ongeldige pogingen begrensd is.
         $retryAfter = $this->hitSubmitLimit();
@@ -408,8 +414,21 @@ class Form extends Component
         $this->values[$field] = $value;
     }
 
+    public function getClosedMessageProperty(): string
+    {
+        return $this->form->closed_message
+            ?: Translation::get('form-closed', 'forms', 'De inschrijving voor dit formulier is gesloten.');
+    }
+
     public function render()
     {
+        // Keep the success message visible for whoever filled the last spot.
+        if (! $this->formSent && $this->form->isClosed()) {
+            $closedView = config('dashed-core.site_theme', 'dashed').'.forms.form-closed';
+
+            return view(view()->exists($closedView) ? $closedView : 'dashed-forms::frontend.form-closed');
+        }
+
         if (view()->exists('dashed.forms.'.str($this->form->name)->slug().'-form')) {
             return view(config('dashed-core.site_theme', 'dashed').'.forms.'.str($this->form->name)->slug().'-form');
         }
