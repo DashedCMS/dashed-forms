@@ -77,7 +77,7 @@ class FormSettingsPage extends Page
                 TextEntry::make("Formulier instellingen voor {$site['name']}")
                     ->state('Stel extra opties in voor de formulieren.'),
                 TagsInput::make("notification_form_inputs_emails_{$site['id']}")
-                    ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
+                    ->suggestions(User::panelUsers()->pluck('email')->toArray())
                     ->label(__('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen'))
                     ->placeholder(__('Voer een email in'))
                     ->reactive(),

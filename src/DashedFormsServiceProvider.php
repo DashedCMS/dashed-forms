@@ -136,13 +136,10 @@ class DashedFormsServiceProvider extends PackageServiceProvider
             $mobileApi->registerCapability('forms', ['version' => $version]);
 
             $mobileApi->registerAbilities(['forms.read']);
-            $mobileApi->registerRoleAbilities([
-                'eigenaar' => ['forms.read'],
-                'admin' => ['forms.read'],
-                'shopbeheerder' => ['forms.read'],
-                'support-agent' => ['forms.read'],
-                'read-only' => ['forms.read'],
-            ]);
+            // De app geeft forms.read aan wie in het CMS formulieren mag zien.
+            if (method_exists($mobileApi, 'registerAbilityPermissions')) {
+                $mobileApi->registerAbilityPermissions(['forms.read' => ['view_form']]);
+            }
 
             if (method_exists($mobileApi, 'registerNotificationTypes')) {
                 $mobileApi->registerNotificationTypes([

@@ -2,6 +2,11 @@
 
 All notable changes to `dashed-forms` will be documented in this file.
 
+## v4.19.0 - 2026-11-25
+
+### Changed
+- E-mailsuggesties tonen iedereen met toegang tot het CMS. In de app volgt `forms.read` nu het CMS-recht `view_form` in plaats van de rolnaam (vereist dashed-core ^4.124).
+
 ## v4.18.0 - 2026-11-24
 
 ### Added

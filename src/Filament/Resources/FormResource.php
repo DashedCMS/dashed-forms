@@ -132,7 +132,7 @@ class FormResource extends Resource
                 ->maxLength(255)
                 ->nullable(),
             TagsInput::make('notification_form_inputs_emails')
-                ->suggestions(User::where('role', 'admin')->pluck('email')->toArray())
+                ->suggestions(User::panelUsers()->pluck('email')->toArray())
                 ->label(__('Emails om de bevestigingsmail van een formulier aanvraag naar te sturen'))
                 ->helperText(__('Vul hier de emails in waar de bevestigingsmail naartoe gestuurd moet worden, indien je dit leeg laat worden de standaard emails gebruikt'))
                 ->placeholder(__('Voer een email in'))
